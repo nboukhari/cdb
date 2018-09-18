@@ -1,13 +1,15 @@
 package com.excilys.cdb2.model;
 
+import java.time.LocalDate;
+
 public class ComputerBuilder {
-	private int id;
+	private long id;
 	private String name;
-	private String introduced;
-	private String discontinued;
-	private int companyId;
+	private LocalDate introduced;
+	private LocalDate discontinued;
+	private long companyId;
 	
-	public ComputerBuilder setId(int id) {
+	public ComputerBuilder setId(long id) {
 		this.id = id;
 		return this;
 	}
@@ -15,15 +17,15 @@ public class ComputerBuilder {
 		this.name = name;
 		return this;
 	}
-	public ComputerBuilder setIntroduced(String introduced) {
+	public ComputerBuilder setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 		return this;
 	}
-	public ComputerBuilder setDiscontinued(String discontinued) {
+	public ComputerBuilder setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 		return this;
 	}
-	public ComputerBuilder setCompanyId(int companyId) {
+	public ComputerBuilder setCompanyId(long companyId) {
 		this.companyId = companyId;
 		return this;
 	}

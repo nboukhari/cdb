@@ -4,13 +4,13 @@ import java.time.LocalDate;
 
 public class Computer {
 
-	private int id;
+	private long id;
 	private String name;
-	private String introduced;
-	private String discontinued;
-	private int companyId;
+	private LocalDate introduced;
+	private LocalDate discontinued;
+	private long companyId;
 	
-	public Computer(int id, String name, String introduced, String discontinued, int companyId){
+	public Computer(long id, String name, LocalDate introduced, LocalDate discontinued, long companyId){
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
@@ -18,17 +18,10 @@ public class Computer {
 		this.companyId = companyId;
 	}
 	
-	/*
-	public Computer(String name, String introduced, String discontinued) {
-		this.name = name;
-		this.introduced = introduced;
-		this.discontinued = discontinued;
-	}*/
-	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -37,22 +30,22 @@ public class Computer {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getIntroduced() {
+	public LocalDate getIntroduced() {
 		return introduced;
 	}
-	public void setIntroduced(String introduced) {
+	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
-	public String getDiscontinued() {
+	public LocalDate getDiscontinued() {
 		return discontinued;
 	}
-	public void setDiscontinued(String discontinued) {
+	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}
-	public int getCompanyId() {
+	public long getCompanyId() {
 		return companyId;
 	}
-	public void setCompanyId(int companyId) {
+	public void setCompanyId(long companyId) {
 		this.companyId = companyId;
 	}
 	

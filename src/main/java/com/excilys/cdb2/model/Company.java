@@ -1,7 +1,7 @@
 package com.excilys.cdb2.model;
 
 public class Company {
-	private int id;
+	private long id;
 	private String name;
 
 	@Override
@@ -9,7 +9,7 @@ public class Company {
 		return "Company [id=" + id + ", name=" + name + "]";
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 	public void setId(int id) {

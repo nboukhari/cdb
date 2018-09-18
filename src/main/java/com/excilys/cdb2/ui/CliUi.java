@@ -1,11 +1,7 @@
 package com.excilys.cdb2.ui;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
-
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.model.ComputerBuilder;
 import com.excilys.cdb2.service.*;
@@ -17,17 +13,12 @@ import com.excilys.cdb2.service.*;
 public class CliUi {
 	
 
-	public static final Scanner READER = new Scanner(System.in);
+	public static Scanner READER = new Scanner(System.in);
 	
 	public static void Cli(){
+		
 		boolean quit = false;
 		do {
-			try {
-				TimeUnit.SECONDS.sleep(2);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			System.out.println("\nBonjour, vous êtes dans une interface en ligne de commande");
 			System.out.println("Menu:");
 			System.out.println("1 - Liste des ordinateurs");
@@ -38,28 +29,30 @@ public class CliUi {
 			System.out.println("6 - Supprimer un ordinateur");
 			System.out.println("0 - Quitter\n");
 			System.out.println("Pour choisir une option, veuillez entrer un chiffre:");
-			String caseNumber = READER.nextLine();
 
-			switch(caseNumber) {
-			case("0"):
+			int nbCh = 0;
+			ChooseUi choose = ChooseUi.values()[Integer.valueOf(EnterId(nbCh))];
+			
+			switch(choose) {
+			case QUIT:
 				quit = true;
 			break;
-			case("1"):
+			case LIST_ALL_COMPUTERS:
 				ComputerServices.showComputers();
 			break;
-			case("2"):
+			case LIST_ALL_COMPANIES:
 				CompanyServices.showCompanies();
 			break;
-			case("3"):
+			case GET_COMPUTER_DETAILS:
 				ComputerServices.showComputerDetail();
 			break;
-			case("4"):
+			case CREATE_COMPUTER:
 				ComputerServices.createComputer();
 			break;
-			case("5"):
+			case MODIFY_COMPUTER:
 				ComputerServices.modifyComputer();
 			break;
-			case("6"):
+			case REMOVE_COMPUTER:
 				ComputerServices.deleteComputer();
 			break;
 			default:
@@ -69,6 +62,11 @@ public class CliUi {
 		}while(!quit);
 		System.out.println("Au revoir.");
 		READER.close();
+	}
+	
+	public static int EnterId(int nbCh) {
+		nbCh = READER.nextInt();
+		return nbCh;
 	}
 	
 	public static Computer enterId(int idPC) {
@@ -89,17 +87,16 @@ public class CliUi {
 		name = READER.nextLine();
 		System.out.println("Veuillez entrer la date de lancement du nouvel ordinateur à créer: ");
 		introduced = READER.nextLine();
+		LocalDate introducedToLocalDate = LocalDate.parse(introduced);
 		System.out.println("Veuillez entrer la date d'arrêt du nouvel ordinateur à créer: ");
 		discontinued = READER.nextLine();
+		LocalDate discontinuedToLocalDate = LocalDate.parse(discontinued);
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 		computerBuilder.setName(name);
-		computerBuilder.setIntroduced(introduced);
-		computerBuilder.setDiscontinued(discontinued);
+		computerBuilder.setIntroduced(introducedToLocalDate);
+		computerBuilder.setDiscontinued(discontinuedToLocalDate);
 		computer = computerBuilder.build();
-		
-		//Computer computer = new Computer(0,name,introduced,discontinued,0);
-		//System.out.println(name+" "+introduced+" "+discontinued);
 		
 		return computer;
 	}
@@ -113,7 +110,7 @@ public class CliUi {
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 		computerBuilder.setName(name);
 		computer = computerBuilder.build();
-		
+
 		return computer;
 		
 	}
@@ -122,10 +119,11 @@ public class CliUi {
 		
 		System.out.println("Veuillez entrer la nouvelle date du lancement de l'ordinateur (au format YYYY-mm-dd): ");
 		introduced = READER.nextLine();
+		LocalDate introducedToLocalDate = LocalDate.parse(introduced);
 		System.out.println("Voici la nouvelle date du lancement de l'ordinateur: "+introduced+"\n");
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setIntroduced(introduced);
+		computerBuilder.setIntroduced(introducedToLocalDate);
 		computer = computerBuilder.build();
 		
 		return computer;
@@ -135,10 +133,11 @@ public class CliUi {
 		
 		System.out.println("Veuillez entrer la nouvelle date de l'arrêt de l'ordinateur (au format YYYY-mm-dd): ");
 		discontinued = READER.nextLine();
+		LocalDate discontinuedToLocalDate = LocalDate.parse(discontinued);
 		System.out.println("Voici la nouvelle date de l'arrêt de l'ordinateur: "+discontinued+"\n");
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setDiscontinued(discontinued);
+		computerBuilder.setDiscontinued(discontinuedToLocalDate);
 		computer = computerBuilder.build();
 		
 		return computer;

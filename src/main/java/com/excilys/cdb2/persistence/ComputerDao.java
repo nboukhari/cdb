@@ -2,9 +2,11 @@ package com.excilys.cdb2.persistence;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import com.excilys.cdb2.model.Computer;
@@ -21,9 +23,9 @@ public class ComputerDao {
 	private static final String PASSWORD = "qwerty1234";
 	private static final String GET_ALL ="SELECT id,name FROM computer";
 	private static final String GET_ONE = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id =?;";
-	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued) VALUES ('?','?','?');";
-	private static final String UPDATE ="UPDATE computer set ? =? where id =?;";
-	private static final String DELETE ="DELETE from computer where name=?;";
+	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued) VALUES (?,?,?);";
+	private static final String UPDATE ="UPDATE computer set ? = ? where id =?;";
+	private static final String DELETE ="DELETE from computer where id =?;";
 	public static final Scanner READER = new Scanner(System.in);
 	private static Connection cn;
 	private static Statement st;
@@ -59,8 +61,9 @@ public class ComputerDao {
 			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
 			st = cn.createStatement();
 			Computer computer = CliUi.enterId(idPC);
-			String sql = "SELECT * FROM computer WHERE id ='"+computer.getId()+"'";
-			ResultSet rs = st.executeQuery(sql);
+			PreparedStatement ppdStmt = cn.prepareStatement(GET_ONE);
+			ppdStmt.setLong(1, computer.getId());;
+			ResultSet rs = ppdStmt.executeQuery();
 			System.out.println("***Détails de l'ordinateur***\n");
 			if(rs.next()) {
 				System.out.println("Id: "+rs.getInt("id")+"\nName: "+rs.getString("name")+"\nDate de lancement: "+rs.getString("introduced")+"\nDate d'arrêt: "+rs.getString("discontinued")+"\nId de l'entreprise: "+rs.getString("company_id"));
@@ -88,9 +91,11 @@ public class ComputerDao {
 			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
 			st = cn.createStatement();
 			Computer computer = CliUi.createPC(namePC, introducedPC, discontinuedPC);
-			String sql = "INSERT INTO computer (name,introduced,discontinued) VALUES ('"+computer.getName()+"','"+computer.getIntroduced()+"','"+computer.getDiscontinued()+"')";
-			st.executeUpdate(sql);
-			//System.out.println("\nVoici les informations concernant l'ordinateur que vous venez de créer:\n"+computer);
+			PreparedStatement ppdStmt = cn.prepareStatement(INSERT);
+			ppdStmt.setString(1, computer.getName());
+			ppdStmt.setObject(2, computer.getIntroduced());
+			ppdStmt.setObject(3, computer.getDiscontinued());
+			ppdStmt.executeUpdate();
 			closeConnection(cn, st);
 		} catch (SQLException e) {
 			//System.out.println("Le nom que vous avez entré n'est pas valide.\n");
@@ -125,6 +130,7 @@ public class ComputerDao {
 					}
 					System.out.println("Que voulez vous modifier? ");
 					System.out.println("1 - Le nom\n2 - La date de lancement\n3 - La date d'arrêt\n0 - Quitter la modification");
+					
 					choice = READER.nextLine();
 					switch(choice) {
 					case("0"):
@@ -188,11 +194,13 @@ public class ComputerDao {
 			int idPC = 0;
 			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
 			st = cn.createStatement();
-			Computer computerId = CliUi.enterId(idPC);
-			String sql ="DELETE from computer where id='"+computerId.getId()+"'";
-			st.executeUpdate(sql);
+			Computer computer = CliUi.enterId(idPC);
+			PreparedStatement ppdStmt = cn.prepareStatement(DELETE);
+			ppdStmt.setLong(1, computer.getId());;
+			ppdStmt.executeUpdate();
 			System.out.println("***Ordinateur supprimé***\n");
 			closeConnection(cn, st);
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
