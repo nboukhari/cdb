@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.ui.*;
 
@@ -26,7 +24,6 @@ public class ComputerDao {
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued) VALUES (?,?,?);";
 	private static final String UPDATE ="UPDATE computer set ? = ? where id =?;";
 	private static final String DELETE ="DELETE from computer where id =?;";
-	//public static final Scanner READER = new Scanner(System.in);
 	private static Connection cn;
 	private static Statement st;
 
@@ -62,11 +59,14 @@ public class ComputerDao {
 			st = cn.createStatement();
 			Computer computer = CliUi.enterIdPC(idPC);
 			PreparedStatement ppdStmt = cn.prepareStatement(GET_ONE);
-			ppdStmt.setLong(1, computer.getId());;
+			ppdStmt.setLong(1, computer.getId());
 			ResultSet rs = ppdStmt.executeQuery();
-			System.out.println("***Détails de l'ordinateur***\n");
 			if(rs.next()) {
-				System.out.println("Id: "+rs.getInt("id")+"\nName: "+rs.getString("name")+"\nDate de lancement: "+rs.getString("introduced")+"\nDate d'arrêt: "+rs.getString("discontinued")+"\nId de l'entreprise: "+rs.getString("company_id"));
+				System.out.println("Id: "+rs.getInt("id")+"\nName: "
+						+rs.getString("name")+"\nDate de lancement: "
+						+rs.getString("introduced")+"\nDate d'arrêt: "
+						+rs.getString("discontinued")+"\nId de l'entreprise: "
+						+rs.getString("company_id"));
 			}
 			else {
 				System.out.println("L'ordinateur que vous avez spécifié n'existe pas.");
@@ -85,11 +85,11 @@ public class ComputerDao {
 	 */
 	public static void setComputer() {
 		try {
-			String namePC = null;
-			String introducedPC = null;
-			String discontinuedPC = null;
 			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
 			st = cn.createStatement();
+			String namePC = CliUi.enterName();
+			LocalDate introducedPC = CliUi.enterDateDebut();
+			LocalDate discontinuedPC = CliUi.enterDateEnd();
 			Computer computer = CliUi.createPC(namePC, introducedPC, discontinuedPC);
 			PreparedStatement ppdStmt = cn.prepareStatement(INSERT);
 			ppdStmt.setString(1, computer.getName());
@@ -111,23 +111,24 @@ public class ComputerDao {
 		try {
 			boolean quit = false;
 			String idPC = "0";
-			//String choice = null;
 			String columnToModify = null;
-			String newValue = null;
 			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
 			st = cn.createStatement();
 			Computer computerId = CliUi.enterIdPC(idPC);
 			if(computerId.getId() > 0) {
-				String PC = "SELECT name,introduced,discontinued FROM computer WHERE id="+computerId.getId()+"";
-				ResultSet getPC = st.executeQuery(PC);
+				PreparedStatement ppdStmt = cn.prepareStatement(GET_ONE);
+				ppdStmt.setLong(1, computerId.getId());
+				ResultSet getPC = ppdStmt.executeQuery();
 				while(getPC.next())
-					System.out.println("\nVoici les informations concernant l'ordinateur que vous pouvez modifier: \nNom: "+getPC.getString("name")+"\nDate de lancement: "+getPC.getString("introduced")+"\nDate d'arrêt: "+getPC.getString("discontinued")+"\n");
+					System.out.println("\nVoici les informations concernant l'ordinateur que vous pouvez modifier: \nNom: "
+							+getPC.getString("name")+"\nDate de lancement: "
+							+getPC.getString("introduced")+"\nDate d'arrêt: "
+							+getPC.getString("discontinued")+"\n");
 				do {
 					System.out.println("Que voulez vous modifier? ");
 					System.out.println("1 - Le nom\n2 - La date de lancement\n3 - La date d'arrêt\n0 - Quitter la modification");
 					String nbChoice = "0";
-					ChooseDao choose = ChooseDao.values()[Integer.valueOf(CliUi.enterId(nbChoice))];
-					//choice = READER.nextLine();
+					ChooseDao choose = ChooseDao.values()[Integer.valueOf(CliUi.enterNbChoice(nbChoice))];
 					switch(choose) {
 					case QUIT:
 						quit = true;
@@ -136,7 +137,7 @@ public class ComputerDao {
 					case MODIFY_NAME:
 						try {
 							columnToModify = "name";
-							newValue = CliUi.enterName();
+							String newValue = CliUi.enterName();
 							Computer computerName = CliUi.updateName(newValue);
 							String sql = "UPDATE computer set "+columnToModify+" ='"+computerName.getName()+"' where id = '"+computerId.getId()+"'";
 							st.executeUpdate(sql);
@@ -148,7 +149,8 @@ public class ComputerDao {
 					case MODIFY_DEBUT:
 						try {
 							columnToModify = "introduced";
-							Computer computerIntroduced = CliUi.updateIntroduced(newValue);
+							LocalDate newValueDate = CliUi.enterDateDebut();
+							Computer computerIntroduced = CliUi.updateIntroduced(newValueDate);
 							String sql2 = "UPDATE computer set "+columnToModify+" ='"+computerIntroduced.getIntroduced()+"' where id = '"+computerId.getId()+"'";
 							st.executeUpdate(sql2);
 						}
@@ -159,7 +161,8 @@ public class ComputerDao {
 					case MODIFY_END:
 						try {
 							columnToModify = "discontinued";
-							Computer computerDiscontinued = CliUi.updateDiscontinued(newValue);
+							LocalDate newValueDate = CliUi.enterDateEnd();
+							Computer computerDiscontinued = CliUi.updateDiscontinued(newValueDate);
 							String sql3 = "UPDATE computer set "+columnToModify+" ='"+computerDiscontinued.getDiscontinued()+"' where id = '"+computerId.getId()+"'";
 							st.executeUpdate(sql3);
 						}
@@ -194,7 +197,6 @@ public class ComputerDao {
 			PreparedStatement ppdStmt = cn.prepareStatement(DELETE);
 			ppdStmt.setLong(1, computer.getId());;
 			ppdStmt.executeUpdate();
-			System.out.println("***Ordinateur supprimé***\n");
 			closeConnection(cn, st);
 			
 		} catch (SQLException e) {

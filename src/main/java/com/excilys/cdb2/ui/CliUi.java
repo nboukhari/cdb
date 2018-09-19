@@ -31,7 +31,7 @@ public class CliUi {
 			System.out.println("Pour choisir une option, veuillez entrer un chiffre:");
 
 			String nbCh = "0";
-			ChooseUi choose = ChooseUi.values()[Integer.valueOf(enterId(nbCh))];
+			ChooseUi choose = ChooseUi.values()[Integer.valueOf(enterNbChoice(nbCh))];
 
 			switch(choose) {
 			case QUIT:
@@ -59,46 +59,50 @@ public class CliUi {
 				System.out.println("Je n'ai pas compris votre requête, veuillez recommencer.");
 			}
 		}while(!quit);
-		System.out.println("Au revoir.");
 		READER.close();
+		System.out.println("Au revoir.");
 	}
 
-	public static int enterId(String nbCh) {
+	public static int enterNbChoice(String nbCh) {
+		
 		nbCh = READER.nextLine();
 		int intCh = Integer.parseInt(nbCh);
+		
 		return intCh;
 	}
 	
+	public static int enterId() {
+		
+		System.out.println("Veuillez entrer l'id de l'ordinateur: ");
+		String idPC = READER.nextLine();
+		int intId = Integer.parseInt(idPC);
+		
+		return intId;
+	}
+	
 	public static String enterName() {
-		String name ="blbl";
+		
 		System.out.println("Veuillez entrer le nom de l'ordinateur: ");
-		name = READER.nextLine();
+		String name = READER.nextLine();
+		
 		return name;
 	}
-	/*
-	public static String enterDateDebut(String date) {
-		System.out.println("Veuillez entrer la date de lancement de l'ordinateur (format YYYY-mm-dd): ");
-		date = READER.nextLine();
-		return date;
-	}
 	
-	public static String enterDateEnd(String date) {
-		System.out.println("Veuillez entrer la date d'arrêt de l'ordinateur (format YYYY-mm-dd): ");
-		date = READER.nextLine();
-		return date;
-	}*/
-	
-	public static LocalDate enterDateDebut(String date) {
+	public static LocalDate enterDateDebut() {
+		
 		System.out.println("Veuillez entrer la date de lancement de l'ordinateur (format YYYY-mm-dd): ");
-		date = READER.nextLine();
+		String date = READER.nextLine();
 		LocalDate dateToLocalDate = LocalDate.parse(date);
+		
 		return dateToLocalDate;
 	}
 	
-	public static LocalDate enterDateEnd(String date) {
+	public static LocalDate enterDateEnd() {
+
 		System.out.println("Veuillez entrer la date d'arrêt de l'ordinateur (format YYYY-mm-dd): ");
-		date = READER.nextLine();
+		String date = READER.nextLine();
 		LocalDate dateToLocalDate = LocalDate.parse(date);
+		
 		return dateToLocalDate;
 	}
 
@@ -115,40 +119,20 @@ public class CliUi {
 		return computer;
 	}
 
-	public static Computer createPC(String name,String introduced,String discontinued) {
+	public static Computer createPC(String name,LocalDate introduced,LocalDate discontinued) {
 
-		System.out.println("Veuillez entrer le nom du nouvel ordinateur à créer: ");
-		name = READER.nextLine();
-		System.out.println("Veuillez entrer la date de lancement du nouvel ordinateur à créer (format YYYY-mm-dd): ");
-		introduced = READER.nextLine();
-		LocalDate introducedToLocalDate = LocalDate.parse(introduced);
-		System.out.println("Veuillez entrer la date d'arrêt du nouvel ordinateur à créer (format YYYY-mm-dd): ");
-		discontinued = READER.nextLine();
-		LocalDate discontinuedToLocalDate = LocalDate.parse(discontinued);
-		Computer computer;
-		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setName(name);
-		computerBuilder.setIntroduced(introducedToLocalDate);
-		computerBuilder.setDiscontinued(discontinuedToLocalDate);
-		computer = computerBuilder.build();
-		
-		/*//LocalDate introducedToLocalDate = LocalDate.parse(introduced);
-		//LocalDate discontinuedToLocalDate = LocalDate.parse(discontinued);
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 		computerBuilder.setName(name);
 		computerBuilder.setIntroduced(introduced);
 		computerBuilder.setDiscontinued(discontinued);
-		computer = computerBuilder.build();*/
+		computer = computerBuilder.build();
 		
 		return computer;
 	}
 
 	public static Computer updateName(String name) {
 		
-		/*System.out.println("Veuillez entrer le nouveau nom de l'ordinateur: ");
-		name = READER.nextLine();
-		System.out.println("Voici le nouveau nom de l'ordinateur: "+name+"\n");*/
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 		computerBuilder.setName(name);
@@ -158,29 +142,21 @@ public class CliUi {
 
 	}
 
-	public static Computer updateIntroduced(String introduced) {
+	public static Computer updateIntroduced(LocalDate introduced) {
 
-		System.out.println("Veuillez entrer la nouvelle date du lancement de l'ordinateur (au format YYYY-mm-dd): ");
-		introduced = READER.nextLine();
-		LocalDate introducedToLocalDate = LocalDate.parse(introduced);
-		System.out.println("Voici la nouvelle date du lancement de l'ordinateur: "+introduced+"\n");
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setIntroduced(introducedToLocalDate);
+		computerBuilder.setIntroduced(introduced);
 		computer = computerBuilder.build();
 
 		return computer;
 	}
 
-	public static Computer updateDiscontinued(String discontinued) {
+	public static Computer updateDiscontinued(LocalDate discontinued) {
 
-		System.out.println("Veuillez entrer la nouvelle date de l'arrêt de l'ordinateur (au format YYYY-mm-dd): ");
-		discontinued = READER.nextLine();
-		LocalDate discontinuedToLocalDate = LocalDate.parse(discontinued);
-		System.out.println("Voici la nouvelle date de l'arrêt de l'ordinateur: "+discontinued+"\n");
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setDiscontinued(discontinuedToLocalDate);
+		computerBuilder.setDiscontinued(discontinued);
 		computer = computerBuilder.build();
 
 		return computer;
