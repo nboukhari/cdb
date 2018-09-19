@@ -26,7 +26,7 @@ public class ComputerDao {
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued) VALUES (?,?,?);";
 	private static final String UPDATE ="UPDATE computer set ? = ? where id =?;";
 	private static final String DELETE ="DELETE from computer where id =?;";
-	public static final Scanner READER = new Scanner(System.in);
+	//public static final Scanner READER = new Scanner(System.in);
 	private static Connection cn;
 	private static Statement st;
 
@@ -57,10 +57,10 @@ public class ComputerDao {
 	 */
 	public static void getComputerDetails() {
 		try {
-			int idPC = 0;
+			String idPC = "0";
 			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
 			st = cn.createStatement();
-			Computer computer = CliUi.enterId(idPC);
+			Computer computer = CliUi.enterIdPC(idPC);
 			PreparedStatement ppdStmt = cn.prepareStatement(GET_ONE);
 			ppdStmt.setLong(1, computer.getId());;
 			ResultSet rs = ppdStmt.executeQuery();
@@ -110,36 +110,33 @@ public class ComputerDao {
 	public static void updateComputer() {
 		try {
 			boolean quit = false;
-			int idPC = 0;
-			String choice = null;
+			String idPC = "0";
+			//String choice = null;
 			String columnToModify = null;
 			String newValue = null;
 			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
 			st = cn.createStatement();
-			Computer computerId = CliUi.enterId(idPC);
+			Computer computerId = CliUi.enterIdPC(idPC);
 			if(computerId.getId() > 0) {
 				String PC = "SELECT name,introduced,discontinued FROM computer WHERE id="+computerId.getId()+"";
 				ResultSet getPC = st.executeQuery(PC);
 				while(getPC.next())
 					System.out.println("\nVoici les informations concernant l'ordinateur que vous pouvez modifier: \nNom: "+getPC.getString("name")+"\nDate de lancement: "+getPC.getString("introduced")+"\nDate d'arrêt: "+getPC.getString("discontinued")+"\n");
 				do {
-					try {
-						TimeUnit.SECONDS.sleep(2);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
 					System.out.println("Que voulez vous modifier? ");
 					System.out.println("1 - Le nom\n2 - La date de lancement\n3 - La date d'arrêt\n0 - Quitter la modification");
-					
-					choice = READER.nextLine();
-					switch(choice) {
-					case("0"):
+					String nbChoice = "0";
+					ChooseDao choose = ChooseDao.values()[Integer.valueOf(CliUi.enterId(nbChoice))];
+					//choice = READER.nextLine();
+					switch(choose) {
+					case QUIT:
 						quit = true;
 					System.out.println("Vous avez choisi de quitter la modification.");
 					break;
-					case("1"):
+					case MODIFY_NAME:
 						try {
 							columnToModify = "name";
+							newValue = CliUi.enterName();
 							Computer computerName = CliUi.updateName(newValue);
 							String sql = "UPDATE computer set "+columnToModify+" ='"+computerName.getName()+"' where id = '"+computerId.getId()+"'";
 							st.executeUpdate(sql);
@@ -148,7 +145,7 @@ public class ComputerDao {
 						System.out.println("Le nom que vous avez entrée n'est pas valide.\n");
 					}
 					break;
-					case("2"):
+					case MODIFY_DEBUT:
 						try {
 							columnToModify = "introduced";
 							Computer computerIntroduced = CliUi.updateIntroduced(newValue);
@@ -159,7 +156,7 @@ public class ComputerDao {
 						System.out.println("La date que vous avez entrée n'est pas valide.\n");
 					}
 					break;
-					case("3"):
+					case MODIFY_END:
 						try {
 							columnToModify = "discontinued";
 							Computer computerDiscontinued = CliUi.updateDiscontinued(newValue);
@@ -172,7 +169,6 @@ public class ComputerDao {
 					break;
 					default:
 						System.out.println("Je n'ai pas compris votre requête, veuillez recommencer.\n");
-						break;
 					}
 				}while(!quit);
 			}
@@ -191,10 +187,10 @@ public class ComputerDao {
 	 */
 	public static void removeComputer() {
 		try {
-			int idPC = 0;
+			String idPC = "0";
 			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
 			st = cn.createStatement();
-			Computer computer = CliUi.enterId(idPC);
+			Computer computer = CliUi.enterIdPC(idPC);
 			PreparedStatement ppdStmt = cn.prepareStatement(DELETE);
 			ppdStmt.setLong(1, computer.getId());;
 			ppdStmt.executeUpdate();
