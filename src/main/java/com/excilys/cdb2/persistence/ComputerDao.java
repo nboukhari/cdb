@@ -19,7 +19,8 @@ public class ComputerDao {
 	private static final String URL = "jdbc:mysql://localhost/computer-database-db";
 	private static final String LOGIN = "admincdb";
 	private static final String PASSWORD = "qwerty1234";
-	private static final String GET_ALL ="SELECT id,name FROM computer";
+	private static String NUMBEROFPAGE = "0";
+	private static final String GET_ALL ="SELECT id,name FROM computer limit ?,10";
 	private static final String GET_ONE = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id =?;";
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued) VALUES (?,?,?);";
 	private static final String UPDATE ="UPDATE computer set ? = ? where id =?;";
@@ -35,15 +36,23 @@ public class ComputerDao {
 		try {
 			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
 			st = cn.createStatement();
-			ResultSet rs = st.executeQuery(GET_ALL);
-			System.out.println("***Liste des ordinateurs***\n");
-			while(rs.next()) {
-				System.out.println(rs.getInt(1)+"|"+rs.getString(2));
-			}
-			rs.close();
+			do {
+				PreparedStatement ppdStmt = cn.prepareStatement(GET_ALL);
+				//System.out.println("TEST = "+NUMBEROFPAGE);
+				int test = CliUi.numberOfPage(NUMBEROFPAGE);
+				ppdStmt.setInt(1, test);
+				System.out.println("a");
+				ResultSet rs = ppdStmt.executeQuery();
+				System.out.println("***Liste des ordinateurs***\n");
+				while(rs.next()) {
+					System.out.println(rs.getInt(1)+"|"+rs.getString(2));
+					//System.out.println("NEW TETE = "+NUMBEROFPAGE);
+				}
+				//rs.close();
+			}while(CliUi.numberOfPage(NUMBEROFPAGE) != 0 && CliUi.numberOfPage(NUMBEROFPAGE) > 0);
 			closeConnection(cn, st);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Erreur SQL");
 		}
 
 	}
@@ -74,8 +83,7 @@ public class ComputerDao {
 			rs.close();
 			closeConnection(cn, st);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Erreur SQL");
 		}
 	}
 
@@ -98,8 +106,7 @@ public class ComputerDao {
 			ppdStmt.executeUpdate();
 			closeConnection(cn, st);
 		} catch (SQLException e) {
-			//System.out.println("Le nom que vous avez entré n'est pas valide.\n");
-			e.printStackTrace();
+			System.out.println("Erreur SQL");
 		}
 	}
 
@@ -128,50 +135,55 @@ public class ComputerDao {
 					System.out.println("Que voulez vous modifier? ");
 					System.out.println("1 - Le nom\n2 - La date de lancement\n3 - La date d'arrêt\n0 - Quitter la modification");
 					String nbChoice = "0";
-					ChooseDao choose = ChooseDao.values()[Integer.valueOf(CliUi.enterNbChoice(nbChoice))];
-					switch(choose) {
-					case QUIT:
-						quit = true;
-					System.out.println("Vous avez choisi de quitter la modification.");
-					break;
-					case MODIFY_NAME:
-						try {
-							columnToModify = "name";
-							String newValue = CliUi.enterName();
-							Computer computerName = CliUi.updateName(newValue);
-							String sql = "UPDATE computer set "+columnToModify+" ='"+computerName.getName()+"' where id = '"+computerId.getId()+"'";
-							st.executeUpdate(sql);
+					try {
+						ChooseDao choose = ChooseDao.values()[Integer.valueOf(CliUi.enterNbChoice(nbChoice))];
+						switch(choose) {
+						case QUIT:
+							quit = true;
+							System.out.println("Vous avez choisi de quitter la modification.");
+							break;
+						case MODIFY_NAME:
+							try {
+								columnToModify = "name";
+								String newValue = CliUi.enterName();
+								Computer computerName = CliUi.updateName(newValue);
+								String sql = "UPDATE computer set "+columnToModify+" ='"+computerName.getName()+"' where id = '"+computerId.getId()+"'";
+								st.executeUpdate(sql);
+							}
+							catch(Exception e) {
+								System.out.println("Le nom que vous avez entrée n'est pas valide.\n");
+							}
+							break;
+						case MODIFY_DEBUT:
+							try {
+								columnToModify = "introduced";
+								LocalDate newValueDate = CliUi.enterDateDebut();
+								Computer computerIntroduced = CliUi.updateIntroduced(newValueDate);
+								String sql2 = "UPDATE computer set "+columnToModify+" ='"+computerIntroduced.getIntroduced()+"' where id = '"+computerId.getId()+"'";
+								st.executeUpdate(sql2);
+							}
+							catch(Exception e) {
+								System.out.println("La date que vous avez entrée n'est pas valide.\n");
+							}
+							break;
+						case MODIFY_END:
+							try {
+								columnToModify = "discontinued";
+								LocalDate newValueDate = CliUi.enterDateEnd();
+								Computer computerDiscontinued = CliUi.updateDiscontinued(newValueDate);
+								String sql3 = "UPDATE computer set "+columnToModify+" ='"+computerDiscontinued.getDiscontinued()+"' where id = '"+computerId.getId()+"'";
+								st.executeUpdate(sql3);
+							}
+							catch(Exception e) {
+								System.out.println("La date que vous avez entrée n'est pas valide.");
+							}
+							break;
+						default:
+							System.out.println("Je n'ai pas compris votre requête, veuillez recommencer.\n");
 						}
-					catch(Exception e) {
-						System.out.println("Le nom que vous avez entrée n'est pas valide.\n");
 					}
-					break;
-					case MODIFY_DEBUT:
-						try {
-							columnToModify = "introduced";
-							LocalDate newValueDate = CliUi.enterDateDebut();
-							Computer computerIntroduced = CliUi.updateIntroduced(newValueDate);
-							String sql2 = "UPDATE computer set "+columnToModify+" ='"+computerIntroduced.getIntroduced()+"' where id = '"+computerId.getId()+"'";
-							st.executeUpdate(sql2);
-						}
 					catch(Exception e) {
-						System.out.println("La date que vous avez entrée n'est pas valide.\n");
-					}
-					break;
-					case MODIFY_END:
-						try {
-							columnToModify = "discontinued";
-							LocalDate newValueDate = CliUi.enterDateEnd();
-							Computer computerDiscontinued = CliUi.updateDiscontinued(newValueDate);
-							String sql3 = "UPDATE computer set "+columnToModify+" ='"+computerDiscontinued.getDiscontinued()+"' where id = '"+computerId.getId()+"'";
-							st.executeUpdate(sql3);
-						}
-					catch(Exception e) {
-						System.out.println("La date que vous avez entrée n'est pas valide.");
-					}
-					break;
-					default:
-						System.out.println("Je n'ai pas compris votre requête, veuillez recommencer.\n");
+						System.out.println("Je n'ai pas compris votre requête, veuillez recommencer.");
 					}
 				}while(!quit);
 			}
@@ -180,7 +192,7 @@ public class ComputerDao {
 			}
 			closeConnection(cn, st);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Erreur SQL");
 		}
 	}
 
@@ -198,9 +210,9 @@ public class ComputerDao {
 			ppdStmt.setLong(1, computer.getId());;
 			ppdStmt.executeUpdate();
 			closeConnection(cn, st);
-			
+
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Erreur SQL");
 		}
 	}
 

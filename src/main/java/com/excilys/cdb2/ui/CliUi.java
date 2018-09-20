@@ -29,33 +29,36 @@ public class CliUi {
 			System.out.println("6 - Supprimer un ordinateur");
 			System.out.println("0 - Quitter\n");
 			System.out.println("Pour choisir une option, veuillez entrer un chiffre:");
-
 			String nbCh = "0";
-			ChooseUi choose = ChooseUi.values()[Integer.valueOf(enterNbChoice(nbCh))];
-
-			switch(choose) {
-			case QUIT:
-				quit = true;
-				break;
-			case LIST_ALL_COMPUTERS:
-				ComputerServices.showComputers();
-				break;
-			case LIST_ALL_COMPANIES:
-				CompanyServices.showCompanies();
-				break;
-			case GET_COMPUTER_DETAILS:
-				ComputerServices.showComputerDetail();
-				break;
-			case CREATE_COMPUTER:
-				ComputerServices.createComputer();
-				break;
-			case MODIFY_COMPUTER:
-				ComputerServices.modifyComputer();
-				break;
-			case REMOVE_COMPUTER:
-				ComputerServices.deleteComputer();
-				break;
-			default:
+			try {
+				ChooseUi choose = ChooseUi.values()[Integer.valueOf(enterNbChoice(nbCh))];
+				switch(choose) {
+				case QUIT:
+					quit = true;
+					break;
+				case LIST_ALL_COMPUTERS:
+					ComputerServices.showComputers();
+					break;
+				case LIST_ALL_COMPANIES:
+					CompanyServices.showCompanies();
+					break;
+				case GET_COMPUTER_DETAILS:
+					ComputerServices.showComputerDetail();
+					break;
+				case CREATE_COMPUTER:
+					ComputerServices.createComputer();
+					break;
+				case MODIFY_COMPUTER:
+					ComputerServices.modifyComputer();
+					break;
+				case REMOVE_COMPUTER:
+					ComputerServices.deleteComputer();
+					break;
+				default:
+					System.out.println("Je n'ai pas compris votre requête, veuillez recommencer.");
+				}
+			}
+			catch(NumberFormatException e) {
 				System.out.println("Je n'ai pas compris votre requête, veuillez recommencer.");
 			}
 		}while(!quit);
@@ -64,45 +67,52 @@ public class CliUi {
 	}
 
 	public static int enterNbChoice(String nbCh) {
-		
 		nbCh = READER.nextLine();
 		int intCh = Integer.parseInt(nbCh);
-		
 		return intCh;
+
+
 	}
 	
-	public static int enterId() {
-		
+	public static int numberOfPage(String Page) {
+		System.out.println("Quelle est la page que vous souhaitez afficher? (Appuyez sur 0 si vous souhaitez quitter)");
+		Page = READER.nextLine();
+		int NbP = Integer.parseInt(Page)*10;
+		return NbP;
+	}
+	
+	public static long enterId() {
+
 		System.out.println("Veuillez entrer l'id de l'ordinateur: ");
 		String idPC = READER.nextLine();
 		int intId = Integer.parseInt(idPC);
-		
+
 		return intId;
 	}
-	
+
 	public static String enterName() {
-		
+
 		System.out.println("Veuillez entrer le nom de l'ordinateur: ");
 		String name = READER.nextLine();
-		
+
 		return name;
 	}
-	
+
 	public static LocalDate enterDateDebut() {
-		
+
 		System.out.println("Veuillez entrer la date de lancement de l'ordinateur (format YYYY-mm-dd): ");
 		String date = READER.nextLine();
 		LocalDate dateToLocalDate = LocalDate.parse(date);
-		
+
 		return dateToLocalDate;
 	}
-	
+
 	public static LocalDate enterDateEnd() {
 
 		System.out.println("Veuillez entrer la date d'arrêt de l'ordinateur (format YYYY-mm-dd): ");
 		String date = READER.nextLine();
 		LocalDate dateToLocalDate = LocalDate.parse(date);
-		
+
 		return dateToLocalDate;
 	}
 
@@ -127,12 +137,12 @@ public class CliUi {
 		computerBuilder.setIntroduced(introduced);
 		computerBuilder.setDiscontinued(discontinued);
 		computer = computerBuilder.build();
-		
+
 		return computer;
 	}
 
 	public static Computer updateName(String name) {
-		
+
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 		computerBuilder.setName(name);
