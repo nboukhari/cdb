@@ -59,7 +59,7 @@ public class CliUi {
 				}
 			}
 			catch(NumberFormatException e) {
-				System.out.println("Je n'ai pas compris votre requête, veuillez recommencer.");
+				System.out.println("Je n'ai pas compris votre requête, veuillez recommencer. (MENU)");
 			}
 		}while(!quit);
 		READER.close();
