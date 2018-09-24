@@ -225,6 +225,12 @@
         </div>
     </section>
 
+<h1>TEEEEST</h1>
+
+<c:forEach var="aParam" items="${test}">
+   <c:out value="${aParam.key}"/> = <c:out value="${aParam.value}"/></br>
+</c:forEach>
+
     <footer class="navbar-fixed-bottom">
         <div class="container text-center">
             <ul class="pagination">

@@ -1,16 +1,17 @@
 package com.excilys.cdb2.model;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 public class Computer {
 
 	private long id;
 	private String name;
-	private LocalDate introduced;
-	private LocalDate discontinued;
+	private Optional<LocalDate> introduced;
+	private Optional<LocalDate> discontinued;
 	private long companyId;
 	
-	public Computer(long id, String name, LocalDate introduced, LocalDate discontinued, long companyId){
+	public Computer(long id, String name, Optional<LocalDate> introduced, Optional<LocalDate> discontinued, long companyId){
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
@@ -30,16 +31,16 @@ public class Computer {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public LocalDate getIntroduced() {
+	public Optional<LocalDate> getIntroduced() {
 		return introduced;
 	}
-	public void setIntroduced(LocalDate introduced) {
+	public void setIntroduced(Optional<LocalDate> introduced) {
 		this.introduced = introduced;
 	}
-	public LocalDate getDiscontinued() {
+	public Optional<LocalDate> getDiscontinued() {
 		return discontinued;
 	}
-	public void setDiscontinued(LocalDate discontinued) {
+	public void setDiscontinued(Optional<LocalDate> discontinued) {
 		this.discontinued = discontinued;
 	}
 	public long getCompanyId() {

@@ -1,5 +1,9 @@
 package com.excilys.cdb2.service;
 
+import java.io.IOException;
+import java.util.List;
+
+import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.persistence.ComputerDao;
 
 /**
@@ -11,40 +15,50 @@ public class ComputerServices {
 	/**
 	 * This method displays all the computers
 	 * @author Nassim BOUKHARI
+	 * @throws IOException 
 	 */
-	public static void showComputers(){
-		ComputerDao.getAllComputers();
+	public static List<Computer> showComputers() throws IOException{
+		List<Computer> computers = ComputerDao.getAllComputers();
+		return computers;
 	}
 	
 	/**
 	 * This method displays all the details about a computer
 	 * @author Nassim BOUKHARI
+	 * @throws IOException 
 	 */
-	public static void showComputerDetail(){
-		ComputerDao.getComputerDetails();
+	public static List<Computer> showComputerDetail() throws IOException{
+		List<Computer> computers = ComputerDao.getComputerDetails();
+		return computers;
 	}
 
 	/**
 	 * This method creates a computer
 	 * @author Nassim BOUKHARI
+	 * @throws IOException 
 	 */
-	public static void createComputer() {
-		ComputerDao.setComputer();
+	public static List<Computer> createComputer() throws IOException {
+		List<Computer> computers = ComputerDao.setComputer();
+		return computers;
 	}
 
 	/**
 	 * This method updates a computer
 	 * @author Nassim BOUKHARI
+	 * @throws IOException 
 	 */
-	public static void modifyComputer() {
-		ComputerDao.updateComputer();
+	public static List<Computer> modifyComputer() throws IOException {
+		List<Computer> computers = ComputerDao.updateComputer();
+		return computers;
 	}
 
 	/**
 	 * This method deletes a computer
 	 * @author Nassim BOUKHARI
+	 * @throws IOException 
 	 */
-	public static void deleteComputer() {	
-		ComputerDao.removeComputer();
+	public static List<Computer> deleteComputer() throws IOException {	
+		List<Computer> computers = ComputerDao.removeComputer();
+		return computers;
 	}
 }

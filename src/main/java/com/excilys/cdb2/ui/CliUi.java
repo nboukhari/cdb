@@ -1,6 +1,9 @@
 package com.excilys.cdb2.ui;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.Scanner;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.model.ComputerBuilder;
@@ -15,7 +18,7 @@ public class CliUi {
 
 	public static Scanner READER = new Scanner(System.in);
 
-	public static void Cli(){
+	public static void Cli() throws IOException{
 
 		boolean quit = false;
 		do {
@@ -98,20 +101,24 @@ public class CliUi {
 		return name;
 	}
 
-	public static LocalDate enterDateDebut() {
-
+	public static Optional<LocalDate> enterDateDebut() {
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		Optional<LocalDate> dateToLocalDate = Optional.empty();
 		System.out.println("Veuillez entrer la date de lancement de l'ordinateur (format YYYY-mm-dd): ");
 		String date = READER.nextLine();
-		LocalDate dateToLocalDate = LocalDate.parse(date);
+		LocalDate ParseDate = LocalDate.parse(date,format);
+		 dateToLocalDate = Optional.ofNullable(ParseDate);
 
 		return dateToLocalDate;
 	}
 
-	public static LocalDate enterDateEnd() {
-
+	public static Optional<LocalDate> enterDateEnd() {
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		Optional<LocalDate> dateToLocalDate = Optional.empty();
 		System.out.println("Veuillez entrer la date d'arrêt de l'ordinateur (format YYYY-mm-dd): ");
 		String date = READER.nextLine();
-		LocalDate dateToLocalDate = LocalDate.parse(date);
+		LocalDate ParseDate = LocalDate.parse(date,format);
+		dateToLocalDate = Optional.ofNullable(ParseDate);
 
 		return dateToLocalDate;
 	}
@@ -129,7 +136,7 @@ public class CliUi {
 		return computer;
 	}
 
-	public static Computer createPC(String name,LocalDate introduced,LocalDate discontinued) {
+	public static Computer createPC(String name,Optional<LocalDate> introduced,Optional<LocalDate> discontinued) {
 
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
@@ -152,7 +159,7 @@ public class CliUi {
 
 	}
 
-	public static Computer updateIntroduced(LocalDate introduced) {
+	public static Computer updateIntroduced(Optional<LocalDate> introduced) {
 
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
@@ -162,7 +169,7 @@ public class CliUi {
 		return computer;
 	}
 
-	public static Computer updateDiscontinued(LocalDate discontinued) {
+	public static Computer updateDiscontinued(Optional<LocalDate> discontinued) {
 
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
@@ -172,7 +179,7 @@ public class CliUi {
 		return computer;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		CliUi.Cli();
 	}
 }
