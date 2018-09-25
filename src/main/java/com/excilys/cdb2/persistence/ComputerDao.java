@@ -1,21 +1,17 @@
 package com.excilys.cdb2.persistence;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -30,17 +26,11 @@ import com.excilys.cdb2.ui.*;
  */
 public class ComputerDao {
 
-	private static String URL;
-	private static String LOGIN;
-	private static String PASSWORD;
-	private static String NUMBEROFPAGE = "0";
 	private static final String GET_ALL = "SELECT id,name FROM computer";
 	private static final String GET_ONE = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id =?;";
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued) VALUES (?,?,?);";
 	private static final String UPDATE = "UPDATE computer set [column] = ? where id =?;";
 	private static final String DELETE = "DELETE from computer where id =?;";
-	private static Properties prop;
-	static Connection cn;
 
 
 	/**
@@ -58,7 +48,6 @@ public class ComputerDao {
 
 			PreparedStatement ppdStmt = cn.prepareStatement(GET_ALL);
 			ResultSet rs = ppdStmt.executeQuery(GET_ALL);
-			System.out.println("***Liste des ordinateurs***\n");
 			while(rs.next()) {
 				long pcId = rs.getLong("id");
 				String name = rs.getString("name");
@@ -104,17 +93,17 @@ public class ComputerDao {
 				
 				String name = rs.getString("name");
 				
-				String dateDebut = rs.getString("introduced");
-				LocalDate ParseDateDebut = LocalDate.parse(dateDebut);
+				Date dateDebut = rs.getDate("introduced");
+				LocalDate ParseDateDebut = dateDebut != null ? dateDebut.toLocalDate() : null;
 				introduced = Optional.ofNullable(ParseDateDebut);
 				
-				String dateEnd = rs.getString("discontinued");
-				LocalDate ParseDateEnd = LocalDate.parse(dateEnd);
+				Date dateEnd = rs.getDate("discontinued");
+				LocalDate ParseDateEnd = dateEnd != null ? dateEnd.toLocalDate() : null;
 				discontinued = Optional.ofNullable(ParseDateEnd);
 				
 				long companyId = rs.getLong("company_id");
 
-
+				
 				computerBuilder.setId(computer.getId());
 				computerBuilder.setName(name);
 				computerBuilder.setIntroduced(introduced);
@@ -122,7 +111,8 @@ public class ComputerDao {
 				computerBuilder.setCompanyId(companyId);
 				computer = computerBuilder.build();
 				computers.add(computer);
-
+				
+				System.out.println(computers);
 			}
 
 			else {
@@ -143,8 +133,9 @@ public class ComputerDao {
 	 * This method creates a computer
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
+	 * @throws ParseException 
 	 */
-	public static List<Computer> setComputer() throws IOException {
+	public static List<Computer> setComputer() throws IOException, ParseException {
 
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		ComputerBuilder computerBuilder = new ComputerBuilder();
@@ -157,8 +148,10 @@ public class ComputerDao {
 			Computer computer = CliUi.createPC(namePC, introducedPC, discontinuedPC);
 			PreparedStatement ppdStmt = cn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
 			ppdStmt.setString(1, computer.getName());
-			ppdStmt.setObject(2, computer.getIntroduced());
-			ppdStmt.setObject(3, computer.getDiscontinued());
+			if(computer.getIntroduced().isPresent())
+				ppdStmt.setObject(2, computer.getIntroduced().get());
+			if(computer.getDiscontinued().isPresent())
+				ppdStmt.setObject(3, computer.getDiscontinued().get());
 			ppdStmt.executeUpdate();
 			ResultSet rs = ppdStmt.getGeneratedKeys();
 
@@ -174,9 +167,8 @@ public class ComputerDao {
 
 		} 
 		catch (SQLException e) {
+			System.out.print("Erreur SQL: ");
 			e.printStackTrace();
-			System.out.println("Erreur SQL");
-
 		}
 		return computers;
 	}
@@ -256,7 +248,10 @@ public class ComputerDao {
 								Optional<LocalDate> newValueDate = CliUi.enterDateDebut();
 								computer = CliUi.updateIntroduced(newValueDate);
 								PreparedStatement ppdStmtUpdate = cn.prepareStatement(columnToModify);
-								ppdStmtUpdate.setObject(1, computer.getIntroduced());
+								
+								if (computer.getIntroduced().isPresent()) {
+									ppdStmtUpdate.setObject(1, computer.getIntroduced().get());
+								}
 								ppdStmtUpdate.setLong(2, computer.getId());
 								ppdStmtUpdate.executeUpdate();
 								computerBuilder.setId(computer.getId());
@@ -278,7 +273,11 @@ public class ComputerDao {
 								Optional<LocalDate> newValueDate = CliUi.enterDateEnd();
 								computer = CliUi.updateDiscontinued(newValueDate);
 								PreparedStatement ppdStmtUpdate = cn.prepareStatement(columnToModify);
-								ppdStmtUpdate.setObject(1, computer.getDiscontinued());
+								
+								if (computer.getDiscontinued().isPresent()) {
+									ppdStmtUpdate.setObject(1, computer.getDiscontinued().get());
+								}
+								
 								ppdStmtUpdate.setLong(2, computer.getId());
 								ppdStmtUpdate.executeUpdate();
 								computerBuilder.setId(computer.getId());
@@ -350,25 +349,15 @@ public class ComputerDao {
 	 * @author Nassim BOUKHARI
 	 */
 	public static Connection getConnection() throws IOException, SQLException {
-
+		Connection cn = null;
 		try {
-			System.out.println("1");
 			Properties prop = new Properties();
-			System.out.println("2");
 			InputStream inputStream = ComputerDao.class.getClassLoader().getResourceAsStream("config.properties");
-			System.out.println("3");
 			prop.load(inputStream);
-			System.out.println("4");
 			String URL = prop.getProperty("URL");
-			System.out.println("URL"+URL);
 			String LOGIN = prop.getProperty("LOGIN");
-			System.out.println("LOGIN"+LOGIN);
 			String PASSWORD = prop.getProperty("PASSWORD");
-			System.out.println("PASSWORD"+PASSWORD);
 			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-			System.out.println("5");
-			System.out.println(URL+LOGIN+PASSWORD);
-			System.out.println("AAAH"+cn);
 			return cn;
 		} catch (Exception e) {
 			System.out.println("Exception: " + e);

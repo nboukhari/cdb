@@ -5,6 +5,7 @@ com/excilys/cdb2/model/Company.class
 com/excilys/cdb2/App.class
 com/excilys/cdb2/persistence/ComputerDao.class
 com/excilys/cdb2/servlets/EditComputer.class
+com/excilys/cdb2/validator/isValidFormat.class
 com/excilys/cdb2/model/Computer.class
 com/excilys/cdb2/persistence/CompanyDao.class
 com/excilys/cdb2/persistence/ComputerDao$1.class

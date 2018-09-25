@@ -1,10 +1,16 @@
 package com.excilys.cdb2.persistence;
 
+import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.excilys.cdb2.model.Company;
+import com.excilys.cdb2.model.CompanyBuilder;
+import com.excilys.cdb2.persistence.ComputerDao;
 //import model.Company;
 
 /**
@@ -12,29 +18,39 @@ import java.sql.Statement;
  * @author Nassim BOUKHARI
  */
 public class CompanyDao {
-	
-	private static final String URL = "jdbc:mysql://localhost/computer-database-db";
-	private static final String LOGIN = "admincdb";
-	private static final String PASSWORD = "qwerty1234";
-	private static Connection cn;
-	private static Statement st;
-	
+
+	private static final String GET_ALL = "SELECT id,name FROM company";
+
 	/**
 	 * This method displays all the companies
 	 * @author Nassim BOUKHARI
+	 * @return 
 	 */
-	public static void getAllCompanies() {
-		try {
-			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
-			st = cn.createStatement();
-			String sql = "SELECT id,name FROM company";
-			ResultSet rs = st.executeQuery(sql);
+	public static List<Company> getAllCompanies() throws IOException {
+		Company company;
+		ArrayList<Company> companies = new ArrayList<Company>();
+		CompanyBuilder companyBuilder = new CompanyBuilder();
+
+		try (Connection cn = ComputerDao.getConnection()){
+
+			PreparedStatement ppdStmt = cn.prepareStatement(GET_ALL);
+			ResultSet rs = ppdStmt.executeQuery(GET_ALL);
 			while(rs.next()) {
-				System.out.println(rs.getInt(1)+"|"+rs.getString(2));
+				long compId = rs.getLong("id");
+				String name = rs.getString("name");
+
+				System.out.println(compId+"|"+name);
+
+				companyBuilder.setId(compId);
+				companyBuilder.setName(name);
+				company = companyBuilder.build();
+				companies.add(company);
 			}
 			rs.close();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return companies;
 	}
 }

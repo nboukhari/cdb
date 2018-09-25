@@ -1,6 +1,7 @@
 package com.excilys.cdb2.ui;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Scanner;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.model.ComputerBuilder;
 import com.excilys.cdb2.service.*;
+import com.excilys.cdb2.validator.isValidFormat;
 
 /**
  * This class is the CLI
@@ -18,7 +20,7 @@ public class CliUi {
 
 	public static Scanner READER = new Scanner(System.in);
 
-	public static void Cli() throws IOException{
+	public static void Cli() throws IOException, ParseException{
 
 		boolean quit = false;
 		do {
@@ -48,7 +50,7 @@ public class CliUi {
 				case GET_COMPUTER_DETAILS:
 					ComputerServices.showComputerDetail();
 					break;
-				case CREATE_COMPUTER:
+				case CREATE_COMPUTER:				
 					ComputerServices.createComputer();
 					break;
 				case MODIFY_COMPUTER:
@@ -76,14 +78,15 @@ public class CliUi {
 
 
 	}
-	
+
 	public static int numberOfPage(String Page) {
 		System.out.println("Quelle est la page que vous souhaitez afficher? (Appuyez sur 0 si vous souhaitez quitter)");
 		Page = READER.nextLine();
-		int NbP = Integer.parseInt(Page)*10;
+		int NbP = Integer.parseInt(Page);
+		NbP = (NbP-1)*10;
 		return NbP;
 	}
-	
+
 	public static long enterId() {
 
 		System.out.println("Veuillez entrer l'id de l'ordinateur: ");
@@ -101,25 +104,41 @@ public class CliUi {
 		return name;
 	}
 
-	public static Optional<LocalDate> enterDateDebut() {
+	public static Optional<LocalDate> enterDateDebut() throws ParseException {
+
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		Optional<LocalDate> dateToLocalDate = Optional.empty();
 		System.out.println("Veuillez entrer la date de lancement de l'ordinateur (format YYYY-mm-dd): ");
-		String date = READER.nextLine();
-		LocalDate ParseDate = LocalDate.parse(date,format);
-		 dateToLocalDate = Optional.ofNullable(ParseDate);
-
+		try {
+			String date = READER.nextLine();
+			if(isValidFormat.Date("yyyy-MM-dd",date)==true) {
+				LocalDate ParseDate = LocalDate.parse(date, format);
+				dateToLocalDate = Optional.ofNullable(ParseDate);
+			}
+			return dateToLocalDate;
+		}
+		catch(Exception e) {
+			System.out.println("BRUUUUUH");
+		}
 		return dateToLocalDate;
 	}
 
-	public static Optional<LocalDate> enterDateEnd() {
+	public static Optional<LocalDate> enterDateEnd() throws ParseException {
+
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		Optional<LocalDate> dateToLocalDate = Optional.empty();
 		System.out.println("Veuillez entrer la date d'arrêt de l'ordinateur (format YYYY-mm-dd): ");
-		String date = READER.nextLine();
-		LocalDate ParseDate = LocalDate.parse(date,format);
-		dateToLocalDate = Optional.ofNullable(ParseDate);
-
+		try {
+			String date = READER.nextLine();
+			if(isValidFormat.Date("yyyy-MM-dd",date)==true) {
+				LocalDate ParseDate = LocalDate.parse(date, format);
+				dateToLocalDate = Optional.ofNullable(ParseDate);
+			}
+			return dateToLocalDate;
+		}
+		catch(Exception e) {
+			System.out.println("BRUUUUUH");
+		}
 		return dateToLocalDate;
 	}
 
@@ -179,7 +198,7 @@ public class CliUi {
 		return computer;
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ParseException {
 		CliUi.Cli();
 	}
 }

@@ -1,6 +1,7 @@
 package com.excilys.cdb2.service;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 import com.excilys.cdb2.model.Computer;
@@ -36,8 +37,9 @@ public class ComputerServices {
 	 * This method creates a computer
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
+	 * @throws ParseException 
 	 */
-	public static List<Computer> createComputer() throws IOException {
+	public static List<Computer> createComputer() throws IOException, ParseException {
 		List<Computer> computers = ComputerDao.setComputer();
 		return computers;
 	}
