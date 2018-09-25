@@ -32,10 +32,8 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//ComputerServices test = new ComputerServices();	ComputerServices.showComputers();
-		List<Computer> blbl = ComputerServices.showComputers();
-		System.out.println("TETEAZTEA"+blbl);
-		request.setAttribute("test", blbl);
+		List<Computer> computers = ComputerServices.showComputers();
+		request.setAttribute("computers", computers);
 		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/Dashboard.jsp" ).forward( request, response );
 	}
 

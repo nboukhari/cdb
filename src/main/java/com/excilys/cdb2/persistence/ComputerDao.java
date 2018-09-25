@@ -26,7 +26,7 @@ import com.excilys.cdb2.ui.*;
  */
 public class ComputerDao {
 
-	private static final String GET_ALL = "SELECT id,name FROM computer";
+	private static final String GET_ALL = "SELECT id,name,introduced,discontinued,company_id FROM computer";
 	private static final String GET_ONE = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id =?;";
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued) VALUES (?,?,?);";
 	private static final String UPDATE = "UPDATE computer set [column] = ? where id =?;";
@@ -49,13 +49,26 @@ public class ComputerDao {
 			PreparedStatement ppdStmt = cn.prepareStatement(GET_ALL);
 			ResultSet rs = ppdStmt.executeQuery(GET_ALL);
 			while(rs.next()) {
+				Optional<LocalDate> introduced = Optional.empty();
+				Optional<LocalDate> discontinued = Optional.empty();
 				long pcId = rs.getLong("id");
 				String name = rs.getString("name");
-
+				Date dateDebut = rs.getDate("introduced");
+				LocalDate ParseDateDebut = dateDebut != null ? dateDebut.toLocalDate() : null;
+				introduced = Optional.ofNullable(ParseDateDebut);
+				
+				Date dateEnd = rs.getDate("discontinued");
+				LocalDate ParseDateEnd = dateEnd != null ? dateEnd.toLocalDate() : null;
+				discontinued = Optional.ofNullable(ParseDateEnd);
+				
+				long companyId = rs.getLong("company_id");
 				System.out.println(pcId+"|"+name);
 
 				computerBuilder.setId(pcId);
 				computerBuilder.setName(name);
+				computerBuilder.setIntroduced(introduced);
+				computerBuilder.setDiscontinued(discontinued);
+				computerBuilder.setCompanyId(companyId);
 				computer = computerBuilder.build();
 				computers.add(computer);
 			}
@@ -182,7 +195,7 @@ public class ComputerDao {
 
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		ComputerBuilder computerBuilder = new ComputerBuilder();
-
+		
 		try (Connection cn = getConnection()){
 
 			boolean quit = false;
@@ -350,6 +363,13 @@ public class ComputerDao {
 	 */
 	public static Connection getConnection() throws IOException, SQLException {
 		Connection cn = null;
+		try {
+		    Class.forName("com.mysql.jdbc.Driver");
+		} 
+		catch (ClassNotFoundException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		} 
 		try {
 			Properties prop = new Properties();
 			InputStream inputStream = ComputerDao.class.getClassLoader().getResourceAsStream("config.properties");
