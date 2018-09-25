@@ -1,6 +1,7 @@
 package com.excilys.cdb2.service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -62,5 +63,16 @@ public class ComputerServices {
 	public static List<Computer> deleteComputer() throws IOException {	
 		List<Computer> computers = ComputerDao.removeComputer();
 		return computers;
+	}
+	
+	/**
+	 * This method displays number of computers
+	 * @author Nassim BOUKHARI
+	 * @throws IOException 
+	 * @throws SQLException 
+	 */
+	public static int getNumberComputers() throws IOException, SQLException {	
+		int test = ComputerDao.getComputersCount();
+		return test;
 	}
 }

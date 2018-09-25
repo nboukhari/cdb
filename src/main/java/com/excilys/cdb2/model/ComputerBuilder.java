@@ -26,6 +26,7 @@ public class ComputerBuilder {
 		this.discontinued = discontinued;
 		return this;
 	}
+	
 	public ComputerBuilder setCompanyId(long companyId) {
 		this.companyId = companyId;
 		return this;

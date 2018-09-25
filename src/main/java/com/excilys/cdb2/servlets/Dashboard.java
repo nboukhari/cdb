@@ -1,6 +1,7 @@
 package com.excilys.cdb2.servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -32,6 +33,18 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		
+		int nbComp;
+		try {
+			nbComp = ComputerServices.getNumberComputers();
+			request.setAttribute("nbComp", nbComp);
+			System.out.println("nbComp"+nbComp);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		List<Computer> computers = ComputerServices.showComputers();
 		request.setAttribute("computers", computers);
 		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/Dashboard.jsp" ).forward( request, response );

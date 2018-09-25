@@ -29,13 +29,15 @@ public class ComputerDao {
 	private static final String GET_ALL = "SELECT id,name,introduced,discontinued,company_id FROM computer";
 	private static final String GET_ONE = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id =?;";
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued) VALUES (?,?,?);";
-	private static final String UPDATE = "UPDATE computer set [column] = ? where id =?;";
-	private static final String DELETE = "DELETE from computer where id =?;";
+	private static final String UPDATE = "UPDATE computer SET [column] = ? WHERE id =?;";
+	private static final String DELETE = "DELETE FROM computer WHERE id =?;";
+	private static final String COUNT = "SELECT COUNT(*) FROM computer";
 
 
 	/**
 	 * This method displays all the computers
 	 * @author Nassim BOUKHARI
+	 * @throws SQLException 
 	 * @throws IOException 
 	 */
 	public static List<Computer> getAllComputers() throws IOException {
@@ -355,6 +357,26 @@ public class ComputerDao {
 
 		}
 		return computers;
+	}
+	
+	/**
+	 * This method displays number of computers
+	 * @author Nassim BOUKHARI
+	 */
+	public static int getComputersCount() throws SQLException, IOException {
+		int nbComp = 0;
+		try (Connection cn = getConnection()){
+			
+			PreparedStatement ppdStmt = cn.prepareStatement(COUNT);
+			ResultSet rs = ppdStmt.executeQuery(COUNT);
+			while(rs.next()) {
+				nbComp = rs.getInt(1);
+			}
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return nbComp;
 	}
 	
 	/**

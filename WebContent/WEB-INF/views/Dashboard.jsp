@@ -20,7 +20,7 @@
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">121 Computers found</h1>
+			<h1 id="homeTitle">${nbComp} Computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -72,8 +72,8 @@
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb" class="cb" value="0"></td>
 							<td><a href="EditComputer" onclick=""><c:out value="${Computer.name}" /></a></td>
-							<td><c:out value="${Computer.introduced}" /></td>
-							<td><c:out value="${Computer.discontinued}" /></td>
+							<td><c:out value="${Computer.introduced.orElse(null)}" /></td>
+							<td><c:out value="${Computer.discontinued.orElse(null)}" /></td>
 							<td><c:out value="${Computer.companyId}" /></td>
 
 						</tr>
