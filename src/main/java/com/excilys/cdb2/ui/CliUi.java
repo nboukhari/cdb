@@ -118,7 +118,7 @@ public class CliUi {
 			return dateToLocalDate;
 		}
 		catch(Exception e) {
-			System.out.println("BRUUUUUH");
+			System.out.println("Erreur de format");
 		}
 		return dateToLocalDate;
 	}
@@ -137,7 +137,7 @@ public class CliUi {
 			return dateToLocalDate;
 		}
 		catch(Exception e) {
-			System.out.println("BRUUUUUH");
+			System.out.println("Erreur de format");
 		}
 		return dateToLocalDate;
 	}

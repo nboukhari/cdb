@@ -8,7 +8,7 @@ public class ComputerBuilder {
 	private String name;
 	private Optional<LocalDate> introduced;
 	private Optional<LocalDate> discontinued;
-	private long companyId;
+	private Optional<String> companyName;
 	
 	public ComputerBuilder setId(long id) {
 		this.id = id;
@@ -27,12 +27,12 @@ public class ComputerBuilder {
 		return this;
 	}
 	
-	public ComputerBuilder setCompanyId(long companyId) {
-		this.companyId = companyId;
+	public ComputerBuilder setCompanyName(Optional<String> companyName) {
+		this.companyName = companyName;
 		return this;
 	}
 	
 	public Computer build() {
-		return new Computer(id,name,introduced,discontinued,companyId);
+		return new Computer(id,name,introduced,discontinued,companyName);
 	}
 }

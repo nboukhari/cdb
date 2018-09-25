@@ -74,7 +74,7 @@
 							<td><a href="EditComputer" onclick=""><c:out value="${Computer.name}" /></a></td>
 							<td><c:out value="${Computer.introduced.orElse(null)}" /></td>
 							<td><c:out value="${Computer.discontinued.orElse(null)}" /></td>
-							<td><c:out value="${Computer.companyId}" /></td>
+							<td><c:out value="${Computer.companyName.orElse(null)}" /></td>
 
 						</tr>
 					</c:forEach>

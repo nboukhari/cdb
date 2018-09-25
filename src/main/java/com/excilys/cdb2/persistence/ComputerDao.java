@@ -26,8 +26,8 @@ import com.excilys.cdb2.ui.*;
  */
 public class ComputerDao {
 
-	private static final String GET_ALL = "SELECT id,name,introduced,discontinued,company_id FROM computer";
-	private static final String GET_ONE = "SELECT id,name,introduced,discontinued,company_id FROM computer WHERE id =?;";
+	private static final String GET_ALL = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id";
+	private static final String GET_ONE = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.id =?;";
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued) VALUES (?,?,?);";
 	private static final String UPDATE = "UPDATE computer SET [column] = ? WHERE id =?;";
 	private static final String DELETE = "DELETE FROM computer WHERE id =?;";
@@ -53,24 +53,25 @@ public class ComputerDao {
 			while(rs.next()) {
 				Optional<LocalDate> introduced = Optional.empty();
 				Optional<LocalDate> discontinued = Optional.empty();
-				long pcId = rs.getLong("id");
-				String name = rs.getString("name");
-				Date dateDebut = rs.getDate("introduced");
+				Optional<String> companyName = Optional.empty();
+				long pcId = rs.getLong("computer.id");
+				String name = rs.getString("computer.name");
+				Date dateDebut = rs.getDate("computer.introduced");
 				LocalDate ParseDateDebut = dateDebut != null ? dateDebut.toLocalDate() : null;
 				introduced = Optional.ofNullable(ParseDateDebut);
 				
-				Date dateEnd = rs.getDate("discontinued");
+				Date dateEnd = rs.getDate("computer.discontinued");
 				LocalDate ParseDateEnd = dateEnd != null ? dateEnd.toLocalDate() : null;
 				discontinued = Optional.ofNullable(ParseDateEnd);
+				String strCompName = rs.getString("company.name");
+				companyName = Optional.ofNullable(strCompName);
+				System.out.println(pcId+"|"+name+"|"+companyName);
 				
-				long companyId = rs.getLong("company_id");
-				System.out.println(pcId+"|"+name);
-
 				computerBuilder.setId(pcId);
 				computerBuilder.setName(name);
 				computerBuilder.setIntroduced(introduced);
 				computerBuilder.setDiscontinued(discontinued);
-				computerBuilder.setCompanyId(companyId);
+				computerBuilder.setCompanyName(companyName);
 				computer = computerBuilder.build();
 				computers.add(computer);
 			}
@@ -105,25 +106,26 @@ public class ComputerDao {
 			if(rs.next()) {
 				Optional<LocalDate> introduced = Optional.empty();
 				Optional<LocalDate> discontinued = Optional.empty();
+				Optional<String> companyName = Optional.empty();
 				
-				String name = rs.getString("name");
+				String name = rs.getString("computer.name");
 				
-				Date dateDebut = rs.getDate("introduced");
+				Date dateDebut = rs.getDate("computer.introduced");
 				LocalDate ParseDateDebut = dateDebut != null ? dateDebut.toLocalDate() : null;
 				introduced = Optional.ofNullable(ParseDateDebut);
 				
-				Date dateEnd = rs.getDate("discontinued");
+				Date dateEnd = rs.getDate("computer.discontinued");
 				LocalDate ParseDateEnd = dateEnd != null ? dateEnd.toLocalDate() : null;
 				discontinued = Optional.ofNullable(ParseDateEnd);
 				
-				long companyId = rs.getLong("company_id");
+				String strCompName = rs.getString("company.name");
+				companyName = Optional.ofNullable(strCompName);
 
-				
 				computerBuilder.setId(computer.getId());
 				computerBuilder.setName(name);
 				computerBuilder.setIntroduced(introduced);
 				computerBuilder.setDiscontinued(discontinued);
-				computerBuilder.setCompanyId(companyId);
+				computerBuilder.setCompanyName(companyName);
 				computer = computerBuilder.build();
 				computers.add(computer);
 				
@@ -138,7 +140,7 @@ public class ComputerDao {
 			rs.close();
 		} catch (SQLException e) {
 
-			System.out.println("Erreur SQL");
+			e.printStackTrace();
 
 		}
 		return computers;
