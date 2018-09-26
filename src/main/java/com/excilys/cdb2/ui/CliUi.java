@@ -104,101 +104,93 @@ public class CliUi {
 		return name;
 	}
 
-	public static Optional<LocalDate> enterDateDebut() throws ParseException {
+	public static Optional<LocalDate> enterDateDebut(String date) throws ParseException {
 
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		Optional<LocalDate> dateToLocalDate = Optional.empty();
-		System.out.println("Veuillez entrer la date de lancement de l'ordinateur (format YYYY-mm-dd): ");
-		try {
-			String date = READER.nextLine();
-			if(isValidFormat.Date("yyyy-MM-dd",date)==true) {
-				LocalDate ParseDate = LocalDate.parse(date, format);
-				dateToLocalDate = Optional.ofNullable(ParseDate);
-			}
-			return dateToLocalDate;
+		if(isValidFormat.Date("yyyy-MM-dd", date)==true) {
+			LocalDate ParseDate = LocalDate.parse(date, format);
+			dateToLocalDate = Optional.ofNullable(ParseDate);
 		}
-		catch(Exception e) {
-			System.out.println("Erreur de format");
-		}
+
 		return dateToLocalDate;
 	}
 
-	public static Optional<LocalDate> enterDateEnd() throws ParseException {
 
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		Optional<LocalDate> dateToLocalDate = Optional.empty();
-		System.out.println("Veuillez entrer la date d'arrêt de l'ordinateur (format YYYY-mm-dd): ");
-		try {
-			String date = READER.nextLine();
-			if(isValidFormat.Date("yyyy-MM-dd",date)==true) {
-				LocalDate ParseDate = LocalDate.parse(date, format);
-				dateToLocalDate = Optional.ofNullable(ParseDate);
-			}
-			return dateToLocalDate;
-		}
-		catch(Exception e) {
-			System.out.println("Erreur de format");
-		}
-		return dateToLocalDate;
+public static Optional<LocalDate> enterDateEnd(String date) throws ParseException {
+
+	DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	Optional<LocalDate> dateToLocalDate = Optional.empty();
+	if(isValidFormat.Date("yyyy-MM-dd", date)==true) {
+	LocalDate ParseDate = LocalDate.parse(date, format);
+	dateToLocalDate = Optional.ofNullable(ParseDate);
 	}
+	return dateToLocalDate;
 
-	public static Computer enterIdPC(String idPC) {
+}
 
-		System.out.println("Veuillez entrer l'id de l'ordinateur: ");
-		idPC = READER.nextLine();
-		int intId = Integer.parseInt(idPC);
-		Computer computer;
-		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setId(intId);
-		computer = computerBuilder.build();
+public static Optional<String> enterCompanyName(String name) {
+	Optional<String> companyName = Optional.empty();
+	companyName = Optional.ofNullable(name);
+	return companyName;
+}
 
-		return computer;
-	}
+public static Computer enterIdPC(String idPC) {
 
-	public static Computer createPC(String name,Optional<LocalDate> introduced,Optional<LocalDate> discontinued) {
+	int intId = Integer.parseInt(idPC);
+	Computer computer;
+	ComputerBuilder computerBuilder = new ComputerBuilder();
+	computerBuilder.setId(intId);
+	computer = computerBuilder.build();
 
-		Computer computer;
-		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setName(name);
-		computerBuilder.setIntroduced(introduced);
-		computerBuilder.setDiscontinued(discontinued);
-		computer = computerBuilder.build();
+	return computer;
+}
 
-		return computer;
-	}
+public static Computer createPC(String name,Optional<LocalDate> introduced,Optional<LocalDate> discontinued, Optional<String> companyName) {
 
-	public static Computer updateName(String name) {
+	Computer computer;
+	ComputerBuilder computerBuilder = new ComputerBuilder();
+	computerBuilder.setName(name);
+	computerBuilder.setIntroduced(introduced);
+	computerBuilder.setDiscontinued(discontinued);
+	computerBuilder.setCompanyName(companyName);
+	computer = computerBuilder.build();
 
-		Computer computer;
-		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setName(name);
-		computer = computerBuilder.build();
+	return computer;
+}
 
-		return computer;
+public static Computer updateName(String name) {
 
-	}
+	Computer computer;
+	ComputerBuilder computerBuilder = new ComputerBuilder();
+	computerBuilder.setName(name);
+	computer = computerBuilder.build();
 
-	public static Computer updateIntroduced(Optional<LocalDate> introduced) {
+	return computer;
 
-		Computer computer;
-		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setIntroduced(introduced);
-		computer = computerBuilder.build();
+}
 
-		return computer;
-	}
+public static Computer updateIntroduced(Optional<LocalDate> introduced) {
 
-	public static Computer updateDiscontinued(Optional<LocalDate> discontinued) {
+	Computer computer;
+	ComputerBuilder computerBuilder = new ComputerBuilder();
+	computerBuilder.setIntroduced(introduced);
+	computer = computerBuilder.build();
 
-		Computer computer;
-		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setDiscontinued(discontinued);
-		computer = computerBuilder.build();
+	return computer;
+}
 
-		return computer;
-	}
+public static Computer updateDiscontinued(Optional<LocalDate> discontinued) {
 
-	public static void main(String[] args) throws IOException, ParseException {
-		CliUi.Cli();
-	}
+	Computer computer;
+	ComputerBuilder computerBuilder = new ComputerBuilder();
+	computerBuilder.setDiscontinued(discontinued);
+	computer = computerBuilder.build();
+
+	return computer;
+}
+
+public static void main(String[] args) throws IOException, ParseException {
+	CliUi.Cli();
+}
 }

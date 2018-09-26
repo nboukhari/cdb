@@ -1,11 +1,20 @@
 package com.excilys.cdb2.servlets;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Optional;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.excilys.cdb2.model.Company;
+import com.excilys.cdb2.model.Computer;
+import com.excilys.cdb2.persistence.CompanyDao;
+import com.excilys.cdb2.persistence.ComputerDao;
 
 /**
  * Servlet implementation class AddComputer
@@ -27,6 +36,8 @@ public class AddComputer extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		List<Company> companies = CompanyDao.getAllCompanies();
+		request.setAttribute("companies", companies);
 		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/AddComputer.jsp" ).forward( request, response );
 	}
 
@@ -35,6 +46,19 @@ public class AddComputer extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		response.setContentType("text/html");
+		String Aname = request.getParameter("computerName");  
+        String Aintroduced = request.getParameter("introduced");  
+        String Adiscontinued = request.getParameter("discontinued");
+        String Acompany = request.getParameter("companyId");
+        try {
+			ComputerDao.setComputer(Aname, Aintroduced, Adiscontinued, Acompany);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			System.out.println("RIP");
+			e.printStackTrace();
+		}
+        //String Uname = request.getParameter("username");  
 		doGet(request, response);
 	}
 
