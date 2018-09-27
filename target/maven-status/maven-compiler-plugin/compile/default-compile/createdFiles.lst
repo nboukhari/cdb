@@ -8,7 +8,6 @@ com/excilys/cdb2/servlets/EditComputer.class
 com/excilys/cdb2/validator/isValidFormat.class
 com/excilys/cdb2/model/Computer.class
 com/excilys/cdb2/persistence/CompanyDao.class
-com/excilys/cdb2/persistence/ComputerDao$1.class
 com/excilys/cdb2/ui/CliUi.class
 com/excilys/cdb2/ui/ChooseUi.class
 com/excilys/cdb2/service/ComputerServices.class

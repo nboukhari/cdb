@@ -1,6 +1,7 @@
 package com.excilys.cdb2.servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
@@ -53,13 +54,14 @@ public class AddComputer extends HttpServlet {
         String Acompany = request.getParameter("companyId");
         try {
 			ComputerDao.setComputer(Aname, Aintroduced, Adiscontinued, Acompany);
-		} catch (ParseException e) {
+			response.sendRedirect("Dashboard");
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println("RIP");
 			e.printStackTrace();
+			PrintWriter test = response.getWriter();
+			test.println("<h1>WTFFFFFFFF</h1>");
 		}
-        //String Uname = request.getParameter("username");  
-		doGet(request, response);
 	}
 
 }

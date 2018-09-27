@@ -28,10 +28,11 @@ public class ComputerDao {
 
 	private static final String GET_ALL = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id";
 	private static final String GET_ONE = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.id =?;";
-	private static String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
+	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
 	private static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id =?;";
 	private static final String DELETE = "DELETE FROM computer WHERE id =?;";
 	private static final String COUNT = "SELECT COUNT(*) FROM computer";
+	private static final String GET_ID_COMPANY = "SELECT id FROM company WHERE name =?;";
 
 
 	/**
@@ -65,7 +66,7 @@ public class ComputerDao {
 				discontinued = Optional.ofNullable(ParseDateEnd);
 				String strCompName = rs.getString("company.name");
 				companyName = Optional.ofNullable(strCompName);
-				System.out.println(pcId+"|"+name+"|"+companyName);
+				//System.out.println(pcId+"|"+name+"|"+companyName);
 
 				computerBuilder.setId(pcId);
 				computerBuilder.setName(name);
@@ -207,60 +208,26 @@ public class ComputerDao {
 	public static List<Computer> updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException {
 
 		ArrayList<Computer> computers = new ArrayList<Computer>();
-		ComputerBuilder computerBuilder = new ComputerBuilder();
 
 		try (Connection cn = getConnection()){
 
-			//boolean quit = false;
-			//String columnToModify;
-			Computer computer = CliUi.enterIdPC(idPC);
-
-			/*if(computer.getId() > 0) {
-				PreparedStatement ppdStmt = cn.prepareStatement(GET_ONE);
-				ppdStmt.setLong(1, computer.getId());
-				ResultSet getPC = ppdStmt.executeQuery();
-
-				while(getPC.next()) {
-
-					System.out.println("\nVoici les informations concernant l'ordinateur que vous pouvez modifier: \nNom: "
-							+getPC.getString("name")+"\nDate de lancement: "
-							+getPC.getString("introduced")+"\nDate d'arrêt: "
-							+getPC.getString("discontinued")+"\n");
-
-				}*/
-
-			/*	do {
-
-				System.out.println("Que voulez vous modifier? ");
-				System.out.println("1 - Le nom\n2 - La date de lancement\n3 - La date d'arrêt\n0 - Quitter la modification");
-				//String nbChoice = "0";
-
-
-					ChooseDao choose = ChooseDao.values()[Integer.valueOf(CliUi.enterNbChoice(nbChoice))];
-						switch(choose) {
-
-						case QUIT:
-							quit = true;
-							System.out.println("Vous avez choisi de quitter la modification.");
-							break;
-
-						case MODIFY_NAME:*/
 					try {
-
+						long newIdPC = CliUi.enterId(idPC);
 						Optional<LocalDate> newDateDebut = CliUi.enterDateDebut(introducedStr);
 						Optional<LocalDate> newDateEnd = CliUi.enterDateEnd(discontinuedStr);
 						Optional<String> newCompany = CliUi.enterCompanyName(companyNameStr);
-						computer = CliUi.createPC(namePC, newDateDebut, newDateEnd,newCompany);
+						Computer computer = CliUi.updatePC(newIdPC, namePC, newDateDebut, newDateEnd,newCompany);
 
 						PreparedStatement ppdStmtUpdate = cn.prepareStatement(UPDATE);
 
 						ppdStmtUpdate.setString(1, computer.getName());
-						if(computer.getIntroduced().isPresent())
-							ppdStmtUpdate.setObject(2, computer.getIntroduced().get());
+						if(computer.getIntroduced().isPresent()) {
+							ppdStmtUpdate.setObject(2, computer.getIntroduced().get().toString());
+						}
 						else
 							ppdStmtUpdate.setNull(2, java.sql.Types.DATE);
 						if(computer.getDiscontinued().isPresent())
-							ppdStmtUpdate.setObject(3, computer.getDiscontinued().get());
+							ppdStmtUpdate.setObject(3, computer.getDiscontinued().get().toString());
 						else
 							ppdStmtUpdate.setNull(3, java.sql.Types.DATE);
 						if(computer.getCompanyName().isPresent())
@@ -268,93 +235,13 @@ public class ComputerDao {
 						else
 							ppdStmtUpdate.setInt(4, 0);
 						ppdStmtUpdate.setLong(5, computer.getId());
-						computerBuilder.setId(computer.getId());
-						computerBuilder.setName(computer.getName());
-						computerBuilder.setIntroduced(computer.getIntroduced());
-						computerBuilder.setDiscontinued(computer.getDiscontinued());
-						computerBuilder.setCompanyName(computer.getCompanyName());
-						computer = computerBuilder.build();
+						ppdStmtUpdate.executeUpdate();
 						computers.add(computer);
-						/*
-								ppdStmtUpdate.setString(1, computer.getName());
-
-								ppdStmtUpdate.setLong(5, computer.getId());
-								ppdStmtUpdate.executeUpdate();
-								computerBuilder.setId(computer.getId());
-								computerBuilder.setName(computer.getName());
-								computers.add(computer);*/
-
+						
 					}
 					catch(Exception e) {
-
 						System.out.println("L'uns des champs n'est pas dans le bon format, veuillez recommencer.\n");
-					}/*
-						//	break;
-
-						//case MODIFY_DEBUT:
-							try {
-
-								columnToModify = UPDATE.replace("[column]", "introduced");
-								Optional<LocalDate> newValueDate = CliUi.enterDateDebut(introducedStr);
-								computer = CliUi.updateIntroduced(newValueDate);
-								PreparedStatement ppdStmtUpdate = cn.prepareStatement(columnToModify);
-
-								if (computer.getIntroduced().isPresent()) {
-									ppdStmtUpdate.setObject(1, computer.getIntroduced().get());
-								}
-								ppdStmtUpdate.setLong(2, computer.getId());
-								ppdStmtUpdate.executeUpdate();
-								computerBuilder.setId(computer.getId());
-								computerBuilder.setIntroduced(computer.getIntroduced());
-								computers.add(computer);
-
-							}
-							catch(Exception e) {
-
-								System.out.println("La date que vous avez entrée n'est pas valide.\n");
-
-							}
-							//break;
-
-						//case MODIFY_END:
-							try {
-
-								columnToModify = UPDATE.replace("[column]", "discontinued");
-								Optional<LocalDate> newValueDate = CliUi.enterDateEnd(discontinuedStr);
-								computer = CliUi.updateDiscontinued(newValueDate);
-								PreparedStatement ppdStmtUpdate = cn.prepareStatement(columnToModify);
-
-								if (computer.getDiscontinued().isPresent()) {
-									ppdStmtUpdate.setObject(1, computer.getDiscontinued().get());
-								}
-
-								ppdStmtUpdate.setLong(2, computer.getId());
-								ppdStmtUpdate.executeUpdate();
-								computerBuilder.setId(computer.getId());
-								computerBuilder.setIntroduced(computer.getDiscontinued());
-								computers.add(computer);
-
-							}
-							catch(Exception e) {
-
-								System.out.println("La date que vous avez entrée n'est pas valide.");
-
-							}
-							//break;
-
-						//default:
-						//	System.out.println("Je n'ai pas compris votre requête, veuillez recommencer.\n");
-						//}
-
 					}
-					 */
-
-				//}while(!quit);
-
-
-				/*else {
-				System.out.println("L'id que vous avez entré est incorrect.");
-			}*/
 			} catch (SQLException e) {
 				System.out.println("Erreur SQL");
 			}
@@ -409,7 +296,29 @@ public class ComputerDao {
 			}
 			return nbComp;
 		}
-
+		
+		public static long getCompanyId(String CompanyName) throws SQLException, IOException {
+			int IdComp = 0;
+			try (Connection cn = getConnection()){
+				Optional<String> newCompany = CliUi.enterCompanyName(CompanyName);
+				Computer computer = CliUi.CompName(newCompany);
+				PreparedStatement ppdStmt = cn.prepareStatement(GET_ID_COMPANY);
+				System.out.println("WAAAH"+computer.getCompanyName().get().toString());
+				ppdStmt.setString(1, computer.getCompanyName().get().toString());
+				System.out.println("waye "+ppdStmt);
+				ResultSet rs = ppdStmt.executeQuery(GET_ID_COMPANY);
+				while(rs.next()) {
+					System.out.println("WAWAWAWA "+rs);
+					IdComp = rs.getInt(1);
+					System.out.println("TEST "+IdComp);
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return IdComp;
+		}
+		
 		/**
 		 * This method connects to the database
 		 * @author Nassim BOUKHARI

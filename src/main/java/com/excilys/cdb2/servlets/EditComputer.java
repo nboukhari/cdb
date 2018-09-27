@@ -1,6 +1,7 @@
 package com.excilys.cdb2.servlets;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -39,8 +40,16 @@ public class EditComputer extends HttpServlet {
 		request.setAttribute("companies", companies);
 		String id = request.getParameter("id");
 		List<Computer> computer = ComputerDao.getComputerDetails(id);
+		/* String Acompany = request.getParameter("companyName");
+	        try {
+				long test = ComputerDao.getCompanyId(Acompany);
+				System.out.println("ID COMPANY :"+test);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
 		request.setAttribute("computer", computer);
-		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/EditComputer.jsp" ).forward( request, response );
+		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/EditComputer.jsp" ).include( request, response );
 	}
 
 	/**
@@ -50,13 +59,15 @@ public class EditComputer extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html");
 		String Aid = request.getParameter("id");
-		System.out.println("ID "+Aid);
+		System.out.println("IDDDDDDDDDDD :"+Aid);
 		String Aname = request.getParameter("computerName");  
         String Aintroduced = request.getParameter("introduced");  
         String Adiscontinued = request.getParameter("discontinued");
         String Acompany = request.getParameter("companyId");
-        ComputerDao.updateComputer(Aid, Aname, Aintroduced, Adiscontinued, Acompany);
-		doGet(request, response);
+        List<Computer> computer =  ComputerDao.updateComputer(Aid, Aname, Aintroduced, Adiscontinued, Acompany);
+        System.out.println("IDDDDDDDDDDDDDDDDDDDDDDDDDDDD :"+Aintroduced);
+        System.out.println("test :"+computer);
+        response.sendRedirect("Dashboard");
 	}
 
 }

@@ -87,10 +87,10 @@ public class CliUi {
 		return NbP;
 	}
 
-	public static long enterId() {
+	public static long enterId(String idPC) {
 
-		System.out.println("Veuillez entrer l'id de l'ordinateur: ");
-		String idPC = READER.nextLine();
+		//System.out.println("Veuillez entrer l'id de l'ordinateur: ");
+		//String idPC = READER.nextLine();
 		int intId = Integer.parseInt(idPC);
 
 		return intId;
@@ -135,6 +135,14 @@ public static Optional<String> enterCompanyName(String name) {
 	return companyName;
 }
 
+public static Computer CompName (Optional<String> companyName) {
+	Computer computer;
+	ComputerBuilder computerBuilder = new ComputerBuilder();
+	computerBuilder.setCompanyName(companyName);
+	computer = computerBuilder.build();
+	return computer;
+}
+
 public static Computer enterIdPC(String idPC) {
 
 	int intId = Integer.parseInt(idPC);
@@ -150,6 +158,20 @@ public static Computer createPC(String name,Optional<LocalDate> introduced,Optio
 
 	Computer computer;
 	ComputerBuilder computerBuilder = new ComputerBuilder();
+	computerBuilder.setName(name);
+	computerBuilder.setIntroduced(introduced);
+	computerBuilder.setDiscontinued(discontinued);
+	computerBuilder.setCompanyName(companyName);
+	computer = computerBuilder.build();
+
+	return computer;
+}
+
+public static Computer updatePC(Long id, String name,Optional<LocalDate> introduced,Optional<LocalDate> discontinued, Optional<String> companyName) {
+
+	Computer computer;
+	ComputerBuilder computerBuilder = new ComputerBuilder();
+	computerBuilder.setId(id);
 	computerBuilder.setName(name);
 	computerBuilder.setIntroduced(introduced);
 	computerBuilder.setDiscontinued(discontinued);
