@@ -52,6 +52,9 @@ public class AddComputer extends HttpServlet {
         String Aintroduced = request.getParameter("introduced");  
         String Adiscontinued = request.getParameter("discontinued");
         String Acompany = request.getParameter("companyId");
+        if (Acompany.equals("0")) {
+        	Acompany = null;
+        }
         try {
 			ComputerDao.setComputer(Aname, Aintroduced, Adiscontinued, Acompany);
 			response.sendRedirect("Dashboard");

@@ -20,32 +20,31 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<c:forEach var="Computer" items="${computer}">
-						<div class="label label-default pull-right">id: ${Computer.id}</div>
+						<div class="label label-default pull-right">id: ${computer.id}</div>
 						<h1>Edit Computer</h1>
 						<form action="EditComputer" method="POST">
-							<input type="hidden" name="id" value="${Computer.id}" id="id"/>
+							<input type="hidden" name="id" value="${computer.id}" id="id"/>
 							<!-- TODO: Change this value with the computer id -->
 							<fieldset>
 								<div class="form-group">
 									<label for="computerName">Computer name</label> <input
 										type="text" class="form-control" id="computerName" name ="computerName"
-										placeholder="Computer name" value ="${Computer.name}">
+										placeholder="Computer name" value ="${computer.name}">
 								</div>
 								<div class="form-group">
 									<label for="introduced">Introduced date</label> <input
-										type="text" class="form-control" id="introduced" name ="introduced"
-										placeholder="Introduced date" value="${Computer.introduced.orElse(null)}">
+										type="date" class="form-control" id="introduced" name ="introduced"
+										placeholder="Introduced date" value="${computer.introduced.orElse(null)}">
 								</div>
 								<div class="form-group">
 									<label for="discontinued">Discontinued date</label> <input
-										type="text" class="form-control" id="discontinued" name ="discontinued"
-										placeholder="Discontinued date" value="${Computer.discontinued.orElse(null)}">
+										type="date" class="form-control" id="discontinued" name ="discontinued"
+										placeholder="Discontinued date" value="${computer.discontinued.orElse(null)}">
 								</div>
 								<div class="form-group">
 									<label for="companyId">Company</label> <select
 										class="form-control" id="companyId" name ="companyId">
-										<option name ="companyName" value="${Computer.companyName.orElse(null)}">${Computer.companyName.orElse(null)}</option>
+										<option value="${idCompany}">${computer.companyName.orElse(null)}</option>
 										<c:forEach var="Company" items="${companies}">
 											<option value="${Company.id}">${Company.name}</option>
 										</c:forEach>
@@ -55,7 +54,6 @@
 							<div class="actions pull-right">
 								<input type="submit" value="Edit" class="btn btn-primary">
 								or <a href="Dashboard" class="btn btn-default">Cancel</a>
-					</c:forEach>
 				</div>
 				</form>
 			</div>

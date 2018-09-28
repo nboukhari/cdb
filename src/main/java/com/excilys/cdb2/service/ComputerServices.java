@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Optional;
 
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.persistence.ComputerDao;
@@ -30,9 +29,8 @@ public class ComputerServices {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 */
-	public static List<Computer> showComputerDetail() throws IOException{
-		List<Computer> computers = ComputerDao.getComputerDetails(null);
-		return computers;
+	public static Computer showComputerDetail(String id) throws IOException{
+		return ComputerDao.getComputerDetails(id);
 	}
 
 	/**
@@ -41,9 +39,8 @@ public class ComputerServices {
 	 * @throws IOException 
 	 * @throws ParseException 
 	 */
-	public static List<Computer> createComputer() throws IOException, ParseException {
-		List<Computer> computers = ComputerDao.setComputer(null, null, null, null);
-		return computers;
+	public static void createComputer(String name, String introduced, String discontinued, String companyName) throws IOException, ParseException {
+		ComputerDao.setComputer(name, introduced, discontinued, companyName);
 	}
 
 	/**
@@ -51,9 +48,8 @@ public class ComputerServices {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 */
-	public static List<Computer> modifyComputer() throws IOException {
-		List<Computer> computers = ComputerDao.updateComputer(null, null, null, null, null);
-		return computers;
+	public static Computer modifyComputer(String id, String name, String introduced, String discontinued, String companyName) throws IOException {
+		return ComputerDao.updateComputer(id, name, introduced, discontinued, companyName);
 	}
 
 	/**

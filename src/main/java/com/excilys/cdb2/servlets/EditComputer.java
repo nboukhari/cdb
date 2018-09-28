@@ -2,7 +2,6 @@ package com.excilys.cdb2.servlets;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -39,15 +38,16 @@ public class EditComputer extends HttpServlet {
 		List<Company> companies = CompanyDao.getAllCompanies();
 		request.setAttribute("companies", companies);
 		String id = request.getParameter("id");
-		List<Computer> computer = ComputerDao.getComputerDetails(id);
-		/* String Acompany = request.getParameter("companyName");
+		Computer computer = ComputerDao.getComputerDetails(id);
 	        try {
-				long test = ComputerDao.getCompanyId(Acompany);
-				System.out.println("ID COMPANY :"+test);
+	        	if (computer.getCompanyName().isPresent() ) {
+				long idCompany = CompanyDao.getCompanyId(computer.getCompanyName().orElse("0"));
+				request.setAttribute("idCompany", idCompany);
+	        	}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}*/
+			}
 		request.setAttribute("computer", computer);
 		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/EditComputer.jsp" ).include( request, response );
 	}
@@ -59,14 +59,11 @@ public class EditComputer extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html");
 		String Aid = request.getParameter("id");
-		System.out.println("IDDDDDDDDDDD :"+Aid);
 		String Aname = request.getParameter("computerName");  
         String Aintroduced = request.getParameter("introduced");  
         String Adiscontinued = request.getParameter("discontinued");
         String Acompany = request.getParameter("companyId");
-        List<Computer> computer =  ComputerDao.updateComputer(Aid, Aname, Aintroduced, Adiscontinued, Acompany);
-        System.out.println("IDDDDDDDDDDDDDDDDDDDDDDDDDDDD :"+Aintroduced);
-        System.out.println("test :"+computer);
+        Computer computer =  ComputerDao.updateComputer(Aid, Aname, Aintroduced, Adiscontinued, Acompany);
         response.sendRedirect("Dashboard");
 	}
 

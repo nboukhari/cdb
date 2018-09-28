@@ -38,7 +38,6 @@ public class Dashboard extends HttpServlet {
 		try {
 			nbComp = ComputerServices.getNumberComputers();
 			request.setAttribute("nbComp", nbComp);
-			System.out.println("nbComp"+nbComp);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

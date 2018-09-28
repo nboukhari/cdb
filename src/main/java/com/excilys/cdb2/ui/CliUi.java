@@ -2,21 +2,14 @@ package com.excilys.cdb2.ui;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.Scanner;
-import com.excilys.cdb2.model.Computer;
-import com.excilys.cdb2.model.ComputerBuilder;
 import com.excilys.cdb2.service.*;
-import com.excilys.cdb2.validator.isValidFormat;
 
 /**
  * This class is the CLI
  * @author Nassim BOUKHARI
  */
 public class CliUi {
-
 
 	public static Scanner READER = new Scanner(System.in);
 
@@ -48,19 +41,18 @@ public class CliUi {
 					CompanyServices.showCompanies();
 					break;
 				case GET_COMPUTER_DETAILS:
-					ComputerServices.showComputerDetail();
+					ComputerServices.showComputerDetail(null);
 					break;
 				case CREATE_COMPUTER:				
-					ComputerServices.createComputer();
+					ComputerServices.createComputer(null, null, null, null);
 					break;
 				case MODIFY_COMPUTER:
-					ComputerServices.modifyComputer();
+					ComputerServices.modifyComputer(null, null, null, null, null);
 					break;
 				case REMOVE_COMPUTER:
 					ComputerServices.deleteComputer();
 					break;
 				default:
-					System.out.println("Je n'ai pas compris votre requête, veuillez recommencer.");
 				}
 			}
 			catch(NumberFormatException e) {
@@ -72,10 +64,10 @@ public class CliUi {
 	}
 
 	public static int enterNbChoice(String nbCh) {
+
 		nbCh = READER.nextLine();
 		int intCh = Integer.parseInt(nbCh);
 		return intCh;
-
 
 	}
 
@@ -87,15 +79,6 @@ public class CliUi {
 		return NbP;
 	}
 
-	public static long enterId(String idPC) {
-
-		//System.out.println("Veuillez entrer l'id de l'ordinateur: ");
-		//String idPC = READER.nextLine();
-		int intId = Integer.parseInt(idPC);
-
-		return intId;
-	}
-
 	public static String enterName() {
 
 		System.out.println("Veuillez entrer le nom de l'ordinateur: ");
@@ -104,115 +87,7 @@ public class CliUi {
 		return name;
 	}
 
-	public static Optional<LocalDate> enterDateDebut(String date) throws ParseException {
-
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		Optional<LocalDate> dateToLocalDate = Optional.empty();
-		if(isValidFormat.Date("yyyy-MM-dd", date)==true) {
-			LocalDate ParseDate = LocalDate.parse(date, format);
-			dateToLocalDate = Optional.ofNullable(ParseDate);
-		}
-
-		return dateToLocalDate;
+	public static void main(String[] args) throws IOException, ParseException {
+		CliUi.Cli();
 	}
-
-
-public static Optional<LocalDate> enterDateEnd(String date) throws ParseException {
-
-	DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-	Optional<LocalDate> dateToLocalDate = Optional.empty();
-	if(isValidFormat.Date("yyyy-MM-dd", date)==true) {
-	LocalDate ParseDate = LocalDate.parse(date, format);
-	dateToLocalDate = Optional.ofNullable(ParseDate);
-	}
-	return dateToLocalDate;
-
-}
-
-public static Optional<String> enterCompanyName(String name) {
-	Optional<String> companyName = Optional.empty();
-	companyName = Optional.ofNullable(name);
-	return companyName;
-}
-
-public static Computer CompName (Optional<String> companyName) {
-	Computer computer;
-	ComputerBuilder computerBuilder = new ComputerBuilder();
-	computerBuilder.setCompanyName(companyName);
-	computer = computerBuilder.build();
-	return computer;
-}
-
-public static Computer enterIdPC(String idPC) {
-
-	int intId = Integer.parseInt(idPC);
-	Computer computer;
-	ComputerBuilder computerBuilder = new ComputerBuilder();
-	computerBuilder.setId(intId);
-	computer = computerBuilder.build();
-
-	return computer;
-}
-
-public static Computer createPC(String name,Optional<LocalDate> introduced,Optional<LocalDate> discontinued, Optional<String> companyName) {
-
-	Computer computer;
-	ComputerBuilder computerBuilder = new ComputerBuilder();
-	computerBuilder.setName(name);
-	computerBuilder.setIntroduced(introduced);
-	computerBuilder.setDiscontinued(discontinued);
-	computerBuilder.setCompanyName(companyName);
-	computer = computerBuilder.build();
-
-	return computer;
-}
-
-public static Computer updatePC(Long id, String name,Optional<LocalDate> introduced,Optional<LocalDate> discontinued, Optional<String> companyName) {
-
-	Computer computer;
-	ComputerBuilder computerBuilder = new ComputerBuilder();
-	computerBuilder.setId(id);
-	computerBuilder.setName(name);
-	computerBuilder.setIntroduced(introduced);
-	computerBuilder.setDiscontinued(discontinued);
-	computerBuilder.setCompanyName(companyName);
-	computer = computerBuilder.build();
-
-	return computer;
-}
-
-public static Computer updateName(String name) {
-
-	Computer computer;
-	ComputerBuilder computerBuilder = new ComputerBuilder();
-	computerBuilder.setName(name);
-	computer = computerBuilder.build();
-
-	return computer;
-
-}
-
-public static Computer updateIntroduced(Optional<LocalDate> introduced) {
-
-	Computer computer;
-	ComputerBuilder computerBuilder = new ComputerBuilder();
-	computerBuilder.setIntroduced(introduced);
-	computer = computerBuilder.build();
-
-	return computer;
-}
-
-public static Computer updateDiscontinued(Optional<LocalDate> discontinued) {
-
-	Computer computer;
-	ComputerBuilder computerBuilder = new ComputerBuilder();
-	computerBuilder.setDiscontinued(discontinued);
-	computer = computerBuilder.build();
-
-	return computer;
-}
-
-public static void main(String[] args) throws IOException, ParseException {
-	CliUi.Cli();
-}
 }
