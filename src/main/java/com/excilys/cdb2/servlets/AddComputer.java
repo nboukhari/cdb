@@ -39,6 +39,8 @@ public class AddComputer extends HttpServlet {
 		// TODO Auto-generated method stub
 		List<Company> companies = CompanyDao.getAllCompanies();
 		request.setAttribute("companies", companies);
+		//String messageError="ok";
+		//request.setAttribute("messageError", messageError);
 		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/AddComputer.jsp" ).forward( request, response );
 	}
 
@@ -48,6 +50,7 @@ public class AddComputer extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html");
+		String messageCreate="ok";
 		String Aname = request.getParameter("computerName");  
         String Aintroduced = request.getParameter("introduced");  
         String Adiscontinued = request.getParameter("discontinued");
@@ -57,13 +60,17 @@ public class AddComputer extends HttpServlet {
         }
         try {
 			ComputerDao.setComputer(Aname, Aintroduced, Adiscontinued, Acompany);
-			response.sendRedirect("Dashboard");
+			messageCreate.equals("ok");
+			request.setAttribute("messageCreate", messageCreate);
+			System.out.println("done");
+			request.getRequestDispatcher("Dashboard").forward(request, response);
+			//request.getRequestDispatcher("/WEB-INF/views/Dashboard.jsp").include(request, response);
+			//response.sendRedirect("AddComputer");
+			System.out.println("done after");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println("RIP");
 			e.printStackTrace();
-			PrintWriter test = response.getWriter();
-			test.println("<h1>WTFFFFFFFF</h1>");
 		}
 	}
 

@@ -20,6 +20,10 @@
 
 	<section id="main">
 		<div class="container">
+			<c:if test="${messageCreate=='ok'}" var="messageCreate">
+				<c:out value="L'ordinateur a bien été crée." />
+				<br />
+			</c:if>
 			<h1 id="homeTitle">${nbComp} Computers found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">

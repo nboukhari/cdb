@@ -1,8 +1,11 @@
 com/excilys/cdb2/ui/CliUi$1.class
+com/excilys/cdb2/mapper/ComputerMapper.class
 com/excilys/cdb2/model/ComputerBuilder.class
 com/excilys/cdb2/model/CompanyBuilder.class
+com/excilys/cdb2/mapper/CompanyMapper.class
 com/excilys/cdb2/model/Company.class
 com/excilys/cdb2/App.class
+com/excilys/cdb2/persistence/ConnectionDAO.class
 com/excilys/cdb2/persistence/ComputerDao.class
 com/excilys/cdb2/servlets/EditComputer.class
 com/excilys/cdb2/validator/isValidFormat.class
@@ -14,4 +17,3 @@ com/excilys/cdb2/service/ComputerServices.class
 com/excilys/cdb2/servlets/AddComputer.class
 com/excilys/cdb2/servlets/Dashboard.class
 com/excilys/cdb2/service/CompanyServices.class
-com/excilys/cdb2/ui/ChooseDao.class

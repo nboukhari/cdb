@@ -2,12 +2,14 @@
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/App.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/model/CompanyBuilder.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/service/CompanyServices.java
-/home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/ui/ChooseDao.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/servlets/EditComputer.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/model/Computer.java
+/home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/mapper/ComputerMapper.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/model/Company.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/servlets/Dashboard.java
+/home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/persistence/ConnectionDAO.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/model/ComputerBuilder.java
+/home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/mapper/CompanyMapper.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/persistence/CompanyDao.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/ui/ChooseUi.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/validator/isValidFormat.java

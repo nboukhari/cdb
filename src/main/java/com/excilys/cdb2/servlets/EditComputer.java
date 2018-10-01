@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +39,9 @@ public class EditComputer extends HttpServlet {
 		List<Company> companies = CompanyDao.getAllCompanies();
 		request.setAttribute("companies", companies);
 		String id = request.getParameter("id");
+		try {
 		Computer computer = ComputerDao.getComputerDetails(id);
+		
 	        try {
 	        	if (computer.getCompanyName().isPresent() ) {
 				long idCompany = CompanyDao.getCompanyId(computer.getCompanyName().orElse("0"));
@@ -50,6 +53,10 @@ public class EditComputer extends HttpServlet {
 			}
 		request.setAttribute("computer", computer);
 		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/EditComputer.jsp" ).include( request, response );
+		}
+		catch(NullPointerException e) {
+			getServletContext().getRequestDispatcher( "/WEB-INF/views/404.html" ).include( request, response );
+		}
 	}
 
 	/**
@@ -58,13 +65,25 @@ public class EditComputer extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html");
+		String messageOk="ok";
+		String messageKo="ko";
 		String Aid = request.getParameter("id");
 		String Aname = request.getParameter("computerName");  
         String Aintroduced = request.getParameter("introduced");  
         String Adiscontinued = request.getParameter("discontinued");
         String Acompany = request.getParameter("companyId");
+        try {
         Computer computer =  ComputerDao.updateComputer(Aid, Aname, Aintroduced, Adiscontinued, Acompany);
-        response.sendRedirect("Dashboard");
+        messageOk.equals("ok");
+        request.setAttribute("messageOk", messageOk);
+        }
+        catch(Exception e) {
+        	messageKo.equals("ko");
+        	request.setAttribute("messageKo", messageKo);
+        }
+        doGet(request, response);
+		//getServletContext().getRequestDispatcher("/EditComputer").forward(request, response);
+        //response.sendRedirect("Dashboard?messageError="+messageError);
 	}
 
 }
