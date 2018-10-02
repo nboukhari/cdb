@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.service.ComputerServices;
 
@@ -34,7 +35,7 @@ public class Dashboard extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		int nbComp;
+		int nbComp = 0;
 		try {
 			nbComp = ComputerServices.getNumberComputers();
 			request.setAttribute("nbComp", nbComp);
@@ -43,8 +44,15 @@ public class Dashboard extends HttpServlet {
 			e.printStackTrace();
 		}
 		
-		
-		List<Computer> computers = ComputerServices.showComputers();
+
+		String limit = "10";
+		limit = request.getParameter("limit");
+		int nbPages = (nbComp / ComputerMapper.stringToInt(limit))+1;
+		request.setAttribute("nbPages", nbPages);
+		System.out.println("NOMBRE DE PAGES: "+nbPages);
+		String NumberOfPage = request.getParameter("page");
+		System.out.println("WAYE "+NumberOfPage);
+		List<Computer> computers = ComputerServices.showComputers(NumberOfPage,limit);
 		request.setAttribute("computers", computers);
 		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/Dashboard.jsp" ).forward( request, response );
 	}

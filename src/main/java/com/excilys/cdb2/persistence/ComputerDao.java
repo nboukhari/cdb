@@ -23,7 +23,7 @@ import com.excilys.cdb2.model.ComputerBuilder;
  */
 public class ComputerDao {
 
-	private static final String GET_ALL = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id";
+	private static final String GET_ALL = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id LIMIT ?,?";
 	private static final String GET_ONE = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.id =?;";
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
 	private static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id =?;";
@@ -37,7 +37,7 @@ public class ComputerDao {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 */
-	public static List<Computer> getAllComputers() throws IOException {
+	public static List<Computer> getAllComputers(String NumberOfPage, String LimitData) throws IOException {
 
 		Computer computer;
 		ArrayList<Computer> computers = new ArrayList<Computer>();
@@ -46,7 +46,11 @@ public class ComputerDao {
 		try (Connection cn = ConnectionDAO.getConnection()){
 
 			PreparedStatement ppdStmt = cn.prepareStatement(GET_ALL);
-			ResultSet rs = ppdStmt.executeQuery(GET_ALL);
+			int numPage = ComputerMapper.numberOfPage(NumberOfPage);
+			long limitPage = ComputerMapper.stringToInt(LimitData);
+			ppdStmt.setInt(1, numPage);
+			ppdStmt.setLong(2, limitPage);
+			ResultSet rs = ppdStmt.executeQuery();
 			while(rs.next()) {
 				Optional<LocalDate> introduced = Optional.empty();
 				Optional<LocalDate> discontinued = Optional.empty();

@@ -19,8 +19,8 @@ public class ComputerServices {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 */
-	public static List<Computer> showComputers() throws IOException{
-		List<Computer> computers = ComputerDao.getAllComputers();
+	public static List<Computer> showComputers(String NumberOfPage, String LimitData) throws IOException{
+		List<Computer> computers = ComputerDao.getAllComputers(NumberOfPage, LimitData);
 		return computers;
 	}
 	

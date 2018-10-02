@@ -27,6 +27,11 @@ public class ComputerMapper {
 		return intId;
 
 	}
+	
+	public static int stringToInt(String stringData) {
+		int intData = Integer.parseInt(stringData);
+		return intData;
+	}
 
 	public static Optional<LocalDate> enterDate(String date) throws ParseException {
 
@@ -57,5 +62,11 @@ public class ComputerMapper {
 		computer = computerBuilder.build();
 
 		return computer;
+	}
+	
+	public static int numberOfPage(String Page) {
+		int NbP = Integer.parseInt(Page);
+		NbP = (NbP-1)*10;
+		return NbP;
 	}
 }

@@ -35,7 +35,7 @@ public class CliUi {
 					quit = true;
 					break;
 				case LIST_ALL_COMPUTERS:
-					ComputerServices.showComputers();
+					ComputerServices.showComputers("1", "10");
 					break;
 				case LIST_ALL_COMPANIES:
 					CompanyServices.showCompanies();
@@ -69,14 +69,6 @@ public class CliUi {
 		int intCh = Integer.parseInt(nbCh);
 		return intCh;
 
-	}
-
-	public static int numberOfPage(String Page) {
-		System.out.println("Quelle est la page que vous souhaitez afficher? (Appuyez sur 0 si vous souhaitez quitter)");
-		Page = READER.nextLine();
-		int NbP = Integer.parseInt(Page);
-		NbP = (NbP-1)*10;
-		return NbP;
 	}
 
 	public static String enterName() {
