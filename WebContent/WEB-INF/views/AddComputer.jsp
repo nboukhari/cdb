@@ -12,7 +12,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="Dashboard"> Application - Computer
+			<a class="navbar-brand" href="Dashboard?limit=10&page=1"> Application - Computer
 				Database </a>
 		</div>
 	</header>
@@ -57,7 +57,7 @@
 						</c:if>
 						<div class="actions pull-right">
 							<input type="submit" value="Add" class="btn btn-primary" /> or <a
-								href="Dashboard" class="btn btn-default">Cancel</a>
+								href="Dashboard?limit=10&page=1" class="btn btn-default">Cancel</a>
 						</div>
 					</form>
 				</div>

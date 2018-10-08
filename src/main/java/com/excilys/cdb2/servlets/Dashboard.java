@@ -51,9 +51,32 @@ public class Dashboard extends HttpServlet {
 		request.setAttribute("nbPages", nbPages);
 		System.out.println("NOMBRE DE PAGES: "+nbPages);
 		String NumberOfPage = request.getParameter("page");
-		System.out.println("WAYE "+NumberOfPage);
+		int nbPage = ComputerMapper.stringToInt(NumberOfPage);
+		
+		int nbPageMinusOne = nbPage - 1;
+		if(nbPageMinusOne < 0) {
+			nbPageMinusOne = 0;
+		}
+		int nbPageMinusTwo = nbPage - 2;
+		if(nbPageMinusTwo < 0) {
+			nbPageMinusTwo = 0;
+		}
+		int nbPageMoreOne = nbPage + 1;
+		if(nbPageMoreOne < 0) {
+			nbPageMoreOne = 0;
+		}
+		int nbPageMoreTwo = nbPage + 2;
+		if(nbPageMoreTwo < 0) {
+			nbPageMoreTwo = 0;
+		}
+		System.out.println("WAYE "+nbPageMinusOne+ " " +nbPage+" "+nbPageMoreOne);
 		List<Computer> computers = ComputerServices.showComputers(NumberOfPage,limit);
 		request.setAttribute("computers", computers);
+		request.setAttribute("nbPage", nbPage);
+		request.setAttribute("nbPageMinusOne", nbPageMinusOne);
+		request.setAttribute("nbPageMinusTwo", nbPageMinusTwo);
+		request.setAttribute("nbPageMoreOne", nbPageMoreOne);
+		request.setAttribute("nbPageMoreTwo", nbPageMoreTwo);
 		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/Dashboard.jsp" ).forward( request, response );
 	}
 
