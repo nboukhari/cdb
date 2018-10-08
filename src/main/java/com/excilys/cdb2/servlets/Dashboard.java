@@ -49,7 +49,7 @@ public class Dashboard extends HttpServlet {
 		limit = request.getParameter("limit");
 		int nbPages = (nbComp / ComputerMapper.stringToInt(limit))+1;
 		request.setAttribute("nbPages", nbPages);
-		System.out.println("NOMBRE DE PAGES: "+nbPages);
+
 		String NumberOfPage = request.getParameter("page");
 		int nbPage = ComputerMapper.stringToInt(NumberOfPage);
 		
@@ -69,9 +69,10 @@ public class Dashboard extends HttpServlet {
 		if(nbPageMoreTwo < 0) {
 			nbPageMoreTwo = 0;
 		}
-		System.out.println("WAYE "+nbPageMinusOne+ " " +nbPage+" "+nbPageMoreOne);
+
 		List<Computer> computers = ComputerServices.showComputers(NumberOfPage,limit);
 		request.setAttribute("computers", computers);
+		request.setAttribute("limit", limit);
 		request.setAttribute("nbPage", nbPage);
 		request.setAttribute("nbPageMinusOne", nbPageMinusOne);
 		request.setAttribute("nbPageMinusTwo", nbPageMinusTwo);

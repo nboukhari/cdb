@@ -67,18 +67,16 @@ public class EditComputer extends HttpServlet {
 		response.setContentType("text/html");
 		String messageOk="ok";
 		String messageKo="ko";
-		String Aid = request.getParameter("id");
-		String Aname = request.getParameter("computerName");  
-        String Aintroduced = request.getParameter("introduced");  
-        String Adiscontinued = request.getParameter("discontinued");
-        String Acompany = request.getParameter("companyId");
+		String id = request.getParameter("id");
+		String name = request.getParameter("computerName");  
+        String introduced = request.getParameter("introduced");  
+        String discontinued = request.getParameter("discontinued");
+        String company = request.getParameter("companyId");
         try {
-        Computer computer =  ComputerDao.updateComputer(Aid, Aname, Aintroduced, Adiscontinued, Acompany);
-        messageOk.equals("ok");
+        Computer computer =  ComputerDao.updateComputer(id, name, introduced, discontinued, company);
         request.setAttribute("messageOk", messageOk);
         }
         catch(Exception e) {
-        	messageKo.equals("ko");
         	request.setAttribute("messageKo", messageKo);
         }
         doGet(request, response);

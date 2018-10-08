@@ -39,8 +39,6 @@ public class AddComputer extends HttpServlet {
 		// TODO Auto-generated method stub
 		List<Company> companies = CompanyDao.getAllCompanies();
 		request.setAttribute("companies", companies);
-		//String messageError="ok";
-		//request.setAttribute("messageError", messageError);
 		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/AddComputer.jsp" ).forward( request, response );
 	}
 
@@ -51,15 +49,15 @@ public class AddComputer extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html");
 		String messageCreate="ok";
-		String Aname = request.getParameter("computerName");  
-        String Aintroduced = request.getParameter("introduced");  
-        String Adiscontinued = request.getParameter("discontinued");
-        String Acompany = request.getParameter("companyId");
-        if (Acompany.equals("0")) {
-        	Acompany = null;
+		String name = request.getParameter("computerName");  
+        String introduced = request.getParameter("introduced");  
+        String discontinued = request.getParameter("discontinued");
+        String company = request.getParameter("companyId");
+        if (company.equals("0")) {
+        	company = null;
         }
         try {
-			ComputerDao.setComputer(Aname, Aintroduced, Adiscontinued, Acompany);
+			ComputerDao.setComputer(name, introduced, discontinued, company);
 			messageCreate.equals("ok");
 			request.setAttribute("messageCreate", messageCreate);
 			System.out.println("done");

@@ -96,49 +96,42 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<!-- <select class="form-control" id="page" name="page">
-					<c:forEach var="i" begin="1" end ="${nbPages}">
-						<option value="${i}"><c:out value="${i}" /></option>
-					</c:forEach>
-				</select> -->
-				
+
 				<c:if test="${nbPageMinusOne>0}">
-					<li><a href="?limit=10&page=${nbPageMinusOne}"
+					<li><a href="?limit=${limit}&page=${nbPageMinusOne}"
 						aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 					</a></li>
 				</c:if>
 				
 				<c:if test="${nbPageMinusTwo>0}">
-					<li><a href="?limit=10&page=${nbPageMinusTwo}">${nbPageMinusTwo}</a></li>
+					<li><a href="?limit=${limit}&page=${nbPageMinusTwo}">${nbPageMinusTwo}</a></li>
 				</c:if>
 				
 				<c:if test="${nbPageMinusOne>0}">
-					<li><a href="?limit=10&page=${nbPageMinusOne}">${nbPageMinusOne}</a></li>
+					<li><a href="?limit=${limit}&page=${nbPageMinusOne}">${nbPageMinusOne}</a></li>
 				</c:if>
 				
 				<li><a style="font-weight: bold; color: red;" href="?limit=10&page=${nbPage}">${nbPage}</a></li>
 				
 				<c:if test="${nbPageMoreOne<=nbPages}">
-					<li><a href="?limit=10&page=${nbPageMoreOne}">${nbPageMoreOne}</a></li>
+					<li><a href="?limit=${limit}&page=${nbPageMoreOne}">${nbPageMoreOne}</a></li>
 				</c:if>
 				
 				<c:if test="${nbPageMoreTwo<=nbPages}">
-				<li><a href="?limit=10&page=${nbPageMoreTwo}">${nbPageMoreTwo}</a></li>
+				<li><a href="?limit=${limit}&page=${nbPageMoreTwo}">${nbPageMoreTwo}</a></li>
 				</c:if>
 				
 				<c:if test="${nbPageMoreOne<=nbPages}">
-				<li><a href="?limit=10&page=${nbPageMoreOne}" aria-label="Next">
+				<li><a href="?limit=${limit}&page=${nbPageMoreOne}" aria-label="Next">
 						<span aria-hidden="true">&raquo;</span>
 				</a></li>
 				</c:if>
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="?limit=10&page=1"><button type="button"
-						class="btn btn-default">10</button></a> <a href="?limit=50&page=1"><button
-						type="button" class="btn btn-default">50</button></a> <a
-					href="?limit=100&page=1"><button type="button"
-						class="btn btn-default">100</button></a>
+				<a href="?limit=10&page=1"><button type="button" class="btn btn-default">10</button></a> 
+				<a href="?limit=50&page=1"><button type="button" class="btn btn-default">50</button></a> 
+				<a href="?limit=100&page=1"><button type="button" class="btn btn-default">100</button></a>
 			</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
