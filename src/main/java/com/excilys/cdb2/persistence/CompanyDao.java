@@ -52,7 +52,7 @@ public class CompanyDao {
 			rs.close();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
 		}
 		return companies;
 	}

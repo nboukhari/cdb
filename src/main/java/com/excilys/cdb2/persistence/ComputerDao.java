@@ -78,7 +78,7 @@ public class ComputerDao {
 			rs.close();
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
 		}
 		return computers;
 
@@ -128,7 +128,7 @@ public class ComputerDao {
 			rs.close();
 		} catch (SQLException e) {
 
-			e.printStackTrace();
+			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
 
 		}
 		return computer;
@@ -168,7 +168,7 @@ public class ComputerDao {
 
 		} 
 		catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
 		}
 	}
 
@@ -215,11 +215,10 @@ public class ComputerDao {
 
 			}
 			catch(Exception e) {
-				e.printStackTrace();
 				System.out.println("L'uns des champs n'est pas dans le bon format, veuillez recommencer.\n");
 			}
 		} catch (SQLException e) {
-			System.out.println("Erreur SQL");
+			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
 		}
 		return computer;
 	}
@@ -247,7 +246,7 @@ public class ComputerDao {
 
 		} catch (SQLException e) {
 
-			System.out.println("Erreur SQL");
+			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
 
 		}
 		return computers;
@@ -268,7 +267,7 @@ public class ComputerDao {
 			}
 		}
 		catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
 		}
 		return nbComp;
 	}
