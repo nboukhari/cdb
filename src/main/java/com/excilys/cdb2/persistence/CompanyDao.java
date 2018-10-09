@@ -61,11 +61,11 @@ public class CompanyDao {
 	 * This method get the Id of the company from his name
 	 * @author Nassim BOUKHARI
 	 */
-	public static long getCompanyId(String CompanyName) throws SQLException, IOException {
-		int IdComp = 0;
+	public static long getCompanyId(String companyName) throws SQLException, IOException {
+		int idComp = 0;
 		try (Connection cn = ConnectionDAO.getConnection()){
-			Optional<String> newCompany = ComputerMapper.enterCompanyName(CompanyName);
-			Computer computer = CompanyMapper.CompName(newCompany);
+			Optional<String> newCompany = ComputerMapper.enterCompanyName(companyName);
+			Computer computer = ComputerMapper.compName(newCompany);
 			PreparedStatement ppdStmt = cn.prepareStatement(GET_ID_COMPANY);
 			if(computer.getCompanyName().isPresent())
 				ppdStmt.setString(1, computer.getCompanyName().get().toString());
@@ -73,7 +73,7 @@ public class CompanyDao {
 				ppdStmt.setInt(1, 0);
 			ResultSet rs = ppdStmt.executeQuery();
 			if(rs.next()) {
-				IdComp = rs.getInt(1);
+				idComp = rs.getInt(1);
 			}
 			else {
 				System.out.println("Y A PAS");
@@ -83,7 +83,7 @@ public class CompanyDao {
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return IdComp;
+		return idComp;
 	}
 
 }

@@ -111,7 +111,7 @@
 					<li><a href="?limit=${limit}&page=${nbPageMinusOne}">${nbPageMinusOne}</a></li>
 				</c:if>
 				
-				<li><a style="font-weight: bold; color: red;" href="?limit=10&page=${nbPage}">${nbPage}</a></li>
+				<li><a style="font-weight: bold; color: red;" href="?limit=${limit}&page=${nbPage}">${nbPage}</a></li>
 				
 				<c:if test="${nbPageMoreOne<=nbPages}">
 					<li><a href="?limit=${limit}&page=${nbPageMoreOne}">${nbPageMoreOne}</a></li>

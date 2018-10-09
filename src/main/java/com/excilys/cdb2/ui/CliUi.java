@@ -50,7 +50,7 @@ public class CliUi {
 					ComputerServices.modifyComputer(null, null, null, null, null);
 					break;
 				case REMOVE_COMPUTER:
-					ComputerServices.deleteComputer();
+					ComputerServices.deleteComputer(null);
 					break;
 				default:
 				}

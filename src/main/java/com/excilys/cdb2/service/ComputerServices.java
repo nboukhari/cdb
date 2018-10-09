@@ -57,8 +57,8 @@ public class ComputerServices {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 */
-	public static List<Computer> deleteComputer() throws IOException {	
-		List<Computer> computers = ComputerDao.removeComputer();
+	public static List<Computer> deleteComputer(String id) throws IOException {	
+		List<Computer> computers = ComputerDao.removeComputer(id);
 		return computers;
 	}
 	

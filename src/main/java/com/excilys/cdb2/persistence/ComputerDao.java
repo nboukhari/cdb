@@ -46,7 +46,7 @@ public class ComputerDao {
 		try (Connection cn = ConnectionDAO.getConnection()){
 
 			PreparedStatement ppdStmt = cn.prepareStatement(GET_ALL);
-			int numPage = ComputerMapper.numberOfPage(NumberOfPage);
+			int numPage = ComputerMapper.numberOfPage(NumberOfPage, LimitData);
 			long limitPage = ComputerMapper.stringToInt(LimitData);
 			ppdStmt.setInt(1, numPage);
 			ppdStmt.setLong(2, limitPage);
@@ -228,14 +228,13 @@ public class ComputerDao {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 */
-	public static List<Computer> removeComputer() throws IOException {
+	public static List<Computer> removeComputer(String idPC) throws IOException {
 
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 
 		try (Connection cn = ConnectionDAO.getConnection()){
 
-			String idPC = "0";
 			Computer computer = ComputerMapper.enterIdPC(idPC);
 			PreparedStatement ppdStmt = cn.prepareStatement(DELETE);
 			ppdStmt.setLong(1, computer.getId());;

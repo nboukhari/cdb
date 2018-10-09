@@ -64,9 +64,20 @@ public class ComputerMapper {
 		return computer;
 	}
 	
-	public static int numberOfPage(String Page) {
-		int NbP = Integer.parseInt(Page);
-		NbP = (NbP-1)*10;
-		return NbP;
+public static Computer compName (Optional<String> companyName) {
+		
+		Computer computer;
+		ComputerBuilder computerBuilder = new ComputerBuilder();
+		computerBuilder.setCompanyName(companyName);
+		computer = computerBuilder.build();
+		return computer;
+		
+	}
+	
+	public static int numberOfPage(String page, String limit) {
+		int nbP = Integer.parseInt(page);
+		int limitNumber = Integer.parseInt(limit);
+		nbP = (nbP-1)*limitNumber;
+		return nbP;
 	}
 }

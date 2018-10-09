@@ -45,34 +45,21 @@ public class Dashboard extends HttpServlet {
 		}
 		
 
-		String limit = "10";
+		String limit;
 		limit = request.getParameter("limit");
+		request.setAttribute("limit", limit);
 		int nbPages = (nbComp / ComputerMapper.stringToInt(limit))+1;
 		request.setAttribute("nbPages", nbPages);
-
-		String NumberOfPage = request.getParameter("page");
-		int nbPage = ComputerMapper.stringToInt(NumberOfPage);
+		String numberOfPage = request.getParameter("page");
+		int nbPage = ComputerMapper.stringToInt(numberOfPage);
 		
 		int nbPageMinusOne = nbPage - 1;
-		if(nbPageMinusOne < 0) {
-			nbPageMinusOne = 0;
-		}
 		int nbPageMinusTwo = nbPage - 2;
-		if(nbPageMinusTwo < 0) {
-			nbPageMinusTwo = 0;
-		}
 		int nbPageMoreOne = nbPage + 1;
-		if(nbPageMoreOne < 0) {
-			nbPageMoreOne = 0;
-		}
 		int nbPageMoreTwo = nbPage + 2;
-		if(nbPageMoreTwo < 0) {
-			nbPageMoreTwo = 0;
-		}
 
-		List<Computer> computers = ComputerServices.showComputers(NumberOfPage,limit);
+		List<Computer> computers = ComputerServices.showComputers(numberOfPage,limit);
 		request.setAttribute("computers", computers);
-		request.setAttribute("limit", limit);
 		request.setAttribute("nbPage", nbPage);
 		request.setAttribute("nbPageMinusOne", nbPageMinusOne);
 		request.setAttribute("nbPageMinusTwo", nbPageMinusTwo);
