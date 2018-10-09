@@ -27,7 +27,7 @@ public class ComputerDao {
 	private static final String GET_ONE = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.id =?;";
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
 	private static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id =?;";
-	private static final String DELETE = "DELETE FROM computer WHERE id =?;";
+	private static final String DELETE = "DELETE FROM computer WHERE id in (?);";
 	private static final String COUNT = "SELECT COUNT(*) FROM computer";
 
 
@@ -228,27 +228,21 @@ public class ComputerDao {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 */
-	public static List<Computer> removeComputer(String idPC) throws IOException {
+	public static void removeComputer(List<Long> ids) throws IOException {
 
-		ArrayList<Computer> computers = new ArrayList<Computer>();
-		ComputerBuilder computerBuilder = new ComputerBuilder();
+		for (Long id : ids) {
+			try (Connection cn = ConnectionDAO.getConnection()){
 
-		try (Connection cn = ConnectionDAO.getConnection()){
+				PreparedStatement ppdStmt = cn.prepareStatement(DELETE);
+				ppdStmt.setLong(1, id);
+				ppdStmt.executeUpdate();
 
-			Computer computer = ComputerMapper.enterIdPC(idPC);
-			PreparedStatement ppdStmt = cn.prepareStatement(DELETE);
-			ppdStmt.setLong(1, computer.getId());;
-			ppdStmt.executeUpdate();
-			computerBuilder.setId(computer.getId());
-			computer = computerBuilder.build();
-			computers.add(computer);
+			} catch (SQLException e) {
 
-		} catch (SQLException e) {
+				System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
 
-			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
-
+			}
 		}
-		return computers;
 	}
 
 	/**

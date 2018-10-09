@@ -44,7 +44,7 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="#" method="POST">
+		<form id="deleteForm" action="DeleteComputer?limit=${limit}&page=${page}" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
 
@@ -76,7 +76,7 @@
 					<c:forEach var="Computer" items="${computers}">
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
-								class="cb" value="0"></td>
+								class="cb" value="${Computer.id}"></td>
 							<td><a href="EditComputer?id=${Computer.id}" onclick=""><c:out
 										value="${Computer.name}" /></a></td>
 							<td><c:out value="${Computer.introduced.orElse(null)}" /></td>
