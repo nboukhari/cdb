@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.service.ComputerServices;
@@ -20,52 +24,72 @@ import com.excilys.cdb2.service.ComputerServices;
 @WebServlet("/Dashboard")
 public class Dashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public Dashboard() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	private final static Logger LOGGER = LoggerFactory.getLogger(AddComputer.class);
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public Dashboard() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+
 		int nbComp = 0;
 		try {
 			nbComp = ComputerServices.getNumberComputers();
 			request.setAttribute("nbComp", nbComp);
-		} catch (SQLException e) {
+		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Error ",e);
 		}
-		
+
 
 		String limit;
 		limit = request.getParameter("limit");
-		request.setAttribute("limit", limit);
-		int nbPages = (nbComp / ComputerMapper.stringToInt(limit))+1;
-		request.setAttribute("nbPages", nbPages);
-		String numberOfPage = request.getParameter("page");
-		int nbPage = ComputerMapper.stringToInt(numberOfPage);
-		
-		int nbPageMinusOne = nbPage - 1;
-		int nbPageMinusTwo = nbPage - 2;
-		int nbPageMoreOne = nbPage + 1;
-		int nbPageMoreTwo = nbPage + 2;
 
-		List<Computer> computers = ComputerServices.showComputers(numberOfPage,limit);
-		request.setAttribute("computers", computers);
-		request.setAttribute("nbPage", nbPage);
-		request.setAttribute("nbPageMinusOne", nbPageMinusOne);
-		request.setAttribute("nbPageMinusTwo", nbPageMinusTwo);
-		request.setAttribute("nbPageMoreOne", nbPageMoreOne);
-		request.setAttribute("nbPageMoreTwo", nbPageMoreTwo);
-		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/Dashboard.jsp" ).forward( request, response );
+		if(limit.equals("10") || limit.equals("50") || limit.equals("100")){
+
+			int nbPages = (nbComp / Integer.parseInt(limit))+1;			
+			String numberOfPage = request.getParameter("page");
+			int nbPage = Integer.parseInt(numberOfPage);
+
+			if(nbPage < 1 || nbPage > nbPages) {
+				getServletContext().getRequestDispatcher( "/WEB-INF/views/404.html" ).include( request, response );
+			}
+			else {
+				int nbPageMinusOne = nbPage - 1;
+				int nbPageMinusTwo = nbPage - 2;
+				int nbPageMoreOne = nbPage + 1;
+				int nbPageMoreTwo = nbPage + 2;
+
+				List<Computer> computers;
+				try {
+					computers = ComputerServices.showComputers(numberOfPage,limit);
+					request.setAttribute("computers", computers);
+					request.setAttribute("limit", limit);
+					request.setAttribute("nbPage", nbPage);
+					request.setAttribute("nbPages", nbPages);
+					request.setAttribute("nbPageMinusOne", nbPageMinusOne);
+					request.setAttribute("nbPageMinusTwo", nbPageMinusTwo);
+					request.setAttribute("nbPageMoreOne", nbPageMoreOne);
+					request.setAttribute("nbPageMoreTwo", nbPageMoreTwo);
+					this.getServletContext().getRequestDispatcher( "/WEB-INF/views/Dashboard.jsp" ).forward( request, response );	
+				} 
+
+				catch (ValidationException e) {
+					LOGGER.error("Error ",e);
+				}
+			}
+		}
+		else {
+			getServletContext().getRequestDispatcher( "/WEB-INF/views/404.html" ).include( request, response );
+		}
 	}
 
 	/**

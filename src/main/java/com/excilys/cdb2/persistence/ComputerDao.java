@@ -7,12 +7,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.model.ComputerBuilder;
@@ -29,15 +34,16 @@ public class ComputerDao {
 	private static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id =?;";
 	private static final String DELETE = "DELETE FROM computer WHERE id in (?);";
 	private static final String COUNT = "SELECT COUNT(*) FROM computer";
-
+	private final static Logger LOGGER = LoggerFactory.getLogger(ComputerDao.class);
 
 	/**
 	 * This method displays all the computers
 	 * @author Nassim BOUKHARI
 	 * @throws SQLException 
 	 * @throws IOException 
+	 * @throws ValidationException 
 	 */
-	public static List<Computer> getAllComputers(String NumberOfPage, String LimitData) throws IOException {
+	public static List<Computer> getAllComputers(String NumberOfPage, String LimitData) throws IOException, ValidationException {
 
 		Computer computer;
 		ArrayList<Computer> computers = new ArrayList<Computer>();
@@ -47,7 +53,7 @@ public class ComputerDao {
 
 			PreparedStatement ppdStmt = cn.prepareStatement(GET_ALL);
 			int numPage = ComputerMapper.numberOfPage(NumberOfPage, LimitData);
-			long limitPage = ComputerMapper.stringToInt(LimitData);
+			long limitPage = Integer.parseInt(LimitData);
 			ppdStmt.setInt(1, numPage);
 			ppdStmt.setLong(2, limitPage);
 			ResultSet rs = ppdStmt.executeQuery();
@@ -78,7 +84,8 @@ public class ComputerDao {
 			rs.close();
 
 		} catch (SQLException e) {
-			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
+			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs.");
 		}
 		return computers;
 
@@ -88,8 +95,9 @@ public class ComputerDao {
 	 * This method displays all the details about a computer
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
+	 * @throws ValidationException 
 	 */
-	public static Computer getComputerDetails(String idPC) throws IOException {
+	public static Computer getComputerDetails(String idPC) throws IOException, ValidationException {
 
 		Computer computer = null;
 
@@ -122,14 +130,13 @@ public class ComputerDao {
 			}
 
 			else {
-				System.out.println("L'ordinateur que vous avez spécifié n'existe pas.");
-
+				LOGGER.error("L'ordinateur que vous avez spécifié n'existe pas.");
 			}
 			rs.close();
 		} catch (SQLException e) {
 
-			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
-
+			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			throw new ValidationException("Une erreur est survenue lors de l'affichage des détails de l'ordinateur.");
 		}
 		return computer;
 	}
@@ -139,8 +146,9 @@ public class ComputerDao {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 * @throws ParseException 
+	 * @throws ValidationException 
 	 */
-	public static void setComputer(String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException {
+	public static void setComputer(String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException {
 
 
 		try (Connection cn = ConnectionDAO.getConnection()){
@@ -166,59 +174,59 @@ public class ComputerDao {
 			ppdStmt.executeUpdate();
 			ResultSet rs = ppdStmt.getGeneratedKeys();
 
-		} 
-		catch (SQLException e) {
-			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
+
 		}
+		catch (SQLException e) {
+			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			throw new ValidationException("Une erreur est survenue lors de la création de l'ordinateur.");
+		}
+
 	}
+
 
 	/**
 	 * This method updates a computer
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
+	 * @throws ParseException 
 	 */
-	public static Computer updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException {
+	public static Computer updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException {
 
 		Computer computer = null;
 		try (Connection cn = ConnectionDAO.getConnection()){
 
-			try {
-				long newIdPC = ComputerMapper.enterId(idPC);
-				Optional<LocalDate> newDateDebut = ComputerMapper.enterDate(introducedStr);
-				Optional<LocalDate> newDateEnd = ComputerMapper.enterDate(discontinuedStr);
-				Optional<String> newCompany = ComputerMapper.enterCompanyName(companyNameStr);
-				computer = new Computer(newIdPC, namePC, newDateDebut, newDateEnd,newCompany);
+			long newIdPC = Integer.parseInt(idPC);
+			Optional<LocalDate> newDateDebut = ComputerMapper.enterDate(introducedStr);
+			Optional<LocalDate> newDateEnd = ComputerMapper.enterDate(discontinuedStr);
+			Optional<String> newCompany = ComputerMapper.enterCompanyName(companyNameStr);
+			computer = new Computer(newIdPC, namePC, newDateDebut, newDateEnd,newCompany);
 
-				PreparedStatement ppdStmtUpdate = cn.prepareStatement(UPDATE);
+			PreparedStatement ppdStmtUpdate = cn.prepareStatement(UPDATE);
 
-				ppdStmtUpdate.setString(1, computer.getName());
-				if(computer.getIntroduced().isPresent()) {
-					ppdStmtUpdate.setObject(2, computer.getIntroduced().get().toString());
-				}
-				else {
-					ppdStmtUpdate.setNull(2, java.sql.Types.DATE);
-				}
-				if(computer.getDiscontinued().isPresent()) {
-					ppdStmtUpdate.setObject(3, computer.getDiscontinued().get().toString());
-				}
-				else {
-					ppdStmtUpdate.setNull(3, java.sql.Types.DATE);
-				}
-				if(computer.getCompanyName().isPresent()) {
-					ppdStmtUpdate.setString(4, computer.getCompanyName().get().toString());
-				}
-				else {
-					ppdStmtUpdate.setNull(4, 0);
-				}
-				ppdStmtUpdate.setLong(5, computer.getId());
-				ppdStmtUpdate.executeUpdate();
-
+			ppdStmtUpdate.setString(1, computer.getName());
+			if(computer.getIntroduced().isPresent()) {
+				ppdStmtUpdate.setObject(2, computer.getIntroduced().get().toString());
 			}
-			catch(Exception e) {
-				System.out.println("L'uns des champs n'est pas dans le bon format, veuillez recommencer.\n");
+			else {
+				ppdStmtUpdate.setNull(2, java.sql.Types.DATE);
 			}
+			if(computer.getDiscontinued().isPresent()) {
+				ppdStmtUpdate.setObject(3, computer.getDiscontinued().get().toString());
+			}
+			else {
+				ppdStmtUpdate.setNull(3, java.sql.Types.DATE);
+			}
+			if(computer.getCompanyName().isPresent()) {
+				ppdStmtUpdate.setString(4, computer.getCompanyName().get().toString());
+			}
+			else {
+				ppdStmtUpdate.setNull(4, 0);
+			}
+			ppdStmtUpdate.setLong(5, computer.getId());
+			ppdStmtUpdate.executeUpdate();
 		} catch (SQLException e) {
-			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
+			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			throw new ValidationException("Une erreur est survenue lors de la mise à jour de l'ordinateur.");
 		}
 		return computer;
 	}
@@ -227,8 +235,9 @@ public class ComputerDao {
 	 * This method deletes a computer
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
+	 * @throws ValidationException 
 	 */
-	public static void removeComputer(List<Long> ids) throws IOException {
+	public static void removeComputer(List<Long> ids) throws IOException, ValidationException {
 
 		for (Long id : ids) {
 			try (Connection cn = ConnectionDAO.getConnection()){
@@ -239,8 +248,8 @@ public class ComputerDao {
 
 			} catch (SQLException e) {
 
-				System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
-
+				LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+				throw new ValidationException("Une erreur est survenue lors de la suppression de l'ordinateur.");
 			}
 		}
 	}
@@ -248,8 +257,9 @@ public class ComputerDao {
 	/**
 	 * This method displays number of computers
 	 * @author Nassim BOUKHARI
+	 * @throws ValidationException 
 	 */
-	public static int getComputersCount() throws SQLException, IOException {
+	public static int getComputersCount() throws IOException, ValidationException {
 		int nbComp = 0;
 		try (Connection cn = ConnectionDAO.getConnection()){
 
@@ -260,7 +270,8 @@ public class ComputerDao {
 			}
 		}
 		catch (SQLException e) {
-			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
+			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			throw new ValidationException("Une erreur est survenue lors de l'affichage du nombre d'ordinateur.");
 		}
 		return nbComp;
 	}

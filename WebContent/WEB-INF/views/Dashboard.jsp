@@ -96,7 +96,13 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-
+				
+				<c:if test="${nbPage!=1}">
+					<li><a href="?limit=${limit}&page=1">
+						<span aria-hidden="true">First</span>
+					</a></li>
+				</c:if>
+				
 				<c:if test="${nbPageMinusOne>0}">
 					<li><a href="?limit=${limit}&page=${nbPageMinusOne}"
 						aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
@@ -125,6 +131,11 @@
 				<li><a href="?limit=${limit}&page=${nbPageMoreOne}" aria-label="Next">
 						<span aria-hidden="true">&raquo;</span>
 				</a></li>
+				</c:if>
+				<c:if test="${nbPage!=nbPages}">
+					<li><a href="?limit=${limit}&page=${nbPages}">
+						<span aria-hidden="true">Last</span>
+					</a></li>
 				</c:if>
 			</ul>
 

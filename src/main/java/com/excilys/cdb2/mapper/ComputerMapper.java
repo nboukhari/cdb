@@ -21,23 +21,11 @@ public class ComputerMapper {
 		return computer;
 	}
 
-	public static long enterId(String idPC) {
-
-		long intId = Integer.parseInt(idPC);
-		return intId;
-
-	}
-	
-	public static int stringToInt(String stringData) {
-		int intData = Integer.parseInt(stringData);
-		return intData;
-	}
-
 	public static Optional<LocalDate> enterDate(String date) throws ParseException {
 
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		Optional<LocalDate> dateToLocalDate = Optional.empty();
-		if(isValidFormat.Date("yyyy-MM-dd", date)) {
+		if(isValidFormat.date("yyyy-MM-dd", date)) {
 			LocalDate ParseDate = LocalDate.parse(date, format);
 			dateToLocalDate = Optional.ofNullable(ParseDate);
 		}

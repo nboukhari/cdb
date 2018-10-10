@@ -52,13 +52,19 @@
 								</div>
 							</fieldset>
 							<c:if test="${messageOk=='ok'}">
-								<c:out value="L'ordinateur a bien été modifié." />
-								<br />
+								<div class="alert alert-success">
+					              L'ordinateur a bien été modifié.
+					                <br/>
+					            </div>
 							</c:if>
-							<c:if test="${messageKo=='ko'}">
-								<c:out value="Les valeurs que vous avez entrées ne sont pas correctes, veuillez recommencer." />
-								<br />
-							</c:if>
+							
+							<c:if test="${dateError=='ko'}" var="messageError">
+							<div class="alert alert-danger">
+				              La date de début est supérieure à la date de fin.
+				                <br/>
+				            </div>
+						</c:if>
+						
 							<div class="actions pull-right">
 								<input type="submit" value="Edit" class="btn btn-primary">
 								or <a href="Dashboard?limit=10&page=1" class="btn btn-default">Cancel</a>

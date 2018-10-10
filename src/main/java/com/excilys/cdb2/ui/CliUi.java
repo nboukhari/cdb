@@ -3,6 +3,10 @@ package com.excilys.cdb2.ui;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Scanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.service.*;
 
 /**
@@ -12,8 +16,9 @@ import com.excilys.cdb2.service.*;
 public class CliUi {
 
 	public static Scanner READER = new Scanner(System.in);
+	private final static Logger LOGGER = LoggerFactory.getLogger(CliUi.class);
 
-	public static void Cli() throws IOException, ParseException{
+	public static void Cli() throws IOException, ParseException, ValidationException{
 
 		boolean quit = false;
 		do {
@@ -56,11 +61,11 @@ public class CliUi {
 				}
 			}
 			catch(NumberFormatException e) {
-				System.out.println("Je n'ai pas compris votre requête, veuillez recommencer. (MENU)");
+				LOGGER.error("Je n'ai pas compris votre requête, veuillez recommencer. (MENU)");
 			}
 		}while(!quit);
 		READER.close();
-		System.out.println("Au revoir.");
+		LOGGER.info("Au revoir.");
 	}
 
 	public static int enterNbChoice(String nbCh) {
@@ -72,14 +77,13 @@ public class CliUi {
 	}
 
 	public static String enterName() {
-
-		System.out.println("Veuillez entrer le nom de l'ordinateur: ");
+		LOGGER.info("Veuillez entrer le nom de l'ordinateur: ");
 		String name = READER.nextLine();
 
 		return name;
 	}
 
-	public static void main(String[] args) throws IOException, ParseException {
+	public static void main(String[] args) throws IOException, ParseException, ValidationException {
 		CliUi.Cli();
 	}
 }

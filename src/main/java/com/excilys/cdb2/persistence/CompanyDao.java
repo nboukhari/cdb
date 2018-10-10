@@ -8,8 +8,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.excilys.cdb2.mapper.CompanyMapper;
+import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Company;
 import com.excilys.cdb2.model.CompanyBuilder;
@@ -22,14 +24,16 @@ import com.excilys.cdb2.model.Computer;
 public class CompanyDao {
 
 	private static final String GET_ALL = "SELECT id,name FROM company";
-	private static final String GET_ID_COMPANY = "SELECT id FROM company WHERE name =?;";
+	private static final String GET_ID_COMPANY = "SELECT id FROM company WHERE name =?";
+	private final static Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
 
 	/**
 	 * This method displays all the companies
 	 * @author Nassim BOUKHARI
 	 * @return 
+	 * @throws ValidationException 
 	 */
-	public static List<Company> getAllCompanies() throws IOException {
+	public static List<Company> getAllCompanies() throws IOException, ValidationException {
 		Company company;
 		ArrayList<Company> companies = new ArrayList<Company>();
 		CompanyBuilder companyBuilder = new CompanyBuilder();
@@ -41,9 +45,6 @@ public class CompanyDao {
 			while(rs.next()) {
 				long compId = rs.getLong("id");
 				String name = rs.getString("name");
-
-				System.out.println(compId+"|"+name);
-
 				companyBuilder.setId(compId);
 				companyBuilder.setName(name);
 				company = companyBuilder.build();
@@ -52,7 +53,8 @@ public class CompanyDao {
 			rs.close();
 
 		} catch (SQLException e) {
-			System.out.println("Une erreur SQL est survenue, voici la cause : "+e);
+			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs.");
 		}
 		return companies;
 	}
@@ -60,8 +62,9 @@ public class CompanyDao {
 	/**
 	 * This method get the Id of the company from his name
 	 * @author Nassim BOUKHARI
+	 * @throws ValidationException 
 	 */
-	public static long getCompanyId(String companyName) throws SQLException, IOException {
+	public static long getCompanyId(String companyName) throws SQLException, IOException, ValidationException {
 		int idComp = 0;
 		try (Connection cn = ConnectionDAO.getConnection()){
 			Optional<String> newCompany = ComputerMapper.enterCompanyName(companyName);
@@ -76,12 +79,13 @@ public class CompanyDao {
 				idComp = rs.getInt(1);
 			}
 			else {
-				System.out.println("Y A PAS");
+				LOGGER.error("Aucune entreprise n'a été trouvé.");
 			}
 		}
 
 		catch (SQLException e) {
-			e.printStackTrace();
+			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs.");
 		}
 		return idComp;
 	}

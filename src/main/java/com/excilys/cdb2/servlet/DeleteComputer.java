@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.persistence.ComputerDao;
 
 /**
@@ -57,8 +58,13 @@ public class DeleteComputer extends HttpServlet {
         for (String idString : selection.split(",")) {
             ids.add(Long.parseLong(idString));
         }
-        ComputerDao.removeComputer(ids);
-		doGet(request, response);
+        try {
+			ComputerDao.removeComputer(ids);
+			doGet(request, response);
+		} catch (ValidationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

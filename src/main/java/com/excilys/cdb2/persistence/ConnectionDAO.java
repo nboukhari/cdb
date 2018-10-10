@@ -6,9 +6,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConnectionDAO {
-
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(ConnectionDAO.class);
+	 
 	/**
 	 * This method connects to the database
 	 * @author Nassim BOUKHARI
@@ -26,13 +30,13 @@ public class ConnectionDAO {
 			Properties prop = new Properties();
 			InputStream inputStream = ComputerDao.class.getClassLoader().getResourceAsStream("config.properties");
 			prop.load(inputStream);
-			String URL = prop.getProperty("URL");
-			String LOGIN = prop.getProperty("LOGIN");
-			String PASSWORD = prop.getProperty("PASSWORD");
-			cn = DriverManager.getConnection(URL, LOGIN, PASSWORD);
+			String url = prop.getProperty("URL");
+			String login = prop.getProperty("LOGIN");
+			String password = prop.getProperty("PASSWORD");
+			cn = DriverManager.getConnection(url, login, password);
 			return cn;
 		} catch (Exception e) {
-			System.out.println("Exception: " + e);
+			 LOGGER.error("Exception ", e);
 		}
 		return cn;
 	}

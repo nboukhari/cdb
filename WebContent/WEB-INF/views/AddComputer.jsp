@@ -50,10 +50,11 @@
 								</select>
 							</div>
 						</fieldset>
-						<c:if test="${messageError=='ok'}" var="messageError">
-							<br />
-							<c:out value="ERROR" />
-							<br />
+						<c:if test="${dateError=='ko'}" var="messageError">
+							<div class="alert alert-danger">
+				              La date de début est supérieure à la date de fin.
+				                <br/>
+				            </div>
 						</c:if>
 						<div class="actions pull-right">
 							<input type="submit" value="Add" class="btn btn-primary" /> or <a
