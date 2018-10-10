@@ -1,11 +1,12 @@
-package com.excilys.cdb2.servlets;
+package com.excilys.cdb2.servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
+import java.io.PrintWriter;
+import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,16 +18,16 @@ import com.excilys.cdb2.persistence.CompanyDao;
 import com.excilys.cdb2.persistence.ComputerDao;
 
 /**
- * Servlet implementation class EditComputer
+ * Servlet implementation class AddComputer
  */
-@WebServlet("/EditComputer")
-public class EditComputer extends HttpServlet {
+@WebServlet("/AddComputer")
+public class AddComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public EditComputer() {
+    public AddComputer() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -38,25 +39,7 @@ public class EditComputer extends HttpServlet {
 		// TODO Auto-generated method stub
 		List<Company> companies = CompanyDao.getAllCompanies();
 		request.setAttribute("companies", companies);
-		String id = request.getParameter("id");
-		try {
-		Computer computer = ComputerDao.getComputerDetails(id);
-		
-	        try {
-	        	if (computer.getCompanyName().isPresent() ) {
-				long idCompany = CompanyDao.getCompanyId(computer.getCompanyName().orElse("0"));
-				request.setAttribute("idCompany", idCompany);
-	        	}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		request.setAttribute("computer", computer);
-		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/EditComputer.jsp" ).include( request, response );
-		}
-		catch(NullPointerException e) {
-			getServletContext().getRequestDispatcher( "/WEB-INF/views/404.html" ).include( request, response );
-		}
+		this.getServletContext().getRequestDispatcher( "/WEB-INF/views/AddComputer.jsp" ).forward( request, response );
 	}
 
 	/**
@@ -65,23 +48,28 @@ public class EditComputer extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html");
-		String messageOk="ok";
-		String messageKo="ko";
-		String id = request.getParameter("id");
+		String messageCreate="ok";
 		String name = request.getParameter("computerName");  
         String introduced = request.getParameter("introduced");  
         String discontinued = request.getParameter("discontinued");
         String company = request.getParameter("companyId");
+        if (company.equals("0")) {
+        	company = null;
+        }
         try {
-        Computer computer =  ComputerDao.updateComputer(id, name, introduced, discontinued, company);
-        request.setAttribute("messageOk", messageOk);
-        }
-        catch(Exception e) {
-        	request.setAttribute("messageKo", messageKo);
-        }
-        doGet(request, response);
-		//getServletContext().getRequestDispatcher("/EditComputer").forward(request, response);
-        //response.sendRedirect("Dashboard?messageError="+messageError);
+			ComputerDao.setComputer(name, introduced, discontinued, company);
+			messageCreate.equals("ok");
+			request.setAttribute("messageCreate", messageCreate);
+			System.out.println("done");
+			request.getRequestDispatcher("Dashboard").forward(request, response);
+			//request.getRequestDispatcher("/WEB-INF/views/Dashboard.jsp").include(request, response);
+			//response.sendRedirect("AddComputer");
+			System.out.println("done after");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("RIP");
+			e.printStackTrace();
+		}
 	}
 
 }
