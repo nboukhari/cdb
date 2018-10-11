@@ -29,10 +29,12 @@ import com.excilys.cdb2.model.ComputerBuilder;
 public class ComputerDao {
 
 	private static final String GET_ALL = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id LIMIT ?,?";
+	private static final String SEARCH = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.name LIKE ? LIMIT ?,?";
 	private static final String GET_ONE = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.id =?;";
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
 	private static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id =?;";
 	private static final String DELETE = "DELETE FROM computer WHERE id in (?);";
+	private static final String SEARCH_COUNT = "SELECT COUNT(*) FROM computer WHERE name LIKE ?";
 	private static final String COUNT = "SELECT COUNT(*) FROM computer";
 	private final static Logger LOGGER = LoggerFactory.getLogger(ComputerDao.class);
 
@@ -86,6 +88,62 @@ public class ComputerDao {
 		} catch (SQLException e) {
 			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs.");
+		}
+		return computers;
+
+	}
+	
+	/**
+	 * This method displays all the computers
+	 * @author Nassim BOUKHARI
+	 * @throws SQLException 
+	 * @throws IOException 
+	 * @throws ValidationException 
+	 */
+	public static List<Computer> searchComputers(String search, String numberOfPage, String limitData) throws IOException, ValidationException {
+
+		Computer computer;
+		ArrayList<Computer> computers = new ArrayList<Computer>();
+		ComputerBuilder computerBuilder = new ComputerBuilder();
+
+		try (Connection cn = ConnectionDAO.getConnection()){
+
+			PreparedStatement ppdStmt = cn.prepareStatement(SEARCH);
+			int numPage = ComputerMapper.numberOfPage(numberOfPage, limitData);
+			long limitPage = Integer.parseInt(limitData);
+			ppdStmt.setString(1, search+"%");
+			ppdStmt.setInt(2, numPage);
+			ppdStmt.setLong(3, limitPage);
+			ResultSet rs = ppdStmt.executeQuery();
+			while(rs.next()) {
+				Optional<LocalDate> introduced = Optional.empty();
+				Optional<LocalDate> discontinued = Optional.empty();
+				Optional<String> companyName = Optional.empty();
+				long pcId = rs.getLong("computer.id");
+				String name = rs.getString("computer.name");
+				Date dateDebut = rs.getDate("computer.introduced");
+				LocalDate ParseDateDebut = dateDebut != null ? dateDebut.toLocalDate() : null;
+				introduced = Optional.ofNullable(ParseDateDebut);
+
+				Date dateEnd = rs.getDate("computer.discontinued");
+				LocalDate ParseDateEnd = dateEnd != null ? dateEnd.toLocalDate() : null;
+				discontinued = Optional.ofNullable(ParseDateEnd);
+				String strCompName = rs.getString("company.name");
+				companyName = Optional.ofNullable(strCompName);
+
+				computerBuilder.setId(pcId);
+				computerBuilder.setName(name);
+				computerBuilder.setIntroduced(introduced);
+				computerBuilder.setDiscontinued(discontinued);
+				computerBuilder.setCompanyName(companyName);
+				computer = computerBuilder.build();
+				computers.add(computer);
+			}
+			rs.close();
+
+		} catch (SQLException e) {
+			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs."+e);
 		}
 		return computers;
 
@@ -272,6 +330,29 @@ public class ComputerDao {
 		catch (SQLException e) {
 			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de l'affichage du nombre d'ordinateur.");
+		}
+		return nbComp;
+	}
+	
+	/**
+	 * This method displays number of computers
+	 * @author Nassim BOUKHARI
+	 * @throws ValidationException 
+	 */
+	public static int getComputersCountFromSearch(String search) throws IOException, ValidationException {
+		int nbComp = 0;
+		try (Connection cn = ConnectionDAO.getConnection()){
+
+			PreparedStatement ppdStmt = cn.prepareStatement(SEARCH_COUNT);
+			ppdStmt.setString(1, search+"%");
+			ResultSet rs = ppdStmt.executeQuery();
+			while(rs.next()) {
+				nbComp = rs.getInt(1);
+			}
+		}
+		catch (SQLException e) {
+			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			throw new ValidationException("Une erreur est survenue lors de l'affichage du nombre d'ordinateur." +e);
 		}
 		return nbComp;
 	}

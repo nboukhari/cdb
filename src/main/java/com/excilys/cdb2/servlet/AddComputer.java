@@ -87,7 +87,7 @@ public class AddComputer extends HttpServlet {
 			}
 			ComputerDao.setComputer(name, introduced, discontinued, company);
 			request.setAttribute("messageCreate", messageCreate);
-		    response.sendRedirect(new StringBuilder("/cdb2/Dashboard?page=1&limit=10").toString());
+		    response.sendRedirect(new StringBuilder("/cdb2/Dashboard?limit=10&page=1").toString());
 		} catch (ValidationException | ParseException e) {
 			// TODO Auto-generated catch block
 			LOGGER.error("Error", e);

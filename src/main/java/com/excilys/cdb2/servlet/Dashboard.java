@@ -41,22 +41,38 @@ public class Dashboard extends HttpServlet {
 		// TODO Auto-generated method stub
 
 		int nbComp = 0;
+		String search = request.getParameter("search");
+		
 		try {
+			if(search ==null) {
 			nbComp = ComputerServices.getNumberComputers();
+			}
+			else {
+				nbComp = ComputerServices.getNumberComputersFromSearch(search);
+			}
 			request.setAttribute("nbComp", nbComp);
 		} catch (ValidationException e) {
 			// TODO Auto-generated catch block
 			LOGGER.error("Error ",e);
+			System.out.println("error "+e);
 		}
 
 
 		String limit;
 		limit = request.getParameter("limit");
-
+		
+		if (limit ==null) {
+			limit ="10";
+		}
 		if(limit.equals("10") || limit.equals("50") || limit.equals("100")){
 
 			int nbPages = (nbComp / Integer.parseInt(limit))+1;			
 			String numberOfPage = request.getParameter("page");
+			
+			if (numberOfPage ==null) {
+				numberOfPage ="1";
+			}
+			
 			int nbPage = Integer.parseInt(numberOfPage);
 
 			if(nbPage < 1 || nbPage > nbPages) {
@@ -70,7 +86,12 @@ public class Dashboard extends HttpServlet {
 
 				List<Computer> computers;
 				try {
+					if(search ==null) {
 					computers = ComputerServices.showComputers(numberOfPage,limit);
+					}
+					else {
+						computers = ComputerServices.showComputersFromSearch(search, numberOfPage,limit);
+					}
 					request.setAttribute("computers", computers);
 					request.setAttribute("limit", limit);
 					request.setAttribute("nbPage", nbPage);
@@ -89,15 +110,6 @@ public class Dashboard extends HttpServlet {
 		}
 		else {
 			getServletContext().getRequestDispatcher( "/WEB-INF/views/404.html" ).include( request, response );
-		}
+		}	
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }

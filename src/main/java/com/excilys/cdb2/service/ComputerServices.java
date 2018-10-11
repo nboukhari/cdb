@@ -21,8 +21,19 @@ public class ComputerServices {
 	 * @throws IOException 
 	 * @throws ValidationException 
 	 */
-	public static List<Computer> showComputers(String NumberOfPage, String LimitData) throws IOException, ValidationException{
-		List<Computer> computers = ComputerDao.getAllComputers(NumberOfPage, LimitData);
+	public static List<Computer> showComputers(String numberOfPage, String limitData) throws IOException, ValidationException{
+		List<Computer> computers = ComputerDao.getAllComputers(numberOfPage, limitData);
+		return computers;
+	}
+	
+	/**
+	 * This method displays all the computers
+	 * @author Nassim BOUKHARI
+	 * @throws IOException 
+	 * @throws ValidationException 
+	 */
+	public static List<Computer> showComputersFromSearch(String search, String numberOfPage, String limitData) throws IOException, ValidationException{
+		List<Computer> computers = ComputerDao.searchComputers(search, numberOfPage, limitData);
 		return computers;
 	}
 	
@@ -76,6 +87,17 @@ public class ComputerServices {
 	 */
 	public static int getNumberComputers() throws IOException, ValidationException {	
 		int test = ComputerDao.getComputersCount();
+		return test;
+	}
+	
+	/**
+	 * This method displays number of computers
+	 * @author Nassim BOUKHARI
+	 * @throws IOException 
+	 * @throws ValidationException 
+	 */
+	public static int getNumberComputersFromSearch(String search) throws IOException, ValidationException {	
+		int test = ComputerDao.getComputersCountFromSearch(search);
 		return test;
 	}
 }
