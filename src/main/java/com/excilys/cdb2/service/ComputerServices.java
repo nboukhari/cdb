@@ -20,8 +20,9 @@ public class ComputerServices {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static List<Computer> showComputers(String numberOfPage, String limitData) throws IOException, ValidationException{
+	public static List<Computer> showComputers(String numberOfPage, String limitData) throws IOException, ValidationException, ClassNotFoundException{
 		List<Computer> computers = ComputerDao.getAllComputers(numberOfPage, limitData);
 		return computers;
 	}
@@ -31,8 +32,9 @@ public class ComputerServices {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static List<Computer> showComputersFromSearch(String search, String numberOfPage, String limitData) throws IOException, ValidationException{
+	public static List<Computer> showComputersFromSearch(String search, String numberOfPage, String limitData) throws IOException, ValidationException, ClassNotFoundException{
 		List<Computer> computers = ComputerDao.searchComputers(search, numberOfPage, limitData);
 		return computers;
 	}
@@ -42,8 +44,9 @@ public class ComputerServices {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static Computer showComputerDetail(String id) throws IOException, ValidationException{
+	public static Computer showComputerDetail(String id) throws IOException, ValidationException, ClassNotFoundException{
 		return ComputerDao.getComputerDetails(id);
 	}
 
@@ -53,8 +56,9 @@ public class ComputerServices {
 	 * @throws IOException 
 	 * @throws ParseException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static void createComputer(String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException {
+	public static void createComputer(String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException, ClassNotFoundException {
 		ComputerDao.setComputer(name, introduced, discontinued, companyName);
 	}
 
@@ -64,8 +68,9 @@ public class ComputerServices {
 	 * @throws IOException 
 	 * @throws ValidationException 
 	 * @throws ParseException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static Computer modifyComputer(String id, String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException {
+	public static Computer modifyComputer(String id, String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException, ClassNotFoundException {
 		return ComputerDao.updateComputer(id, name, introduced, discontinued, companyName);
 	}
 
@@ -74,8 +79,9 @@ public class ComputerServices {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static void deleteComputer() throws IOException, ValidationException {	
+	public static void deleteComputer() throws IOException, ValidationException, ClassNotFoundException {	
 		ComputerDao.removeComputer(null);
 	}
 	
@@ -84,8 +90,9 @@ public class ComputerServices {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static int getNumberComputers() throws IOException, ValidationException {	
+	public static int getNumberComputers() throws IOException, ValidationException, ClassNotFoundException {	
 		int test = ComputerDao.getComputersCount();
 		return test;
 	}
@@ -95,8 +102,9 @@ public class ComputerServices {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static int getNumberComputersFromSearch(String search) throws IOException, ValidationException {	
+	public static int getNumberComputersFromSearch(String search) throws IOException, ValidationException, ClassNotFoundException {	
 		int test = ComputerDao.getComputersCountFromSearch(search);
 		return test;
 	}

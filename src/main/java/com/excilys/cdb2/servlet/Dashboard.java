@@ -1,7 +1,6 @@
 package com.excilys.cdb2.servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -10,11 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.apache.log4j.Logger;
 
 import com.excilys.cdb2.exception.ValidationException;
-import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.service.ComputerServices;
 
@@ -24,7 +21,7 @@ import com.excilys.cdb2.service.ComputerServices;
 @WebServlet("/Dashboard")
 public class Dashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final static Logger LOGGER = LoggerFactory.getLogger(AddComputer.class);
+	//private final static Logger LOGGER = Logger.getLogger(Dashboard.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -51,9 +48,9 @@ public class Dashboard extends HttpServlet {
 				nbComp = ComputerServices.getNumberComputersFromSearch(search);
 			}
 			request.setAttribute("nbComp", nbComp);
-		} catch (ValidationException e) {
+		} catch (ValidationException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("Error ",e);
+			//LOGGER.error("Error ",e);
 			System.out.println("error "+e);
 		}
 
@@ -86,12 +83,13 @@ public class Dashboard extends HttpServlet {
 
 				List<Computer> computers;
 				try {
-					if(search ==null) {
+					if(search == null) {
 					computers = ComputerServices.showComputers(numberOfPage,limit);
 					}
 					else {
 						computers = ComputerServices.showComputersFromSearch(search, numberOfPage,limit);
 					}
+					request.setAttribute("search",search);
 					request.setAttribute("computers", computers);
 					request.setAttribute("limit", limit);
 					request.setAttribute("nbPage", nbPage);
@@ -103,8 +101,8 @@ public class Dashboard extends HttpServlet {
 					this.getServletContext().getRequestDispatcher( "/WEB-INF/views/Dashboard.jsp" ).forward( request, response );	
 				} 
 
-				catch (ValidationException e) {
-					LOGGER.error("Error ",e);
+				catch (ValidationException | ClassNotFoundException e) {
+					//LOGGER.error("Error ",e);
 				}
 			}
 		}

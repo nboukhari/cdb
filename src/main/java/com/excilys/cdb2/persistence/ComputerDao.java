@@ -14,8 +14,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.apache.log4j.Logger;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.mapper.ComputerMapper;
@@ -36,7 +35,7 @@ public class ComputerDao {
 	private static final String DELETE = "DELETE FROM computer WHERE id in (?);";
 	private static final String SEARCH_COUNT = "SELECT COUNT(*) FROM computer WHERE name LIKE ?";
 	private static final String COUNT = "SELECT COUNT(*) FROM computer";
-	private final static Logger LOGGER = LoggerFactory.getLogger(ComputerDao.class);
+	//private final static Logger LOGGER = Logger.getLogger(ComputerDao.class);
 
 	/**
 	 * This method displays all the computers
@@ -44,8 +43,9 @@ public class ComputerDao {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static List<Computer> getAllComputers(String NumberOfPage, String LimitData) throws IOException, ValidationException {
+	public static List<Computer> getAllComputers(String NumberOfPage, String LimitData) throws IOException, ValidationException, ClassNotFoundException {
 
 		Computer computer;
 		ArrayList<Computer> computers = new ArrayList<Computer>();
@@ -86,7 +86,7 @@ public class ComputerDao {
 			rs.close();
 
 		} catch (SQLException e) {
-			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs.");
 		}
 		return computers;
@@ -99,8 +99,9 @@ public class ComputerDao {
 	 * @throws SQLException 
 	 * @throws IOException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static List<Computer> searchComputers(String search, String numberOfPage, String limitData) throws IOException, ValidationException {
+	public static List<Computer> searchComputers(String search, String numberOfPage, String limitData) throws IOException, ValidationException, ClassNotFoundException {
 
 		Computer computer;
 		ArrayList<Computer> computers = new ArrayList<Computer>();
@@ -142,7 +143,7 @@ public class ComputerDao {
 			rs.close();
 
 		} catch (SQLException e) {
-			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs."+e);
 		}
 		return computers;
@@ -154,8 +155,9 @@ public class ComputerDao {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static Computer getComputerDetails(String idPC) throws IOException, ValidationException {
+	public static Computer getComputerDetails(String idPC) throws IOException, ValidationException, ClassNotFoundException {
 
 		Computer computer = null;
 
@@ -188,12 +190,12 @@ public class ComputerDao {
 			}
 
 			else {
-				LOGGER.error("L'ordinateur que vous avez spécifié n'existe pas.");
+				//LOGGER.error("L'ordinateur que vous avez spécifié n'existe pas.");
 			}
 			rs.close();
 		} catch (SQLException e) {
 
-			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de l'affichage des détails de l'ordinateur.");
 		}
 		return computer;
@@ -205,8 +207,9 @@ public class ComputerDao {
 	 * @throws IOException 
 	 * @throws ParseException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static void setComputer(String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException {
+	public static void setComputer(String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException, ClassNotFoundException {
 
 
 		try (Connection cn = ConnectionDAO.getConnection()){
@@ -235,7 +238,7 @@ public class ComputerDao {
 
 		}
 		catch (SQLException e) {
-			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de la création de l'ordinateur.");
 		}
 
@@ -247,8 +250,9 @@ public class ComputerDao {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 * @throws ParseException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static Computer updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException {
+	public static Computer updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException, ClassNotFoundException {
 
 		Computer computer = null;
 		try (Connection cn = ConnectionDAO.getConnection()){
@@ -283,7 +287,7 @@ public class ComputerDao {
 			ppdStmtUpdate.setLong(5, computer.getId());
 			ppdStmtUpdate.executeUpdate();
 		} catch (SQLException e) {
-			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de la mise à jour de l'ordinateur.");
 		}
 		return computer;
@@ -294,8 +298,9 @@ public class ComputerDao {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static void removeComputer(List<Long> ids) throws IOException, ValidationException {
+	public static void removeComputer(List<Long> ids) throws IOException, ValidationException, ClassNotFoundException {
 
 		for (Long id : ids) {
 			try (Connection cn = ConnectionDAO.getConnection()){
@@ -306,7 +311,7 @@ public class ComputerDao {
 
 			} catch (SQLException e) {
 
-				LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+				//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 				throw new ValidationException("Une erreur est survenue lors de la suppression de l'ordinateur.");
 			}
 		}
@@ -316,8 +321,9 @@ public class ComputerDao {
 	 * This method displays number of computers
 	 * @author Nassim BOUKHARI
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static int getComputersCount() throws IOException, ValidationException {
+	public static int getComputersCount() throws IOException, ValidationException, ClassNotFoundException {
 		int nbComp = 0;
 		try (Connection cn = ConnectionDAO.getConnection()){
 
@@ -328,7 +334,7 @@ public class ComputerDao {
 			}
 		}
 		catch (SQLException e) {
-			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de l'affichage du nombre d'ordinateur.");
 		}
 		return nbComp;
@@ -338,8 +344,9 @@ public class ComputerDao {
 	 * This method displays number of computers
 	 * @author Nassim BOUKHARI
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static int getComputersCountFromSearch(String search) throws IOException, ValidationException {
+	public static int getComputersCountFromSearch(String search) throws IOException, ValidationException, ClassNotFoundException {
 		int nbComp = 0;
 		try (Connection cn = ConnectionDAO.getConnection()){
 
@@ -351,7 +358,7 @@ public class ComputerDao {
 			}
 		}
 		catch (SQLException e) {
-			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de l'affichage du nombre d'ordinateur." +e);
 		}
 		return nbComp;

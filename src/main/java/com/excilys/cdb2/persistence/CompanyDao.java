@@ -8,8 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.apache.log4j.Logger;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.mapper.ComputerMapper;
@@ -25,15 +24,16 @@ public class CompanyDao {
 
 	private static final String GET_ALL = "SELECT id,name FROM company";
 	private static final String GET_ID_COMPANY = "SELECT id FROM company WHERE name =?";
-	private final static Logger LOGGER = LoggerFactory.getLogger(CompanyDao.class);
+	//private final static Logger LOGGER = Logger.getLogger(CompanyDao.class);
 
 	/**
 	 * This method displays all the companies
 	 * @author Nassim BOUKHARI
 	 * @return 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static List<Company> getAllCompanies() throws IOException, ValidationException {
+	public static List<Company> getAllCompanies() throws IOException, ValidationException, ClassNotFoundException {
 		Company company;
 		ArrayList<Company> companies = new ArrayList<Company>();
 		CompanyBuilder companyBuilder = new CompanyBuilder();
@@ -53,7 +53,7 @@ public class CompanyDao {
 			rs.close();
 
 		} catch (SQLException e) {
-			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs.");
 		}
 		return companies;
@@ -63,8 +63,9 @@ public class CompanyDao {
 	 * This method get the Id of the company from his name
 	 * @author Nassim BOUKHARI
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static long getCompanyId(String companyName) throws SQLException, IOException, ValidationException {
+	public static long getCompanyId(String companyName) throws SQLException, IOException, ValidationException, ClassNotFoundException {
 		int idComp = 0;
 		try (Connection cn = ConnectionDAO.getConnection()){
 			Optional<String> newCompany = ComputerMapper.enterCompanyName(companyName);
@@ -79,12 +80,12 @@ public class CompanyDao {
 				idComp = rs.getInt(1);
 			}
 			else {
-				LOGGER.error("Aucune entreprise n'a été trouvé.");
+				//LOGGER.error("Aucune entreprise n'a été trouvé.");
 			}
 		}
 
 		catch (SQLException e) {
-			LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
+			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs.");
 		}
 		return idComp;

@@ -6,38 +6,41 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+//import org.apache.log4j.Logger;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class ConnectionDAO {
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(ConnectionDAO.class);
-	 
+	//private final static Logger LOGGER = Logger.getLogger(ConnectionDAO.class);
+	private static HikariConfig config;
+	private static HikariDataSource datasource;
+	
 	/**
 	 * This method connects to the database
 	 * @author Nassim BOUKHARI
 	 */
+	
+
+	static {
+		config = new HikariConfig();
+		config.setJdbcUrl( "jdbc:mysql://localhost/computer-database-db" );
+        config.setUsername( "admincdb" );
+        config.setPassword( "qwerty1234" );
+        config.setDriverClassName("com.mysql.jdbc.Driver");
+        config.addDataSourceProperty( "cachePrepStmts" , "true" );
+        config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
+        config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
+        datasource = new HikariDataSource( config );
+	}
+	
+	 private ConnectionDAO() {
+	 }
+	 
 	public static Connection getConnection() throws IOException, SQLException {
-		Connection cn = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} 
-		catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		try {
-			Properties prop = new Properties();
-			InputStream inputStream = ComputerDao.class.getClassLoader().getResourceAsStream("config.properties");
-			prop.load(inputStream);
-			String url = prop.getProperty("URL");
-			String login = prop.getProperty("LOGIN");
-			String password = prop.getProperty("PASSWORD");
-			cn = DriverManager.getConnection(url, login, password);
-			return cn;
-		} catch (Exception e) {
-			 LOGGER.error("Exception ", e);
-		}
-		return cn;
+		
+		return datasource.getConnection();
 	}
 }

@@ -5,15 +5,14 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.apache.log4j.Logger;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.servlet.AddComputer;
 
 public class isValidFormat {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(isValidFormat.class);
+	//private final static Logger LOGGER = Logger.getLogger(isValidFormat.class);
 
 	public static boolean date(String format, String value) {
 		LocalDate ldt;
@@ -41,7 +40,7 @@ public class isValidFormat {
 
 			if(date1.compareTo(date2) > 0) {
 				String dateError="ko";
-				LOGGER.error("La date de début est supérieure à la date de fin.");
+			//	LOGGER.error("La date de début est supérieure à la date de fin.");
 				throw new ValidationException("La date de début est supérieure à la date de fin.");
 
 

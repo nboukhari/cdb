@@ -18,8 +18,9 @@ public class CompanyServices {
 	 * @author Nassim BOUKHARI
 	 * @throws IOException 
 	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static List<Company> showCompanies() throws IOException, ValidationException{
+	public static List<Company> showCompanies() throws IOException, ValidationException, ClassNotFoundException{
 		List<Company> companies = CompanyDao.getAllCompanies();
 		return companies;
 	}

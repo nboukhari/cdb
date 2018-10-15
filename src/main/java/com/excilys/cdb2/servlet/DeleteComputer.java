@@ -61,7 +61,7 @@ public class DeleteComputer extends HttpServlet {
         try {
 			ComputerDao.removeComputer(ids);
 			doGet(request, response);
-		} catch (ValidationException e) {
+		} catch (ValidationException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

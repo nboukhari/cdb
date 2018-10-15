@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.apache.log4j.Logger;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.model.Company;
@@ -28,7 +27,7 @@ import com.excilys.cdb2.persistence.ComputerDao;
 @WebServlet("/AddComputer")
 public class AddComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final static Logger LOGGER = LoggerFactory.getLogger(AddComputer.class);
+	//private final static Logger LOGGER = Logger.getLogger(AddComputer.class);
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -48,7 +47,7 @@ public class AddComputer extends HttpServlet {
 			companies = CompanyDao.getAllCompanies();
 			request.setAttribute("companies", companies);
 			this.getServletContext().getRequestDispatcher( "/WEB-INF/views/AddComputer.jsp" ).forward( request, response );
-		} catch (ValidationException e) {
+		} catch (ValidationException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -79,7 +78,7 @@ public class AddComputer extends HttpServlet {
 					String dateError="ko";
 					request.setAttribute("dateError", dateError);
 					this.getServletContext().getRequestDispatcher( "/WEB-INF/views/AddComputer.jsp" ).forward( request, response );
-					LOGGER.error("La date de début est supérieure à la date de fin.");
+					//LOGGER.error("La date de début est supérieure à la date de fin.");
 					throw new ValidationException("La date de début est supérieure à la date de fin.");
 					
 				
@@ -88,9 +87,9 @@ public class AddComputer extends HttpServlet {
 			ComputerDao.setComputer(name, introduced, discontinued, company);
 			request.setAttribute("messageCreate", messageCreate);
 		    response.sendRedirect(new StringBuilder("/cdb2/Dashboard?limit=10&page=1").toString());
-		} catch (ValidationException | ParseException e) {
+		} catch (ValidationException | ParseException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			LOGGER.error("Error", e);
+			//LOGGER.error("Error", e);
 		}
 	}
 

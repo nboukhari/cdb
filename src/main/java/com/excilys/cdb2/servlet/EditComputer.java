@@ -13,8 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.apache.log4j.Logger;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.model.Company;
@@ -28,7 +27,7 @@ import com.excilys.cdb2.persistence.ComputerDao;
 @WebServlet("/EditComputer")
 public class EditComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final static Logger LOGGER = LoggerFactory.getLogger(AddComputer.class);
+	//private final static Logger LOGGER = Logger.getLogger(AddComputer.class);
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -47,7 +46,7 @@ public class EditComputer extends HttpServlet {
 		try {
 			companies = CompanyDao.getAllCompanies();
 			request.setAttribute("companies", companies);
-		} catch (ValidationException e1) {
+		} catch (ValidationException | ClassNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -60,14 +59,14 @@ public class EditComputer extends HttpServlet {
 					long idCompany = CompanyDao.getCompanyId(computer.getCompanyName().orElse("0"));
 					request.setAttribute("idCompany", idCompany);
 				}
-			} catch (SQLException e) {
+			} catch (SQLException | ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			request.setAttribute("computer", computer);
 			this.getServletContext().getRequestDispatcher( "/WEB-INF/views/EditComputer.jsp" ).include( request, response );
 		}
-		catch(ValidationException e) {
+		catch(ValidationException | ClassNotFoundException e) {
 			getServletContext().getRequestDispatcher( "/WEB-INF/views/404.html" ).include( request, response );
 		}
 	}
@@ -94,7 +93,7 @@ public class EditComputer extends HttpServlet {
 				if(date1.compareTo(date2) > 0) {
 					String dateError="ko";
 					request.setAttribute("dateError", dateError);
-					LOGGER.error("La date de début est supérieure à la date de fin.");
+					//LOGGER.error("La date de début est supérieure à la date de fin.");
 					throw new ValidationException("La date de début est supérieure à la date de fin.");
 
 
@@ -103,9 +102,9 @@ public class EditComputer extends HttpServlet {
 			Computer computer =  ComputerDao.updateComputer(id, name, introduced, discontinued, company);
 			request.setAttribute("messageOk", messageOk);
 		}
-		catch(ValidationException | ParseException e) {
+		catch(ValidationException | ParseException | ClassNotFoundException e) {
 			//request.setAttribute("messageKo", messageKo);
-			LOGGER.error("Les valeurs que vous avez entrées ne sont pas correctes, veuillez recommencer.");
+			//LOGGER.error("Les valeurs que vous avez entrées ne sont pas correctes, veuillez recommencer.");
 		}
 		doGet(request, response);
 		//getServletContext().getRequestDispatcher("/EditComputer").forward(request, response);

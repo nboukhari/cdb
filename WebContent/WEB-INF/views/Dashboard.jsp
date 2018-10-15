@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<%@ taglib uri="http://displaytag.sf.net" prefix="display"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
 <head>
@@ -98,51 +97,51 @@
 			<ul class="pagination">
 				
 				<c:if test="${nbPage!=1}">
-					<li><a href="?limit=${limit}&page=1">
+					<li><a href="?search=${search}&limit=${limit}&page=1">
 						<span aria-hidden="true">First</span>
 					</a></li>
 				</c:if>
 				
 				<c:if test="${nbPageMinusOne>0}">
-					<li><a href="?limit=${limit}&page=${nbPageMinusOne}"
+					<li><a href="?search=${search}&limit=${limit}&page=${nbPageMinusOne}"
 						aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 					</a></li>
 				</c:if>
 				
 				<c:if test="${nbPageMinusTwo>0}">
-					<li><a href="?limit=${limit}&page=${nbPageMinusTwo}">${nbPageMinusTwo}</a></li>
+					<li><a href="?search=${search}&limit=${limit}&page=${nbPageMinusTwo}">${nbPageMinusTwo}</a></li>
 				</c:if>
 				
 				<c:if test="${nbPageMinusOne>0}">
-					<li><a href="?limit=${limit}&page=${nbPageMinusOne}">${nbPageMinusOne}</a></li>
+					<li><a href="?search=${search}&limit=${limit}&page=${nbPageMinusOne}">${nbPageMinusOne}</a></li>
 				</c:if>
 				
 				<li><a style="font-weight: bold; color: red;" href="?limit=${limit}&page=${nbPage}">${nbPage}</a></li>
 				
 				<c:if test="${nbPageMoreOne<=nbPages}">
-					<li><a href="?limit=${limit}&page=${nbPageMoreOne}">${nbPageMoreOne}</a></li>
+					<li><a href="?search=${search}&limit=${limit}&page=${nbPageMoreOne}">${nbPageMoreOne}</a></li>
 				</c:if>
 				
 				<c:if test="${nbPageMoreTwo<=nbPages}">
-				<li><a href="?limit=${limit}&page=${nbPageMoreTwo}">${nbPageMoreTwo}</a></li>
+				<li><a href="?search=${search}&limit=${limit}&page=${nbPageMoreTwo}">${nbPageMoreTwo}</a></li>
 				</c:if>
 				
 				<c:if test="${nbPageMoreOne<=nbPages}">
-				<li><a href="?limit=${limit}&page=${nbPageMoreOne}" aria-label="Next">
+				<li><a href="?search=${search}&limit=${limit}&page=${nbPageMoreOne}" aria-label="Next">
 						<span aria-hidden="true">&raquo;</span>
 				</a></li>
 				</c:if>
 				<c:if test="${nbPage!=nbPages}">
-					<li><a href="?limit=${limit}&page=${nbPages}">
+					<li><a href="?search=${search}&limit=${limit}&page=${nbPages}">
 						<span aria-hidden="true">Last</span>
 					</a></li>
 				</c:if>
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="?limit=10&page=1"><button type="button" class="btn btn-default">10</button></a> 
-				<a href="?limit=50&page=1"><button type="button" class="btn btn-default">50</button></a> 
-				<a href="?limit=100&page=1"><button type="button" class="btn btn-default">100</button></a>
+				<a href="?search=${search}&limit=10&page=1"><button type="button" class="btn btn-default">10</button></a> 
+				<a href="?search=${search}&limit=50&page=1"><button type="button" class="btn btn-default">50</button></a> 
+				<a href="?search=${search}&limit=100&page=1"><button type="button" class="btn btn-default">100</button></a>
 			</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
