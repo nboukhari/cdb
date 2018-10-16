@@ -24,6 +24,7 @@ public class CompanyDao {
 
 	private static final String GET_ALL = "SELECT id,name FROM company";
 	private static final String GET_ID_COMPANY = "SELECT id FROM company WHERE name =?";
+	private static final String DELETE = "DELETE FROM company WHERE id =?";
 	//private final static Logger LOGGER = Logger.getLogger(CompanyDao.class);
 
 	/**
@@ -89,6 +90,31 @@ public class CompanyDao {
 			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs.");
 		}
 		return idComp;
+	}
+	
+	/**
+	 * This method deletes a company
+	 * @author Nassim BOUKHARI
+	 * @throws IOException 
+	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
+	 * @throws SQLException 
+	 */
+	public static void removeCompany(long id) throws IOException, ValidationException, ClassNotFoundException, SQLException {
+		PreparedStatement ppdStmt = null;
+		try(Connection cn = ConnectionDAO.getConnection()){
+			cn.setAutoCommit(false);
+			ComputerDao.removeComputerFromCompany(id, cn);
+			ppdStmt = cn.prepareStatement(DELETE);
+			ppdStmt.setLong(1, id);
+			ppdStmt.executeUpdate();
+			cn.commit();
+		} catch (SQLException e) {
+			throw new ValidationException("Une erreur est survenue lors de la suppression de l'ordinateur.");
+		}
+		finally {
+			ppdStmt.close();
+		}
 	}
 
 }

@@ -33,6 +33,7 @@ public class ComputerDao {
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
 	private static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id =?;";
 	private static final String DELETE = "DELETE FROM computer WHERE id in (?);";
+	private static final String DELETE_COMPUTERS_COMPANY = "DELETE FROM computer WHERE company_id =?";
 	private static final String SEARCH_COUNT = "SELECT COUNT(*) FROM computer WHERE name LIKE ?";
 	private static final String COUNT = "SELECT COUNT(*) FROM computer";
 	//private final static Logger LOGGER = Logger.getLogger(ComputerDao.class);
@@ -316,6 +317,25 @@ public class ComputerDao {
 			}
 		}
 	}
+	
+	/**
+	 * This method deletes a computer that is in a company
+	 * @author Nassim BOUKHARI
+	 * @throws IOException 
+	 * @throws ValidationException 
+	 * @throws ClassNotFoundException 
+	 */
+	public static void removeComputerFromCompany(long idComp, Connection cn) throws IOException, ValidationException, ClassNotFoundException {
+		
+		try{
+			PreparedStatement ppdStmt = cn.prepareStatement(DELETE_COMPUTERS_COMPANY);
+			ppdStmt.setLong(1, idComp);
+			ppdStmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new ValidationException("Une erreur est survenue lors de la suppression de l'ordinateur.");
+		}
+	}
+	
 
 	/**
 	 * This method displays number of computers
@@ -341,7 +361,7 @@ public class ComputerDao {
 	}
 	
 	/**
-	 * This method displays number of computers
+	 * This method displays computers from the search
 	 * @author Nassim BOUKHARI
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 

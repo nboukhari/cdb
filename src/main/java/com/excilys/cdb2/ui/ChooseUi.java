@@ -7,7 +7,8 @@ public enum ChooseUi {
 	GET_COMPUTER_DETAILS(3),
 	CREATE_COMPUTER(4),
 	MODIFY_COMPUTER(5),
-	REMOVE_COMPUTER(6);
+	REMOVE_COMPUTER(6),
+	REMOVE_COMPANY(7);
 	
 	private int nbChoice;
 	

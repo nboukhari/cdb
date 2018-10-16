@@ -1,6 +1,7 @@
 package com.excilys.cdb2.service;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.excilys.cdb2.exception.ValidationException;
@@ -23,5 +24,9 @@ public class CompanyServices {
 	public static List<Company> showCompanies() throws IOException, ValidationException, ClassNotFoundException{
 		List<Company> companies = CompanyDao.getAllCompanies();
 		return companies;
+	}
+	
+	public static void deleteCompany(long id) throws ClassNotFoundException, IOException, ValidationException, SQLException {
+		CompanyDao.removeCompany(id);
 	}
 }

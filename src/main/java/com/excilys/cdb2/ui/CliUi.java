@@ -1,6 +1,7 @@
 package com.excilys.cdb2.ui;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Scanner;
 //import org.apache.log4j.Logger;
@@ -16,8 +17,8 @@ public class CliUi {
 	public static Scanner READER = new Scanner(System.in);
 	//private final static Logger LOGGER = Logger.getLogger(CliUi.class);
 
-	public static void Cli() throws IOException, ParseException, ValidationException, ClassNotFoundException{
-
+	public static void Cli() throws IOException, ParseException, ValidationException, ClassNotFoundException, SQLException{
+		String entry = "";
 		boolean quit = false;
 		do {
 			System.out.println("\nBonjour, vous êtes dans une interface en ligne de commande");
@@ -28,6 +29,7 @@ public class CliUi {
 			System.out.println("4 - Créer un ordinateur");
 			System.out.println("5 - Modifier un ordinateur");
 			System.out.println("6 - Supprimer un ordinateur");
+			System.out.println("7 - Supprimer une compagnie");
 			System.out.println("0 - Quitter\n");
 			System.out.println("Pour choisir une option, veuillez entrer un chiffre:");
 			String nbCh = "0";
@@ -55,6 +57,11 @@ public class CliUi {
 				case REMOVE_COMPUTER:
 					ComputerServices.deleteComputer();
 					break;
+				case REMOVE_COMPANY:
+					System.out.println("ENTRER LE NOM DE LA COMPANY");
+					long id = enterLong(entry);
+					CompanyServices.deleteCompany(id);
+					break;
 				default:
 				}
 			}
@@ -73,6 +80,12 @@ public class CliUi {
 		return intCh;
 
 	}
+	
+	public static long enterLong(String nb) {
+		nb = READER.nextLine();
+		int longNb = Integer.parseInt(nb);
+		return longNb;
+	}
 
 	public static String enterName() {
 		//LOGGER.info("Veuillez entrer le nom de l'ordinateur: ");
@@ -81,7 +94,7 @@ public class CliUi {
 		return name;
 	}
 
-	public static void main(String[] args) throws IOException, ParseException, ValidationException, ClassNotFoundException {
+	public static void main(String[] args) throws IOException, ParseException, ValidationException, ClassNotFoundException, SQLException {
 		CliUi.Cli();
 	}
 }
