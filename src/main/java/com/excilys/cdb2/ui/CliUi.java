@@ -16,7 +16,8 @@ public class CliUi {
 
 	public static Scanner READER = new Scanner(System.in);
 	//private final static Logger LOGGER = Logger.getLogger(CliUi.class);
-
+	private static ComputerServices computerServices = new ComputerServices();
+	private static CompanyServices companyServices = new CompanyServices();
 	public static void Cli() throws IOException, ParseException, ValidationException, ClassNotFoundException, SQLException{
 		String entry = "";
 		boolean quit = false;
@@ -40,27 +41,27 @@ public class CliUi {
 					quit = true;
 					break;
 				case LIST_ALL_COMPUTERS:
-					ComputerServices.showComputers("1", "10");
+					computerServices.showComputers("1", "10");
 					break;
 				case LIST_ALL_COMPANIES:
-					CompanyServices.showCompanies();
+					companyServices.showCompanies();
 					break;
 				case GET_COMPUTER_DETAILS:
-					ComputerServices.showComputerDetail(null);
+					computerServices.showComputerDetail(null);
 					break;
 				case CREATE_COMPUTER:				
-					ComputerServices.createComputer(null, null, null, null);
+					computerServices.createComputer(null, null, null, null);
 					break;
 				case MODIFY_COMPUTER:
-					ComputerServices.modifyComputer(null, null, null, null, null);
+					computerServices.modifyComputer(null, null, null, null, null);
 					break;
 				case REMOVE_COMPUTER:
-					ComputerServices.deleteComputer();
+					//ComputerServices.deleteComputer(List<long> ids);
 					break;
 				case REMOVE_COMPANY:
-					System.out.println("ENTRER LE NOM DE LA COMPANY");
+					System.out.println("Entrer le nom de l'entreprise :");
 					long id = enterLong(entry);
-					CompanyServices.deleteCompany(id);
+					companyServices.deleteCompany(id);
 					break;
 				default:
 				}

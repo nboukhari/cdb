@@ -3,11 +3,15 @@ package com.excilys.cdb2.servlet;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 //import org.apache.log4j.Logger;
 
@@ -22,15 +26,17 @@ import com.excilys.cdb2.service.ComputerServices;
 public class Dashboard extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	//private final static Logger LOGGER = Logger.getLogger(Dashboard.class);
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public Dashboard() {
-		super();
-		// TODO Auto-generated constructor stub
+	
+	@Autowired
+	private ComputerServices computerServices;
+	
+	
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+	super.init(config);
+	SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 	}
-
+	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -42,10 +48,10 @@ public class Dashboard extends HttpServlet {
 		
 		try {
 			if(search ==null) {
-			nbComp = ComputerServices.getNumberComputers();
+			nbComp = computerServices.getNumberComputers();
 			}
 			else {
-				nbComp = ComputerServices.getNumberComputersFromSearch(search);
+				nbComp = computerServices.getNumberComputersFromSearch(search);
 			}
 			request.setAttribute("nbComp", nbComp);
 		} catch (ValidationException | ClassNotFoundException e) {
@@ -84,10 +90,10 @@ public class Dashboard extends HttpServlet {
 				List<Computer> computers;
 				try {
 					if(search == null) {
-					computers = ComputerServices.showComputers(numberOfPage,limit);
+					computers = computerServices.showComputers(numberOfPage,limit);
 					}
 					else {
-						computers = ComputerServices.showComputersFromSearch(search, numberOfPage,limit);
+						computers = computerServices.showComputersFromSearch(search, numberOfPage,limit);
 					}
 					request.setAttribute("search",search);
 					request.setAttribute("computers", computers);

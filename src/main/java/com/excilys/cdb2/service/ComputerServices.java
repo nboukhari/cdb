@@ -1,9 +1,11 @@
 package com.excilys.cdb2.service;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.model.Computer;
@@ -13,8 +15,11 @@ import com.excilys.cdb2.persistence.ComputerDao;
  * This class that delivers the requests the to the class ComputerDao
  * @author Nassim BOUKHARI
  */
+@Service
 public class ComputerServices {
 	
+	@Autowired
+	private ComputerDao computerDao;
 	/**
 	 * This method displays all the computers
 	 * @author Nassim BOUKHARI
@@ -22,8 +27,8 @@ public class ComputerServices {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static List<Computer> showComputers(String numberOfPage, String limitData) throws IOException, ValidationException, ClassNotFoundException{
-		List<Computer> computers = ComputerDao.getAllComputers(numberOfPage, limitData);
+	public List<Computer> showComputers(String numberOfPage, String limitData) throws IOException, ValidationException, ClassNotFoundException{
+		List<Computer> computers = computerDao.getAllComputers(numberOfPage, limitData);
 		return computers;
 	}
 	
@@ -34,8 +39,8 @@ public class ComputerServices {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static List<Computer> showComputersFromSearch(String search, String numberOfPage, String limitData) throws IOException, ValidationException, ClassNotFoundException{
-		List<Computer> computers = ComputerDao.searchComputers(search, numberOfPage, limitData);
+	public List<Computer> showComputersFromSearch(String search, String numberOfPage, String limitData) throws IOException, ValidationException, ClassNotFoundException{
+		List<Computer> computers = computerDao.searchComputers(search, numberOfPage, limitData);
 		return computers;
 	}
 	
@@ -46,8 +51,8 @@ public class ComputerServices {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static Computer showComputerDetail(String id) throws IOException, ValidationException, ClassNotFoundException{
-		return ComputerDao.getComputerDetails(id);
+	public Computer showComputerDetail(String id) throws IOException, ValidationException, ClassNotFoundException{
+		return computerDao.getComputerDetails(id);
 	}
 
 	/**
@@ -58,8 +63,8 @@ public class ComputerServices {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void createComputer(String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException, ClassNotFoundException {
-		ComputerDao.setComputer(name, introduced, discontinued, companyName);
+	public void createComputer(String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException, ClassNotFoundException {
+		computerDao.setComputer(name, introduced, discontinued, companyName);
 	}
 
 	/**
@@ -70,8 +75,8 @@ public class ComputerServices {
 	 * @throws ParseException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static Computer modifyComputer(String id, String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException, ClassNotFoundException {
-		return ComputerDao.updateComputer(id, name, introduced, discontinued, companyName);
+	public Computer modifyComputer(String id, String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException, ClassNotFoundException {
+		return computerDao.updateComputer(id, name, introduced, discontinued, companyName);
 	}
 
 	/**
@@ -81,8 +86,8 @@ public class ComputerServices {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void deleteComputer() throws IOException, ValidationException, ClassNotFoundException {	
-		ComputerDao.removeComputer(null);
+	public void deleteComputer(List<Long> ids) throws IOException, ValidationException, ClassNotFoundException {	
+		computerDao.removeComputer(ids);
 	}
 	
 	/**
@@ -92,9 +97,9 @@ public class ComputerServices {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static int getNumberComputers() throws IOException, ValidationException, ClassNotFoundException {	
-		int test = ComputerDao.getComputersCount();
-		return test;
+	public int getNumberComputers() throws IOException, ValidationException, ClassNotFoundException {	
+		int nbComp = computerDao.getComputersCount();
+		return nbComp;
 	}
 	
 	/**
@@ -104,8 +109,8 @@ public class ComputerServices {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static int getNumberComputersFromSearch(String search) throws IOException, ValidationException, ClassNotFoundException {	
-		int test = ComputerDao.getComputersCountFromSearch(search);
-		return test;
+	public int getNumberComputersFromSearch(String search) throws IOException, ValidationException, ClassNotFoundException {	
+		int nbComp = computerDao.getComputersCountFromSearch(search);
+		return nbComp;
 	}
 }

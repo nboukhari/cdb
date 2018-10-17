@@ -1,5 +1,6 @@
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/service/ComputerServices.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/App.java
+/home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/configuration/MainWebAppInitializer.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/model/CompanyBuilder.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/service/CompanyServices.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/servlet/DeleteComputer.java
@@ -18,5 +19,6 @@
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/servlet/EditComputer.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/exception/ValidationException.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/validator/isValidFormat.java
+/home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/configuration/ClientWebConfig.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/persistence/ComputerDao.java
 /home/excilys/eclipse-workspace/cdb2/src/main/java/com/excilys/cdb2/ui/CliUi.java

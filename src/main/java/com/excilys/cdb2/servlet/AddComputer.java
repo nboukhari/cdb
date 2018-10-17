@@ -1,25 +1,26 @@
 package com.excilys.cdb2.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Optional;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 //import org.apache.log4j.Logger;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.model.Company;
-import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.persistence.CompanyDao;
-import com.excilys.cdb2.persistence.ComputerDao;
+import com.excilys.cdb2.service.ComputerServices;
 
 /**
  * Servlet implementation class AddComputer
@@ -29,6 +30,12 @@ public class AddComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	//private final static Logger LOGGER = Logger.getLogger(AddComputer.class);
 	
+	@Autowired
+	private ComputerServices computerServices;
+	
+	@Autowired
+	private CompanyDao companyDao;
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -36,7 +43,13 @@ public class AddComputer extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-
+    
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+    super.init(config);
+    SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
+    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -44,7 +57,7 @@ public class AddComputer extends HttpServlet {
 		// TODO Auto-generated method stub
 		List<Company> companies;
 		try {
-			companies = CompanyDao.getAllCompanies();
+			companies = companyDao.getAllCompanies();
 			request.setAttribute("companies", companies);
 			this.getServletContext().getRequestDispatcher( "/WEB-INF/views/AddComputer.jsp" ).forward( request, response );
 		} catch (ValidationException | ClassNotFoundException e) {
@@ -84,7 +97,7 @@ public class AddComputer extends HttpServlet {
 				
 				}
 			}
-			ComputerDao.setComputer(name, introduced, discontinued, company);
+        	computerServices.createComputer(name, introduced, discontinued, company);
 			request.setAttribute("messageCreate", messageCreate);
 		    response.sendRedirect(new StringBuilder("/cdb2/Dashboard?limit=10&page=1").toString());
 		} catch (ValidationException | ParseException | ClassNotFoundException e) {

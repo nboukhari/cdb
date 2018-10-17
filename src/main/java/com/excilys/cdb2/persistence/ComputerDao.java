@@ -7,12 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 //import org.apache.log4j.Logger;
 
@@ -25,6 +27,7 @@ import com.excilys.cdb2.model.ComputerBuilder;
  * This class does all the functionnalities about computers
  * @author Nassim BOUKHARI
  */
+@Repository
 public class ComputerDao {
 
 	private static final String GET_ALL = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id LIMIT ?,?";
@@ -37,7 +40,9 @@ public class ComputerDao {
 	private static final String SEARCH_COUNT = "SELECT COUNT(*) FROM computer WHERE name LIKE ?";
 	private static final String COUNT = "SELECT COUNT(*) FROM computer";
 	//private final static Logger LOGGER = Logger.getLogger(ComputerDao.class);
-
+	
+	@Autowired
+	private ConnectionDAO connectionDAO = new ConnectionDAO();
 	/**
 	 * This method displays all the computers
 	 * @author Nassim BOUKHARI
@@ -46,13 +51,13 @@ public class ComputerDao {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static List<Computer> getAllComputers(String NumberOfPage, String LimitData) throws IOException, ValidationException, ClassNotFoundException {
+	public List<Computer> getAllComputers(String NumberOfPage, String LimitData) throws IOException, ValidationException, ClassNotFoundException {
 
 		Computer computer;
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 
-		try (Connection cn = ConnectionDAO.getConnection()){
+		try (Connection cn = connectionDAO.getConnection()){
 
 			PreparedStatement ppdStmt = cn.prepareStatement(GET_ALL);
 			int numPage = ComputerMapper.numberOfPage(NumberOfPage, LimitData);
@@ -83,6 +88,7 @@ public class ComputerDao {
 				computerBuilder.setCompanyName(companyName);
 				computer = computerBuilder.build();
 				computers.add(computer);
+				
 			}
 			rs.close();
 
@@ -102,13 +108,13 @@ public class ComputerDao {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static List<Computer> searchComputers(String search, String numberOfPage, String limitData) throws IOException, ValidationException, ClassNotFoundException {
+	public List<Computer> searchComputers(String search, String numberOfPage, String limitData) throws IOException, ValidationException, ClassNotFoundException {
 
 		Computer computer;
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 
-		try (Connection cn = ConnectionDAO.getConnection()){
+		try (Connection cn = connectionDAO.getConnection()){
 
 			PreparedStatement ppdStmt = cn.prepareStatement(SEARCH);
 			int numPage = ComputerMapper.numberOfPage(numberOfPage, limitData);
@@ -140,6 +146,7 @@ public class ComputerDao {
 				computerBuilder.setCompanyName(companyName);
 				computer = computerBuilder.build();
 				computers.add(computer);
+				
 			}
 			rs.close();
 
@@ -158,11 +165,11 @@ public class ComputerDao {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static Computer getComputerDetails(String idPC) throws IOException, ValidationException, ClassNotFoundException {
+	public Computer getComputerDetails(String idPC) throws IOException, ValidationException, ClassNotFoundException {
 
 		Computer computer = null;
 
-		try (Connection cn = ConnectionDAO.getConnection()){
+		try (Connection cn = connectionDAO.getConnection()){
 
 			computer = ComputerMapper.enterIdPC(idPC);
 			PreparedStatement ppdStmt = cn.prepareStatement(GET_ONE);
@@ -189,10 +196,12 @@ public class ComputerDao {
 
 				computer = new Computer(computer.getId(), name, introduced, discontinued, companyName);
 			}
+			
 
 			else {
 				//LOGGER.error("L'ordinateur que vous avez spécifié n'existe pas.");
 			}
+			
 			rs.close();
 		} catch (SQLException e) {
 
@@ -210,10 +219,10 @@ public class ComputerDao {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void setComputer(String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException, ClassNotFoundException {
+	public void setComputer(String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException, ClassNotFoundException {
 
 
-		try (Connection cn = ConnectionDAO.getConnection()){
+		try (Connection cn = connectionDAO.getConnection()){
 
 			Optional<String> companyName = ComputerMapper.enterCompanyName(companyNameStr);
 			Optional<LocalDate> introducedPC = ComputerMapper.enterDate(introducedStr);
@@ -235,7 +244,7 @@ public class ComputerDao {
 				ppdStmt.setNull(4, 0);
 			ppdStmt.executeUpdate();
 			ResultSet rs = ppdStmt.getGeneratedKeys();
-
+			
 
 		}
 		catch (SQLException e) {
@@ -253,10 +262,10 @@ public class ComputerDao {
 	 * @throws ParseException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static Computer updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException, ClassNotFoundException {
+	public Computer updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException, ClassNotFoundException {
 
 		Computer computer = null;
-		try (Connection cn = ConnectionDAO.getConnection()){
+		try (Connection cn = connectionDAO.getConnection()){
 
 			long newIdPC = Integer.parseInt(idPC);
 			Optional<LocalDate> newDateDebut = ComputerMapper.enterDate(introducedStr);
@@ -287,6 +296,7 @@ public class ComputerDao {
 			}
 			ppdStmtUpdate.setLong(5, computer.getId());
 			ppdStmtUpdate.executeUpdate();
+			
 		} catch (SQLException e) {
 			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
 			throw new ValidationException("Une erreur est survenue lors de la mise à jour de l'ordinateur.");
@@ -301,14 +311,15 @@ public class ComputerDao {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void removeComputer(List<Long> ids) throws IOException, ValidationException, ClassNotFoundException {
+	public void removeComputer(List<Long> ids) throws IOException, ValidationException, ClassNotFoundException {
 
 		for (Long id : ids) {
-			try (Connection cn = ConnectionDAO.getConnection()){
+			try (Connection cn = connectionDAO.getConnection()){
 
 				PreparedStatement ppdStmt = cn.prepareStatement(DELETE);
 				ppdStmt.setLong(1, id);
 				ppdStmt.executeUpdate();
+				
 
 			} catch (SQLException e) {
 
@@ -331,6 +342,7 @@ public class ComputerDao {
 			PreparedStatement ppdStmt = cn.prepareStatement(DELETE_COMPUTERS_COMPANY);
 			ppdStmt.setLong(1, idComp);
 			ppdStmt.executeUpdate();
+			
 		} catch (SQLException e) {
 			throw new ValidationException("Une erreur est survenue lors de la suppression de l'ordinateur.");
 		}
@@ -343,15 +355,16 @@ public class ComputerDao {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static int getComputersCount() throws IOException, ValidationException, ClassNotFoundException {
-		int nbComp = 0;
-		try (Connection cn = ConnectionDAO.getConnection()){
+	public int getComputersCount() throws IOException, ValidationException, ClassNotFoundException {
+		int nbComp = 1;
+		try (Connection cn = connectionDAO.getConnection()){
 
 			PreparedStatement ppdStmt = cn.prepareStatement(COUNT);
 			ResultSet rs = ppdStmt.executeQuery(COUNT);
 			while(rs.next()) {
 				nbComp = rs.getInt(1);
 			}
+			
 		}
 		catch (SQLException e) {
 			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
@@ -366,9 +379,9 @@ public class ComputerDao {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static int getComputersCountFromSearch(String search) throws IOException, ValidationException, ClassNotFoundException {
+	public int getComputersCountFromSearch(String search) throws IOException, ValidationException, ClassNotFoundException {
 		int nbComp = 0;
-		try (Connection cn = ConnectionDAO.getConnection()){
+		try (Connection cn = connectionDAO.getConnection()){
 
 			PreparedStatement ppdStmt = cn.prepareStatement(SEARCH_COUNT);
 			ppdStmt.setString(1, search+"%");
@@ -376,6 +389,7 @@ public class ComputerDao {
 			while(rs.next()) {
 				nbComp = rs.getInt(1);
 			}
+			
 		}
 		catch (SQLException e) {
 			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);

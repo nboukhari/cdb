@@ -46,7 +46,10 @@
 										class="form-control" id="companyId" name ="companyId">
 										<option value="${idCompany}">${computer.companyName.orElse(null)}</option>
 										<c:forEach var="Company" items="${companies}">
-											<option value="${Company.id}">${Company.name}</option>
+											
+										<c:if test="${idCompany != Company.id}">
+										<option value="${Company.id}">${Company.name}</option>
+										</c:if>
 										</c:forEach>
 									</select>
 								</div>
