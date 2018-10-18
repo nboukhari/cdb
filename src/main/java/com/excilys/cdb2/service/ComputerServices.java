@@ -75,8 +75,8 @@ public class ComputerServices {
 	 * @throws ParseException 
 	 * @throws ClassNotFoundException 
 	 */
-	public Computer modifyComputer(String id, String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException, ClassNotFoundException {
-		return computerDao.updateComputer(id, name, introduced, discontinued, companyName);
+	public void modifyComputer(String id, String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException, ClassNotFoundException {
+		computerDao.updateComputer(id, name, introduced, discontinued, companyName);
 	}
 
 	/**

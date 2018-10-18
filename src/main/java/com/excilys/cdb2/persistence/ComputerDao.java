@@ -2,6 +2,7 @@ package com.excilys.cdb2.persistence;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,11 +10,13 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
 //import org.apache.log4j.Logger;
@@ -35,11 +38,19 @@ public class ComputerDao {
 	private static final String GET_ONE = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.id =?;";
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
 	private static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id =?;";
-	private static final String DELETE = "DELETE FROM computer WHERE id in (?);";
+	private static final String DELETE = "DELETE FROM computer WHERE id = ?;";
 	private static final String DELETE_COMPUTERS_COMPANY = "DELETE FROM computer WHERE company_id =?";
 	private static final String SEARCH_COUNT = "SELECT COUNT(*) FROM computer WHERE name LIKE ?";
 	private static final String COUNT = "SELECT COUNT(*) FROM computer";
 	//private final static Logger LOGGER = Logger.getLogger(ComputerDao.class);
+	
+	JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	public ComputerDao(DataSource dataSource) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+
 	
 	@Autowired
 	private ConnectionDAO connectionDAO = new ConnectionDAO();
@@ -56,7 +67,7 @@ public class ComputerDao {
 		Computer computer;
 		ArrayList<Computer> computers = new ArrayList<Computer>();
 		ComputerBuilder computerBuilder = new ComputerBuilder();
-
+		
 		try (Connection cn = connectionDAO.getConnection()){
 
 			PreparedStatement ppdStmt = cn.prepareStatement(GET_ALL);
@@ -221,37 +232,32 @@ public class ComputerDao {
 	 */
 	public void setComputer(String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException, ClassNotFoundException {
 
-
-		try (Connection cn = connectionDAO.getConnection()){
-
+			String introducedOptional;
+			String discontinuedOptional;
+			String companyNameOptional;
 			Optional<String> companyName = ComputerMapper.enterCompanyName(companyNameStr);
 			Optional<LocalDate> introducedPC = ComputerMapper.enterDate(introducedStr);
 			Optional<LocalDate> discontinuedPC = ComputerMapper.enterDate(discontinuedStr);
 			Computer computer = ComputerMapper.createPC(namePC, introducedPC, discontinuedPC,companyName);
-			PreparedStatement ppdStmt = cn.prepareStatement(INSERT, Statement.RETURN_GENERATED_KEYS);
-			ppdStmt.setString(1, computer.getName());
 			if(computer.getIntroduced().isPresent())
-				ppdStmt.setObject(2, computer.getIntroduced().get().toString());
+				introducedOptional = computer.getIntroduced().get().toString();
 			else
-				ppdStmt.setNull(2, java.sql.Types.DATE);
+				introducedOptional = null;
 			if(computer.getDiscontinued().isPresent())
-				ppdStmt.setObject(3, computer.getDiscontinued().get().toString());
+				discontinuedOptional = computer.getDiscontinued().get().toString();
 			else
-				ppdStmt.setNull(3, java.sql.Types.DATE);
+				discontinuedOptional = null;
 			if(computer.getCompanyName().isPresent())
-				ppdStmt.setString(4, computer.getCompanyName().get().toString());
+				companyNameOptional = computer.getCompanyName().get().toString();
 			else
-				ppdStmt.setNull(4, 0);
-			ppdStmt.executeUpdate();
-			ResultSet rs = ppdStmt.getGeneratedKeys();
+				companyNameOptional = null;
 			
-
-		}
-		catch (SQLException e) {
-			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
-			throw new ValidationException("Une erreur est survenue lors de la création de l'ordinateur.");
-		}
-
+			jdbcTemplate.update(INSERT, 
+								computer.getName(),
+								introducedOptional,
+								discontinuedOptional,
+								companyNameOptional);
+	
 	}
 
 
@@ -262,139 +268,78 @@ public class ComputerDao {
 	 * @throws ParseException 
 	 * @throws ClassNotFoundException 
 	 */
-	public Computer updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException, ClassNotFoundException {
+	public void updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws ParseException {
 
-		Computer computer = null;
-		try (Connection cn = connectionDAO.getConnection()){
 
 			long newIdPC = Integer.parseInt(idPC);
+			String introducedOptional;
+			String discontinuedOptional;
+			String companyNameOptional;
 			Optional<LocalDate> newDateDebut = ComputerMapper.enterDate(introducedStr);
 			Optional<LocalDate> newDateEnd = ComputerMapper.enterDate(discontinuedStr);
 			Optional<String> newCompany = ComputerMapper.enterCompanyName(companyNameStr);
-			computer = new Computer(newIdPC, namePC, newDateDebut, newDateEnd,newCompany);
+			Computer computer = new Computer(newIdPC, namePC, newDateDebut, newDateEnd,newCompany);
 
-			PreparedStatement ppdStmtUpdate = cn.prepareStatement(UPDATE);
-
-			ppdStmtUpdate.setString(1, computer.getName());
-			if(computer.getIntroduced().isPresent()) {
-				ppdStmtUpdate.setObject(2, computer.getIntroduced().get().toString());
-			}
-			else {
-				ppdStmtUpdate.setNull(2, java.sql.Types.DATE);
-			}
-			if(computer.getDiscontinued().isPresent()) {
-				ppdStmtUpdate.setObject(3, computer.getDiscontinued().get().toString());
-			}
-			else {
-				ppdStmtUpdate.setNull(3, java.sql.Types.DATE);
-			}
-			if(computer.getCompanyName().isPresent()) {
-				ppdStmtUpdate.setString(4, computer.getCompanyName().get().toString());
-			}
-			else {
-				ppdStmtUpdate.setNull(4, 0);
-			}
-			ppdStmtUpdate.setLong(5, computer.getId());
-			ppdStmtUpdate.executeUpdate();
+			if(computer.getIntroduced().isPresent())
+				introducedOptional = computer.getIntroduced().get().toString();
+			else
+				introducedOptional = null;
+			if(computer.getDiscontinued().isPresent())
+				discontinuedOptional = computer.getDiscontinued().get().toString();
+			else
+				discontinuedOptional = null;
+			if(computer.getCompanyName().isPresent())
+				companyNameOptional = computer.getCompanyName().get().toString();
+			else
+				companyNameOptional = null;
 			
-		} catch (SQLException e) {
-			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
-			throw new ValidationException("Une erreur est survenue lors de la mise à jour de l'ordinateur.");
-		}
-		return computer;
+			jdbcTemplate.update(UPDATE, 
+								computer.getName(),
+								introducedOptional,
+								discontinuedOptional,
+								companyNameOptional,
+								newIdPC);
+	
 	}
+
 
 	/**
 	 * This method deletes a computer
 	 * @author Nassim BOUKHARI
-	 * @throws IOException 
-	 * @throws ValidationException 
-	 * @throws ClassNotFoundException 
 	 */
-	public void removeComputer(List<Long> ids) throws IOException, ValidationException, ClassNotFoundException {
+	public void removeComputer(List<Long> ids) {
 
 		for (Long id : ids) {
-			try (Connection cn = connectionDAO.getConnection()){
-
-				PreparedStatement ppdStmt = cn.prepareStatement(DELETE);
-				ppdStmt.setLong(1, id);
-				ppdStmt.executeUpdate();
-				
-
-			} catch (SQLException e) {
-
-				//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
-				throw new ValidationException("Une erreur est survenue lors de la suppression de l'ordinateur.");
-			}
+			jdbcTemplate.update(DELETE, id);
 		}
 	}
 	
 	/**
 	 * This method deletes a computer that is in a company
 	 * @author Nassim BOUKHARI
-	 * @throws IOException 
-	 * @throws ValidationException 
-	 * @throws ClassNotFoundException 
 	 */
-	public static void removeComputerFromCompany(long idComp, Connection cn) throws IOException, ValidationException, ClassNotFoundException {
+	public void removeComputerFromCompany(long idComp, Connection cn) {
 		
-		try{
-			PreparedStatement ppdStmt = cn.prepareStatement(DELETE_COMPUTERS_COMPANY);
-			ppdStmt.setLong(1, idComp);
-			ppdStmt.executeUpdate();
-			
-		} catch (SQLException e) {
-			throw new ValidationException("Une erreur est survenue lors de la suppression de l'ordinateur.");
-		}
+		jdbcTemplate.update(DELETE_COMPUTERS_COMPANY);
 	}
 	
 
 	/**
 	 * This method displays number of computers
 	 * @author Nassim BOUKHARI
-	 * @throws ValidationException 
-	 * @throws ClassNotFoundException 
 	 */
-	public int getComputersCount() throws IOException, ValidationException, ClassNotFoundException {
-		int nbComp = 1;
-		try (Connection cn = connectionDAO.getConnection()){
+	public int getComputersCount() {
 
-			PreparedStatement ppdStmt = cn.prepareStatement(COUNT);
-			ResultSet rs = ppdStmt.executeQuery(COUNT);
-			while(rs.next()) {
-				nbComp = rs.getInt(1);
-			}
-			
-		}
-		catch (SQLException e) {
-			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
-			throw new ValidationException("Une erreur est survenue lors de l'affichage du nombre d'ordinateur.");
-		}
-		return nbComp;
+		return jdbcTemplate.query(COUNT, (resultSet, rowNum) -> resultSet.getInt(1)).get(0);
 	}
 	
 	/**
 	 * This method displays computers from the search
 	 * @author Nassim BOUKHARI
-	 * @throws ValidationException 
-	 * @throws ClassNotFoundException 
 	 */
-	public int getComputersCountFromSearch(String search) throws IOException, ValidationException, ClassNotFoundException {
-		int nbComp = 0;
-		try (Connection cn = connectionDAO.getConnection()){
+	public int getComputersCountFromSearch(String search){
 
-			PreparedStatement ppdStmt = cn.prepareStatement(SEARCH_COUNT);
-			ppdStmt.setString(1, search+"%");
-			ResultSet rs = ppdStmt.executeQuery();
-			while(rs.next()) {
-				nbComp = rs.getInt(1);
-			}
-			
-		}
-		catch (SQLException e) {
-			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
-			throw new ValidationException("Une erreur est survenue lors de l'affichage du nombre d'ordinateur." +e);
-		}
-		return nbComp;
+		return jdbcTemplate.queryForObject(SEARCH_COUNT, new Object[] {new StringBuilder(search).append("%").toString()},
+				(resultSet, rowNum) -> resultSet.getInt(1));
 	}
 }

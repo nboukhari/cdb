@@ -114,7 +114,7 @@ public class EditComputer extends HttpServlet {
 
 				}
 			}
-			Computer computer = computerServices.modifyComputer(id, name, introduced, discontinued, company);
+			computerServices.modifyComputer(id, name, introduced, discontinued, company);
 			request.setAttribute("messageOk", messageOk);
 		}
 		catch(ValidationException | ParseException | ClassNotFoundException e) {

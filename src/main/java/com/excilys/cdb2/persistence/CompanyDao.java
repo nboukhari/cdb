@@ -30,8 +30,12 @@ public class CompanyDao {
 	private static final String GET_ID_COMPANY = "SELECT id FROM company WHERE name =?";
 	private static final String DELETE = "DELETE FROM company WHERE id =?";
 	//private final static Logger LOGGER = Logger.getLogger(CompanyDao.class);
+	
 	@Autowired
 	private ConnectionDAO connectionDAO;
+	
+	@Autowired
+	private ComputerDao computerDao;
 	/**
 	 * This method displays all the companies
 	 * @author Nassim BOUKHARI
@@ -109,7 +113,7 @@ public class CompanyDao {
 		PreparedStatement ppdStmt = null;
 		try(Connection cn = connectionDAO.getConnection()){
 			cn.setAutoCommit(false);
-			ComputerDao.removeComputerFromCompany(id, cn);
+			computerDao.removeComputerFromCompany(id, cn);
 			ppdStmt = cn.prepareStatement(DELETE);
 			ppdStmt.setLong(1, id);
 			ppdStmt.executeUpdate();

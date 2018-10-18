@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.excilys.cdb2.exception.ValidationException;
@@ -22,7 +23,9 @@ import com.excilys.cdb2.service.ComputerServices;
 @WebServlet("/DeleteComputer")
 public class DeleteComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static ComputerServices computerServices = new ComputerServices();
+	
+	@Autowired
+	private ComputerServices computerServices;
     /**
      * @see HttpServlet#HttpServlet()
      */
