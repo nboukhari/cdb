@@ -1,5 +1,6 @@
 package com.excilys.cdb2.mapper;
 
+import java.sql.Date;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -47,6 +48,31 @@ public class ComputerMapper {
 		computerBuilder.setIntroduced(introduced);
 		computerBuilder.setDiscontinued(discontinued);
 		computerBuilder.setCompanyName(companyName);
+		computer = computerBuilder.build();
+
+		return computer;
+	}
+	
+	public static Computer updatePC(long id, String name,Date introduced,Date discontinued, String companyName) {
+		
+		Optional<LocalDate> introducedOptional = Optional.empty();
+		Optional<LocalDate> discontinuedOptional = Optional.empty();
+		Optional<String> companyNameOptional = Optional.empty();
+		LocalDate ParseDateDebut = introduced != null ? introduced.toLocalDate() : null;
+		introducedOptional = Optional.ofNullable(ParseDateDebut);
+
+		LocalDate ParseDateEnd = discontinued != null ? discontinued.toLocalDate() : null;
+		discontinuedOptional = Optional.ofNullable(ParseDateEnd);
+		companyNameOptional = Optional.ofNullable(companyName);
+
+		
+		Computer computer;
+		ComputerBuilder computerBuilder = new ComputerBuilder();
+		computerBuilder.setId(id);
+		computerBuilder.setName(name);
+		computerBuilder.setIntroduced(introducedOptional);
+		computerBuilder.setDiscontinued(discontinuedOptional);
+		computerBuilder.setCompanyName(companyNameOptional);
 		computer = computerBuilder.build();
 
 		return computer;
