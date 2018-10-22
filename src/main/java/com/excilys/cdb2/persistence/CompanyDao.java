@@ -10,10 +10,14 @@ import java.util.List;
 import java.util.Optional;
 //import org.apache.log4j.Logger;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.cdb2.exception.ValidationException;
+import com.excilys.cdb2.mapper.CompanyMapper;
 import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Company;
 import com.excilys.cdb2.model.CompanyBuilder;
@@ -36,6 +40,13 @@ public class CompanyDao {
 	
 	@Autowired
 	private ComputerDao computerDao;
+	
+	JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	public CompanyDao(DataSource dataSource) {
+		jdbcTemplate = new JdbcTemplate(dataSource);
+	}
 	/**
 	 * This method displays all the companies
 	 * @author Nassim BOUKHARI
@@ -44,61 +55,27 @@ public class CompanyDao {
 	 * @throws ClassNotFoundException 
 	 */
 	public List<Company> getAllCompanies() throws IOException, ValidationException, ClassNotFoundException {
-		Company company;
-		ArrayList<Company> companies = new ArrayList<Company>();
-		CompanyBuilder companyBuilder = new CompanyBuilder();
-
-		try (Connection cn = connectionDAO.getConnection()){
-
-			PreparedStatement ppdStmt = cn.prepareStatement(GET_ALL);
-			ResultSet rs = ppdStmt.executeQuery(GET_ALL);
-			while(rs.next()) {
-				long compId = rs.getLong("id");
-				String name = rs.getString("name");
-				companyBuilder.setId(compId);
-				companyBuilder.setName(name);
-				company = companyBuilder.build();
-				companies.add(company);
-			}
-			rs.close();
-
-		} catch (SQLException e) {
-			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
-			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs.");
-		}
+		List<Company> companies = jdbcTemplate.query(GET_ALL,
+									(resultSet, rowNum) -> {
+										return retrieveCompanyFromQuery(resultSet);
+									});
 		return companies;
 	}
 	
 	/**
 	 * This method get the Id of the company from his name
 	 * @author Nassim BOUKHARI
-	 * @throws ValidationException 
-	 * @throws ClassNotFoundException 
 	 */
-	public long getCompanyId(String companyName) throws SQLException, IOException, ValidationException, ClassNotFoundException {
-		int idComp = 0;
-		try (Connection cn = connectionDAO.getConnection()){
+	public long getCompanyId(String companyName) {
+			String comp;
 			Optional<String> newCompany = ComputerMapper.enterCompanyName(companyName);
 			Computer computer = ComputerMapper.compName(newCompany);
-			PreparedStatement ppdStmt = cn.prepareStatement(GET_ID_COMPANY);
 			if(computer.getCompanyName().isPresent())
-				ppdStmt.setString(1, computer.getCompanyName().get().toString());
+				comp = computer.getCompanyName().get().toString();
 			else
-				ppdStmt.setInt(1, 0);
-			ResultSet rs = ppdStmt.executeQuery();
-			if(rs.next()) {
-				idComp = rs.getInt(1);
-			}
-			else {
-				//LOGGER.error("Aucune entreprise n'a été trouvé.");
-			}
-		}
-
-		catch (SQLException e) {
-			//LOGGER.error("Une erreur SQL est survenue, voici la cause : "+e);
-			throw new ValidationException("Une erreur est survenue lors de l'affichage des ordinateurs.");
-		}
-		return idComp;
+				comp = "0";
+			return (long) jdbcTemplate.queryForObject(GET_ID_COMPANY, new Object[] {comp}, (resultSet, rowNum) -> resultSet.getInt(1));
+			
 	}
 	
 	/**
@@ -125,5 +102,9 @@ public class CompanyDao {
 			ppdStmt.close();
 		}
 	}
+	
+	private Company retrieveCompanyFromQuery(ResultSet rs) throws SQLException {
+        return CompanyMapper.company(rs.getLong(1), rs.getString(2));
+    }
 
 }

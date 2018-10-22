@@ -4,21 +4,36 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Scanner;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
+
+import com.excilys.cdb2.configuration.AppConfig;
 //import org.apache.log4j.Logger;
 import com.excilys.cdb2.exception.ValidationException;
-import com.excilys.cdb2.service.*;
+import com.excilys.cdb2.service.CompanyServices;
+import com.excilys.cdb2.service.ComputerServices;
 
 /**
  * This class is the CLI
  * @author Nassim BOUKHARI
  */
+@Controller("CliUi")
 public class CliUi {
 
-	public static Scanner READER = new Scanner(System.in);
+	public Scanner READER = new Scanner(System.in);
 	//private final static Logger LOGGER = Logger.getLogger(CliUi.class);
-	private static ComputerServices computerServices = new ComputerServices();
-	private static CompanyServices companyServices = new CompanyServices();
-	public static void Cli() throws IOException, ParseException, ValidationException, ClassNotFoundException, SQLException{
+	
+	@Autowired
+	private ComputerServices computerServices;
+	
+	@Autowired
+	private CompanyServices companyServices;
+	
+	public void Cli() throws IOException, ParseException, ValidationException, ClassNotFoundException, SQLException{
 		String entry = "";
 		boolean quit = false;
 		do {
@@ -56,7 +71,7 @@ public class CliUi {
 					computerServices.modifyComputer(null, null, null, null, null);
 					break;
 				case REMOVE_COMPUTER:
-					//ComputerServices.deleteComputer(List<long> ids);
+					// ComputerServices.deleteComputer(List<long> ids);
 					break;
 				case REMOVE_COMPANY:
 					System.out.println("Entrer le nom de l'entreprise :");
@@ -74,7 +89,7 @@ public class CliUi {
 		//LOGGER.info("Au revoir.");
 	}
 
-	public static int enterNbChoice(String nbCh) {
+	public int enterNbChoice(String nbCh) {
 
 		nbCh = READER.nextLine();
 		int intCh = Integer.parseInt(nbCh);
@@ -82,13 +97,13 @@ public class CliUi {
 
 	}
 	
-	public static long enterLong(String nb) {
+	public long enterLong(String nb) {
 		nb = READER.nextLine();
 		int longNb = Integer.parseInt(nb);
 		return longNb;
 	}
 
-	public static String enterName() {
+	public String enterName() {
 		//LOGGER.info("Veuillez entrer le nom de l'ordinateur: ");
 		String name = READER.nextLine();
 
@@ -96,6 +111,7 @@ public class CliUi {
 	}
 
 	public static void main(String[] args) throws IOException, ParseException, ValidationException, ClassNotFoundException, SQLException {
-		CliUi.Cli();
+		ApplicationContext context = new  AnnotationConfigApplicationContext(AppConfig.class);
+		context.getBean(CliUi.class).Cli();
 	}
 }
