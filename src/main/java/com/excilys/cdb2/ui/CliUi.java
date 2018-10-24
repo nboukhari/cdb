@@ -8,8 +8,7 @@ import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import com.excilys.cdb2.configuration.AppConfig;
 //import org.apache.log4j.Logger;
@@ -21,7 +20,7 @@ import com.excilys.cdb2.service.ComputerServices;
  * This class is the CLI
  * @author Nassim BOUKHARI
  */
-@Controller("CliUi")
+@Component
 public class CliUi {
 
 	public Scanner READER = new Scanner(System.in);

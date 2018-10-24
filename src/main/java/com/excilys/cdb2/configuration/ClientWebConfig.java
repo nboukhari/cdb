@@ -10,18 +10,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-@EnableWebMvc
 @Configuration
-@ComponentScan(basePackages = { "com.excilys.cdb2.servlet" })
+@EnableWebMvc
+@ComponentScan(basePackages = { "com.excilys.cdb2.controller" })
 public class ClientWebConfig implements WebMvcConfigurer {
  
+	/*
    @Override
    public void addViewControllers(ViewControllerRegistry registry) {
       registry.addViewController("/Dashboard");
       registry.addViewController("/AddComputer");
       registry.addViewController("/EditComputer");
       registry.addViewController("/DeleteComputer");
-   }
+   }*/
  
    @Bean
    public ViewResolver viewResolver() {

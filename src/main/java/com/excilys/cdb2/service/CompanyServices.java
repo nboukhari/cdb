@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.model.Company;
@@ -33,6 +34,7 @@ public class CompanyServices {
 		return companies;
 	}
 	
+	@Transactional
 	public void deleteCompany(long id) throws ClassNotFoundException, IOException, ValidationException, SQLException {
 		companyDao.removeCompany(id);
 	}

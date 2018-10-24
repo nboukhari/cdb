@@ -1,11 +1,8 @@
 package com.excilys.cdb2.persistence;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 //import org.apache.log4j.Logger;
@@ -20,7 +17,6 @@ import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.mapper.CompanyMapper;
 import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Company;
-import com.excilys.cdb2.model.CompanyBuilder;
 import com.excilys.cdb2.model.Computer;
 
 /**
@@ -34,9 +30,6 @@ public class CompanyDao {
 	private static final String GET_ID_COMPANY = "SELECT id FROM company WHERE name =?";
 	private static final String DELETE = "DELETE FROM company WHERE id =?";
 	//private final static Logger LOGGER = Logger.getLogger(CompanyDao.class);
-	
-	@Autowired
-	private ConnectionDAO connectionDAO;
 	
 	@Autowired
 	private ComputerDao computerDao;
@@ -87,20 +80,8 @@ public class CompanyDao {
 	 * @throws SQLException 
 	 */
 	public void removeCompany(long id) throws IOException, ValidationException, ClassNotFoundException, SQLException {
-		PreparedStatement ppdStmt = null;
-		try(Connection cn = connectionDAO.getConnection()){
-			cn.setAutoCommit(false);
-			computerDao.removeComputerFromCompany(id, cn);
-			ppdStmt = cn.prepareStatement(DELETE);
-			ppdStmt.setLong(1, id);
-			ppdStmt.executeUpdate();
-			cn.commit();
-		} catch (SQLException e) {
-			throw new ValidationException("Une erreur est survenue lors de la suppression de l'ordinateur.");
-		}
-		finally {
-			ppdStmt.close();
-		}
+			computerDao.removeComputerFromCompany(id);
+			jdbcTemplate.update(DELETE, id);
 	}
 	
 	private Company retrieveCompanyFromQuery(ResultSet rs) throws SQLException {

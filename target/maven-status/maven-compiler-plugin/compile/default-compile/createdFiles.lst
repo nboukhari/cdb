@@ -13,7 +13,6 @@ com/excilys/cdb2/service/ComputerServices.class
 com/excilys/cdb2/model/ComputerBuilder.class
 com/excilys/cdb2/mapper/CompanyMapper.class
 com/excilys/cdb2/persistence/ComputerDao.class
-com/excilys/cdb2/servlet/Dashboard.class
 com/excilys/cdb2/model/Computer.class
 com/excilys/cdb2/persistence/CompanyDao.class
 com/excilys/cdb2/ui/CliUi.class

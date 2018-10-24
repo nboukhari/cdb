@@ -11,7 +11,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
-@ComponentScan("com.excilys.cdb2")
+@ComponentScan(basePackages ={"com.excilys.cdb2.configuration", "com.excilys.cdb2.controller", "com.excilys.cdb2.mapper", "com.excilys.cdb2.persistence",
+"com.excilys.cdb2.service", "com.excilys.cdb2.ui"})
 @PropertySource("classpath:config.properties")
 public class AppConfig {
 

@@ -1,22 +1,16 @@
 package com.excilys.cdb2.persistence;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
 //import org.apache.log4j.Logger;
@@ -24,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Computer;
-import com.excilys.cdb2.model.ComputerBuilder;
 
 /**
  * This class does all the functionnalities about computers
@@ -201,7 +194,7 @@ public class ComputerDao {
 	 * This method deletes a computer that is in a company
 	 * @author Nassim BOUKHARI
 	 */
-	public void removeComputerFromCompany(long idComp, Connection cn) {
+	public void removeComputerFromCompany(long idC) {
 		
 		jdbcTemplate.update(DELETE_COMPUTERS_COMPANY);
 	}
