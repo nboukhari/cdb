@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <html>
 <head>
 <title>Computer Database</title>
@@ -15,37 +16,46 @@
 		<div class="container">
 			<a class="navbar-brand" href="?limit=10&page=1"> Application -
 				Computer Database </a>
+				<div class="btn-group btn-group-sm pull-right" role="group">
+					<spring:message	code="change"/> :
+					<a href="?lang=en"><spring:message code="eng"/></a>
+					<a href="?lang=fr"><spring:message	code="fr"/></a>
+				</div>
 		</div>
+		
 	</header>
 
 	<section id="main">
 		<div class="container">
 			<c:if test="${messageCreate=='ok'}" var="messageCreate">
 				<div class="alert alert-success">
-					              L'ordinateur a bien été créé.
-					                <br/>
-					            </div>
+					L'ordinateur a bien été créé. <br />
+				</div>
 			</c:if>
-			<h1 id="homeTitle">${nbComp} Computers found</h1>
+			<h1 id="homeTitle">${nbComp}
+				<spring:message code="comp"/>
+			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
 
 						<input type="search" id="searchbox" name="search"
-							class="form-control" placeholder="Search name" /> <input
-							type="submit" id="searchsubmit" value="Filter by name"
+							class="form-control" placeholder="<spring:message code="search"/>" /> <input
+							type="submit" id="searchsubmit" value="<spring:message code="filter"/>"
 							class="btn btn-primary" />
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="AddComputer">Add
-						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
-						onclick="$.fn.toggleEditMode();">Edit</a>
+					<a class="btn btn-success" id="addComputer" href="AddComputer"><spring:message
+							code="add"/></a> <a class="btn btn-default"
+						id="editComputer" href="#" onclick="$.fn.toggleEditMode();"><spring:message
+							code="edit"/></a>
 				</div>
 			</div>
 		</div>
 
-		<form id="deleteForm" action="DeleteComputer?limit=${limit}&page=${page}" method="POST">
+		<form id="deleteForm"
+			action="DeleteComputer?limit=${limit}&page=${page}" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
 
@@ -63,12 +73,12 @@
 									class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>Computer name</th>
-						<th>Introduced date</th>
+						<th><spring:message code="name"/></th>
+						<th><spring:message code="introduced"/></th>
 						<!-- Table header for Discontinued Date -->
-						<th>Discontinued date</th>
+						<th><spring:message code="discontinued"/></th>
 						<!-- Table header for Company -->
-						<th>Company</th>
+						<th><spring:message code="company"/></th>
 
 					</tr>
 				</thead>
@@ -92,58 +102,68 @@
 		</div>
 	</section>
 
- 
+
 
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				
+
 				<c:if test="${nbPage!=1}">
-					<li><a href="?search=${search}&limit=${limit}&page=1">
-						<span aria-hidden="true">First</span>
+					<li><a href="?search=${search}&limit=${limit}&page=1"> <span
+							aria-hidden="true"><spring:message code="first"/></span>
 					</a></li>
 				</c:if>
-				
+
 				<c:if test="${nbPageMinusOne>0}">
-					<li><a href="?search=${search}&limit=${limit}&page=${nbPageMinusOne}"
+					<li><a
+						href="?search=${search}&limit=${limit}&page=${nbPageMinusOne}"
 						aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
 					</a></li>
 				</c:if>
-				
+
 				<c:if test="${nbPageMinusTwo>0}">
-					<li><a href="?search=${search}&limit=${limit}&page=${nbPageMinusTwo}">${nbPageMinusTwo}</a></li>
+					<li><a
+						href="?search=${search}&limit=${limit}&page=${nbPageMinusTwo}">${nbPageMinusTwo}</a></li>
 				</c:if>
-				
+
 				<c:if test="${nbPageMinusOne>0}">
-					<li><a href="?search=${search}&limit=${limit}&page=${nbPageMinusOne}">${nbPageMinusOne}</a></li>
+					<li><a
+						href="?search=${search}&limit=${limit}&page=${nbPageMinusOne}">${nbPageMinusOne}</a></li>
 				</c:if>
-				
-				<li><a style="font-weight: bold; color: red;" href="?limit=${limit}&page=${nbPage}">${nbPage}</a></li>
-				
+
+				<li><a style="font-weight: bold; color: red;"
+					href="?limit=${limit}&page=${nbPage}">${nbPage}</a></li>
+
 				<c:if test="${nbPageMoreOne<=nbPages}">
-					<li><a href="?search=${search}&limit=${limit}&page=${nbPageMoreOne}">${nbPageMoreOne}</a></li>
+					<li><a
+						href="?search=${search}&limit=${limit}&page=${nbPageMoreOne}">${nbPageMoreOne}</a></li>
 				</c:if>
-				
+
 				<c:if test="${nbPageMoreTwo<=nbPages}">
-				<li><a href="?search=${search}&limit=${limit}&page=${nbPageMoreTwo}">${nbPageMoreTwo}</a></li>
+					<li><a
+						href="?search=${search}&limit=${limit}&page=${nbPageMoreTwo}">${nbPageMoreTwo}</a></li>
 				</c:if>
-				
+
 				<c:if test="${nbPageMoreOne<=nbPages}">
-				<li><a href="?search=${search}&limit=${limit}&page=${nbPageMoreOne}" aria-label="Next">
-						<span aria-hidden="true">&raquo;</span>
-				</a></li>
+					<li><a
+						href="?search=${search}&limit=${limit}&page=${nbPageMoreOne}"
+						aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+					</a></li>
 				</c:if>
 				<c:if test="${nbPage!=nbPages}">
 					<li><a href="?search=${search}&limit=${limit}&page=${nbPages}">
-						<span aria-hidden="true">Last</span>
+							<span aria-hidden="true"><spring:message code="last"/></span>
 					</a></li>
 				</c:if>
 			</ul>
-
+		
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="?search=${search}&limit=10&page=1"><button type="button" class="btn btn-default">10</button></a> 
-				<a href="?search=${search}&limit=50&page=1"><button type="button" class="btn btn-default">50</button></a> 
-				<a href="?search=${search}&limit=100&page=1"><button type="button" class="btn btn-default">100</button></a>
+				<a href="?search=${search}&limit=10&page=1"><button
+						type="button" class="btn btn-default">10</button></a> <a
+					href="?search=${search}&limit=50&page=1"><button type="button"
+						class="btn btn-default">50</button></a> <a
+					href="?search=${search}&limit=100&page=1"><button type="button"
+						class="btn btn-default">100</button></a>
 			</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>

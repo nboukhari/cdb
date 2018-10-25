@@ -25,7 +25,7 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
   
     @Override
     protected String[] getServletMappings() {
-        return new String[] { "/" };
+        return new String[] { "/Dashboard","/EditComputer","/DeleteComputer","/AddComputer" };
     }
 
 }

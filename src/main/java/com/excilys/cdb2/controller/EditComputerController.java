@@ -43,7 +43,7 @@ public class EditComputerController {
 					long idCompany = companyServices.showCompanyId(computer.getCompanyName().orElse("0"));
 					model.addAttribute("idCompany", idCompany);
 				}
-			
+			model.addAttribute("id", id);
 			model.addAttribute("computer", computer);
 		}
 		catch(ValidationException | ClassNotFoundException e) {
