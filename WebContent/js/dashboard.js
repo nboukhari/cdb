@@ -47,11 +47,9 @@ $(function() {
     $.fn.toggleEditMode = function() {
         if($(".editMode").is(":visible")) {
             $(".editMode").hide();
-            $("#editComputer").text("Edit");
         }
         else {
             $(".editMode").show();
-            $("#editComputer").text("View");
         }
         return this;
     };
@@ -89,14 +87,4 @@ $(document).keydown(function(e) {
             }
             break;
     }
-});
-
-//Define langage
-$(document).ready(function() {
-    $("#locales").change(function () {
-        var selectedOption = $('#locales').val();
-        if (selectedOption != ''){
-            window.location.replace('Dashboard?lang=' + selectedOption);
-        }
-    });
 });

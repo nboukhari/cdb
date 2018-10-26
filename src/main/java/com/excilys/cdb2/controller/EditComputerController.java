@@ -32,7 +32,9 @@ public class EditComputerController {
 	
 	@GetMapping
 	public String handleGet(@RequestParam("id") String id, Model model) throws ClassNotFoundException, IOException, ValidationException, SQLException {
-		
+		if(id.equals(null)) {
+			return "404";
+		}
 		List<Company> companies;
 		companies = companyServices.showCompanies();
 		model.addAttribute("companies", companies);

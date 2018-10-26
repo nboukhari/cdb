@@ -5,6 +5,7 @@
 <head>
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/font-awesome.css" rel="stylesheet" media="screen">
@@ -15,10 +16,17 @@
 		<div class="container">
 			<a class="navbar-brand" href="Dashboard?limit=10&page=1"> Application - Computer
 				Database </a>
-				<div class="btn-group btn-group-sm pull-right" role="group">
-					<spring:message	code="change"/> :
-					<a href="?lang=en&id=${id}"><spring:message code="eng"/></a>
-					<a href="?lang=fr&id=${id}"><spring:message	code="fr"/></a>
+				<div class="actions pull-right" role="group">
+						<a class="navbar-brand" href="?lang=en&id=${id}">
+							<button	type="button" class="btn btn-default">
+								<spring:message code="eng"/>
+							</button>
+						</a>
+						<a class="navbar-brand" href="?lang=fr&id=${id}">
+							<button	type="button" class="btn btn-default">
+								<spring:message	code="fr"/>
+							</button>
+						</a>
 				</div>
 		</div>
 	</header>
@@ -62,14 +70,14 @@
 							</fieldset>
 							<c:if test="${messageOk=='ok'}">
 								<div class="alert alert-success">
-					              L'ordinateur a bien été modifié.
+					            	<spring:message code="editMessageOk"/>
 					                <br/>
 					            </div>
 							</c:if>
 							
 							<c:if test="${dateError=='ko'}" var="messageError">
 							<div class="alert alert-danger">
-				              La date de début est supérieure à la date de fin.
+				              <spring:message code="dateErrorMessage"/>
 				                <br/>
 				            </div>
 						</c:if>

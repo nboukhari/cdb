@@ -5,6 +5,7 @@
 <head>
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/font-awesome.css" rel="stylesheet" media="screen">
@@ -15,10 +16,17 @@
 		<div class="container">
 			<a class="navbar-brand" href="Dashboard?limit=10&page=1"> Application - Computer
 				Database </a>
-				<div class="btn-group btn-group-sm pull-right" role="group">
-					<spring:message	code="change"/> :
-					<a href="?lang=en"><spring:message code="eng"/></a>
-					<a href="?lang=fr"><spring:message	code="fr"/></a>
+				<div class="actions pull-right" role="group">
+						<a class="navbar-brand" href="?lang=en">
+							<button	type="button" class="btn btn-default">
+								<spring:message code="eng"/>
+							</button>
+						</a>
+						<a class="navbar-brand" href="?lang=fr">
+							<button	type="button" class="btn btn-default">
+								<spring:message	code="fr"/>
+							</button>
+						</a>
 				</div>
 		</div>
 	</header>
@@ -58,7 +66,7 @@
 						</fieldset>
 						<c:if test="${dateError=='ko'}" var="messageError">
 							<div class="alert alert-danger">
-				              La date de début est supérieure à la date de fin.
+				              La date de dï¿½but est supï¿½rieure ï¿½ la date de fin.
 				                <br/>
 				            </div>
 						</c:if>

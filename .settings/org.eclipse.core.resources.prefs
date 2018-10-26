@@ -1,4 +1,8 @@
 eclipse.preferences.version=1
+encoding//WebContent/WEB-INF/views/AddComputer.jsp=UTF-8
+encoding//WebContent/WEB-INF/views/Dashboard.jsp=UTF-8
+encoding//WebContent/WEB-INF/views/EditComputer.jsp=UTF-8
 encoding//src/main/java=UTF-8
+encoding//src/main/resources/messages_fr.properties=UTF-8
 encoding//src/test/java=UTF-8
 encoding/<project>=UTF-8

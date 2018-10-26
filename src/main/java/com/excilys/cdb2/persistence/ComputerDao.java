@@ -27,13 +27,13 @@ import com.excilys.cdb2.model.Computer;
 public class ComputerDao {
 
 	private static final String GET_ALL = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id LIMIT ?,?";
-	private static final String SEARCH = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.name LIKE ? LIMIT ?,?";
+	private static final String SEARCH = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.name LIKE ? OR company.name LIKE ? LIMIT ?,?";
 	private static final String GET_ONE = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.id =?;";
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
 	private static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id =?;";
 	private static final String DELETE = "DELETE FROM computer WHERE id = ?;";
 	private static final String DELETE_COMPUTERS_COMPANY = "DELETE FROM computer WHERE company_id =?";
-	private static final String SEARCH_COUNT = "SELECT COUNT(*) FROM computer WHERE name LIKE ?";
+	private static final String SEARCH_COUNT = "SELECT COUNT(*) FROM computer LEFT JOIN company on company.id = computer.company_id WHERE computer.name LIKE ? OR company.name LIKE ?";
 	private static final String COUNT = "SELECT COUNT(*) FROM computer";
 	//private final static Logger LOGGER = Logger.getLogger(ComputerDao.class);
 	
@@ -77,9 +77,10 @@ public class ComputerDao {
 			long limitPage = Integer.parseInt(limitData);
 			List<Computer> computers = jdbcTemplate.query(SEARCH,
 	                preparedStatement -> {
-	                	preparedStatement.setString(1, search+"%");
-	                    preparedStatement.setInt(2, numPage);
-	                    preparedStatement.setLong(3, limitPage);
+	                	preparedStatement.setString(1, "%"+search+"%");
+	                	preparedStatement.setString(2, "%"+search+"%");
+	                    preparedStatement.setInt(3, numPage);
+	                    preparedStatement.setLong(4, limitPage);
 	                }, (resultSet, rowNum) -> {
 	                    return retrieveComputerFromQuery(resultSet);
 	                });
@@ -215,7 +216,7 @@ public class ComputerDao {
 	 */
 	public int getComputersCountFromSearch(String search){
 
-		return jdbcTemplate.queryForObject(SEARCH_COUNT, new Object[] {new StringBuilder(search).append("%").toString()},
+		return jdbcTemplate.queryForObject(SEARCH_COUNT, new Object[] {new StringBuilder("%").append(search).append("%").toString(), new StringBuilder("%").append(search).append("%").toString()}, 
 				(resultSet, rowNum) -> resultSet.getInt(1));
 	}
 	

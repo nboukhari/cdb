@@ -5,7 +5,7 @@
 <head>
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/font-awesome.css" rel="stylesheet" media="screen">
@@ -16,10 +16,17 @@
 		<div class="container">
 			<a class="navbar-brand" href="?limit=10&page=1"> Application -
 				Computer Database </a>
-				<div class="btn-group btn-group-sm pull-right" role="group">
-					<spring:message	code="change"/> :
-					<a href="?lang=en"><spring:message code="eng"/></a>
-					<a href="?lang=fr"><spring:message	code="fr"/></a>
+				<div class="actions pull-right" role="group">
+						<a class="navbar-brand" href="?lang=en">
+							<button	type="button" class="btn btn-default">
+								<spring:message code="eng"/>
+							</button>
+						</a>
+						<a class="navbar-brand" href="?lang=fr">
+							<button	type="button" class="btn btn-default">
+								<spring:message	code="fr"/>
+							</button>
+						</a>
 				</div>
 		</div>
 		
@@ -29,7 +36,7 @@
 		<div class="container">
 			<c:if test="${messageCreate=='ok'}" var="messageCreate">
 				<div class="alert alert-success">
-					L'ordinateur a bien été créé. <br />
+					<spring:message code="addMessage"/>
 				</div>
 			</c:if>
 			<h1 id="homeTitle">${nbComp}
@@ -46,10 +53,12 @@
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="AddComputer"><spring:message
-							code="add"/></a> <a class="btn btn-default"
-						id="editComputer" href="#" onclick="$.fn.toggleEditMode();"><spring:message
-							code="edit"/></a>
+					<a class="btn btn-success" id="addComputer" href="AddComputer">
+						<spring:message	code="add"/>
+					</a> 
+					<a class="btn btn-default"	id="editComputer" href="#" onclick="$.fn.toggleEditMode();">
+							<spring:message	code="delete"/>
+					</a>
 				</div>
 			</div>
 		</div>
