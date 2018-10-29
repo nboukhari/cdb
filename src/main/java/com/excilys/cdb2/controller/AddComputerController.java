@@ -21,6 +21,7 @@ import com.excilys.cdb2.model.Company;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.service.CompanyServices;
 import com.excilys.cdb2.service.ComputerServices;
+import com.excilys.cdb2.validator.isValidFormat;
 
 @Controller
 @RequestMapping("/AddComputer")
@@ -53,21 +54,16 @@ public class AddComputerController {
 		if (company.equals("0")) {
 			company = null;
 		}
-		if(!introduced.equals("") && !discontinued.equals("")) {
-
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			java.util.Date date1 = sdf.parse(introduced);
-			java.util.Date date2 = sdf.parse(discontinued);
-
-			if(date1.compareTo(date2) > 0) {
-				String dateError="ko";
-				model.addAttribute("dateError", dateError);
-				return "AddComputer";
-			}
+		if(isValidFormat.dateSuperior(introduced, discontinued).equals("ko")) {
+			String dateError ="ko";
+			model.addAttribute("dateError",dateError);
+			return "AddComputer";
 		}
-		computerServices.createComputer(name, introduced, discontinued, company);
-		redirectAttributes.addFlashAttribute("messageCreate", messageCreate);
-		return "redirect:Dashboard";
+		else {
+			computerServices.createComputer(name, introduced, discontinued, company);
+			redirectAttributes.addFlashAttribute("messageCreate", messageCreate);
+			return "redirect:Dashboard";
+		}
 	}
-	
+
 }

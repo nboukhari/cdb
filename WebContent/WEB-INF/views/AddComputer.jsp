@@ -66,7 +66,7 @@
 						</fieldset>
 						<c:if test="${dateError=='ko'}" var="messageError">
 							<div class="alert alert-danger">
-				              La date de d�but est sup�rieure � la date de fin.
+				              <spring:message code="dateErrorMessage"/>
 				                <br/>
 				            </div>
 						</c:if>

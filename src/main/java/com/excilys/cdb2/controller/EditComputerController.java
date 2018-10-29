@@ -19,6 +19,7 @@ import com.excilys.cdb2.model.Company;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.service.CompanyServices;
 import com.excilys.cdb2.service.ComputerServices;
+import com.excilys.cdb2.validator.isValidFormat;
 
 @Controller
 @RequestMapping("/EditComputer")
@@ -32,9 +33,7 @@ public class EditComputerController {
 	
 	@GetMapping
 	public String handleGet(@RequestParam("id") String id, Model model) throws ClassNotFoundException, IOException, ValidationException, SQLException {
-		if(id.equals(null)) {
-			return "404";
-		}
+		
 		List<Company> companies;
 		companies = companyServices.showCompanies();
 		model.addAttribute("companies", companies);
@@ -62,27 +61,16 @@ public class EditComputerController {
 			@RequestParam("companyId") String company, Model model) throws IOException, ClassNotFoundException, ValidationException, SQLException {
 		String messageOk="ok";
 		try {
-			if(!introduced.equals("") && !discontinued.equals("")) {
-
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				java.util.Date date1 = sdf.parse(introduced);
-				java.util.Date date2 = sdf.parse(discontinued);
-
-				if(date1.compareTo(date2) > 0) {
-					String dateError="ko";
-					model.addAttribute("dateError", dateError);
-					//LOGGER.error("La date de début est supérieure à la date de fin.");
-					throw new ValidationException("La date de début est supérieure à la date de fin.");
-
-
-				}
+			if(isValidFormat.dateSuperior(introduced, discontinued).equals("ko")) {
+				String dateError ="ko";
+				model.addAttribute("dateError",dateError);
 			}
+			else {
 			computerServices.modifyComputer(id, name, introduced, discontinued, company);
 			model.addAttribute("messageOk", messageOk);
-			//request.setAttribute("messageOk", messageOk);
+			}
 		}
 		catch(ValidationException | ParseException | ClassNotFoundException e) {
-			//request.setAttribute("messageKo", messageKo);
 			//LOGGER.error("Les valeurs que vous avez entrées ne sont pas correctes, veuillez recommencer.");
 		}
 	

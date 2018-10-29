@@ -187,7 +187,7 @@ public class ComputerDao {
 	public void removeComputer(List<Long> ids) {
 
 		for (Long id : ids) {
-			jdbcTemplate.update(DELETE, id);
+			jdbcTemplate.update(DELETE, preparedStatement ->{preparedStatement.setLong(1,id);});
 		}
 	}
 	
