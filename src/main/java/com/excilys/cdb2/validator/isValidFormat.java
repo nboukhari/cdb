@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-//import org.apache.log4j.Logger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

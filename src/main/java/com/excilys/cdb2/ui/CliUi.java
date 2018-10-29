@@ -4,14 +4,17 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Scanner;
+import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.excilys.cdb2.configuration.AppConfig;
-//import org.apache.log4j.Logger;
+
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.service.CompanyServices;
 import com.excilys.cdb2.service.ComputerServices;
@@ -24,7 +27,7 @@ import com.excilys.cdb2.service.ComputerServices;
 public class CliUi {
 
 	public Scanner READER = new Scanner(System.in);
-	//private final static Logger LOGGER = Logger.getLogger(CliUi.class);
+	private final static Logger logger = LoggerFactory.getLogger("CliUi");
 	
 	@Autowired
 	private ComputerServices computerServices;
@@ -70,22 +73,22 @@ public class CliUi {
 					computerServices.modifyComputer(null, null, null, null, null);
 					break;
 				case REMOVE_COMPUTER:
-					// ComputerServices.deleteComputer(List<long> ids);
+					ComputerServices.deleteComputer(List<long> ids);
 					break;
 				case REMOVE_COMPANY:
 					System.out.println("Entrer le nom de l'entreprise :");
-					long id = enterLong(entry);
-					companyServices.deleteCompany(id);
+					
+					companyServices.deleteCompany(enterLong(entry));
 					break;
 				default:
 				}
 			}
 			catch(NumberFormatException e) {
-				//LOGGER.error("Je n'ai pas compris votre requête, veuillez recommencer. (MENU)");
+				logger.error("Je n'ai pas compris votre requête, veuillez recommencer. (MENU)");
 			}
 		}while(!quit);
 		READER.close();
-		//LOGGER.info("Au revoir.");
+		logger.info("Au revoir.");
 	}
 
 	public int enterNbChoice(String nbCh) {
@@ -103,7 +106,7 @@ public class CliUi {
 	}
 
 	public String enterName() {
-		//LOGGER.info("Veuillez entrer le nom de l'ordinateur: ");
+		logger.info("Veuillez entrer le nom de l'ordinateur: ");
 		String name = READER.nextLine();
 
 		return name;

@@ -1,11 +1,8 @@
 package com.excilys.cdb2.persistence;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +15,6 @@ import com.zaxxer.hikari.HikariDataSource;
 @Repository
 public class ConnectionDAO {
 	
-	//private final static Logger logger = LoggerFactory.getLogger("ConnectionDAO");
 	private HikariConfig config;
 	private HikariDataSource datasource;
 	

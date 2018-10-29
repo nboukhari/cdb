@@ -3,7 +3,6 @@ package com.excilys.cdb2.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.model.Company;
@@ -30,6 +32,8 @@ public class EditComputerController {
 	
 	@Autowired
 	private CompanyServices companyServices;
+	
+	private final static Logger logger = LoggerFactory.getLogger("EditComputerController");
 	
 	@GetMapping
 	public String handleGet(@RequestParam("id") String id, Model model) throws ClassNotFoundException, IOException, ValidationException, SQLException {
@@ -71,7 +75,7 @@ public class EditComputerController {
 			}
 		}
 		catch(ValidationException | ParseException | ClassNotFoundException e) {
-			//LOGGER.error("Les valeurs que vous avez entrées ne sont pas correctes, veuillez recommencer.");
+			logger.error("Les valeurs que vous avez entrées ne sont pas correctes, veuillez recommencer.");
 		}
 	
 		return handleGet(id, model);

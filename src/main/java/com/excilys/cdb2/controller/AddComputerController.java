@@ -3,7 +3,6 @@ package com.excilys.cdb2.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.model.Company;
-import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.service.CompanyServices;
 import com.excilys.cdb2.service.ComputerServices;
 import com.excilys.cdb2.validator.isValidFormat;
