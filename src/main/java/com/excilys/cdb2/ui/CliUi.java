@@ -73,7 +73,7 @@ public class CliUi {
 					computerServices.modifyComputer(null, null, null, null, null);
 					break;
 				case REMOVE_COMPUTER:
-					ComputerServices.deleteComputer(List<long> ids);
+					//ComputerServices.deleteComputer(List<long> ids);
 					break;
 				case REMOVE_COMPANY:
 					System.out.println("Entrer le nom de l'entreprise :");

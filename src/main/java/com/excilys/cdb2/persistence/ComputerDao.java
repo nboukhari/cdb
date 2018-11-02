@@ -9,23 +9,29 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.sql.DataSource;
+
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-//import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Computer;
+import com.excilys.cdb2.model.QCompany;
+import com.excilys.cdb2.model.QComputer;
+import com.google.common.base.Supplier;
+import com.querydsl.core.types.dsl.StringExpression;
+import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 
 /**
  * This class does all the functionnalities about computers
  * @author Nassim BOUKHARI
  */
 @Repository
+@Transactional
 public class ComputerDao {
-
 	private static final String GET_ALL = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id LIMIT ?,?";
 	private static final String SEARCH = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.name LIKE ? OR company.name LIKE ? LIMIT ?,?";
 	private static final String GET_ONE = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.id =?;";
@@ -35,16 +41,25 @@ public class ComputerDao {
 	private static final String DELETE_COMPUTERS_COMPANY = "DELETE FROM computer WHERE company_id =?";
 	private static final String SEARCH_COUNT = "SELECT COUNT(*) FROM computer LEFT JOIN company on company.id = computer.company_id WHERE computer.name LIKE ? OR company.name LIKE ?";
 	private static final String COUNT = "SELECT COUNT(*) FROM computer";
-	//private final static Logger LOGGER = Logger.getLogger(ComputerDao.class);
 	
 	JdbcTemplate jdbcTemplate;
 
+	private SessionFactory sessionFactory;
+	private static QComputer qcomputer = QComputer.computer;
+	private static QCompany qcompany = QCompany.company;
+	private Supplier<HibernateQueryFactory> queryFactory =
+			() -> new HibernateQueryFactory(sessionFactory.getCurrentSession());
+	
+	@Autowired
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+	
 	@Autowired
 	public ComputerDao(DataSource dataSource) {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
-	
 	/**
 	 * This method displays all the computers
 	 * @author Nassim BOUKHARI
@@ -107,33 +122,13 @@ public class ComputerDao {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public void setComputer(String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ValidationException, ClassNotFoundException {
+	public void setComputer(String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ClassNotFoundException {
 
-			String introducedOptional;
-			String discontinuedOptional;
-			String companyNameOptional;
-			Optional<String> companyName = ComputerMapper.enterCompanyName(companyNameStr);
-			Optional<LocalDate> introducedPC = ComputerMapper.enterDate(introducedStr);
-			Optional<LocalDate> discontinuedPC = ComputerMapper.enterDate(discontinuedStr);
-			Computer computer = ComputerMapper.createPC(namePC, introducedPC, discontinuedPC,companyName);
-			if(computer.getIntroduced().isPresent())
-				introducedOptional = computer.getIntroduced().get().toString();
-			else
-				introducedOptional = null;
-			if(computer.getDiscontinued().isPresent())
-				discontinuedOptional = computer.getDiscontinued().get().toString();
-			else
-				discontinuedOptional = null;
-			if(computer.getCompanyName().isPresent())
-				companyNameOptional = computer.getCompanyName().get().toString();
-			else
-				companyNameOptional = null;
-			
-			jdbcTemplate.update(INSERT, 
-								computer.getName(),
-								introducedOptional,
-								discontinuedOptional,
-								companyNameOptional);
+			String companyName = ComputerMapper.enterCompanyName(companyNameStr);
+			LocalDate introducedPC = ComputerMapper.enterDate(introducedStr);
+			LocalDate discontinuedPC = ComputerMapper.enterDate(discontinuedStr);
+			Computer computer = ComputerMapper.updatePC(namePC, introducedPC, discontinuedPC,companyNameStr);
+			sessionFactory.getCurrentSession().save(computer);
 	
 	}
 
@@ -149,33 +144,18 @@ public class ComputerDao {
 
 
 			long newIdPC = Integer.parseInt(idPC);
-			String introducedOptional;
-			String discontinuedOptional;
-			String companyNameOptional;
 			Optional<LocalDate> newDateDebut = ComputerMapper.enterDate(introducedStr);
 			Optional<LocalDate> newDateEnd = ComputerMapper.enterDate(discontinuedStr);
 			Optional<String> newCompany = ComputerMapper.enterCompanyName(companyNameStr);
 			Computer computer = new Computer(newIdPC, namePC, newDateDebut, newDateEnd,newCompany);
-
-			if(computer.getIntroduced().isPresent())
-				introducedOptional = computer.getIntroduced().get().toString();
-			else
-				introducedOptional = null;
-			if(computer.getDiscontinued().isPresent())
-				discontinuedOptional = computer.getDiscontinued().get().toString();
-			else
-				discontinuedOptional = null;
-			if(computer.getCompanyName().isPresent())
-				companyNameOptional = computer.getCompanyName().get().toString();
-			else
-				companyNameOptional = null;
 			
-			jdbcTemplate.update(UPDATE, 
-								computer.getName(),
-								introducedOptional,
-								discontinuedOptional,
-								companyNameOptional,
-								newIdPC);
+			queryFactory.get().update(qcomputer)
+			 .where(qcomputer.id.eq(newIdPC))
+			 .set(qcomputer.name, computer.getName())
+			 .set(qcomputer.introduced, computer.getIntroduced())
+			 .set(qcomputer.discontinued, computer.getDiscontinued())
+			 .set(qcomputer.companyName, computer.getCompanyName())
+			 .execute();
 	
 	}
 
@@ -187,7 +167,7 @@ public class ComputerDao {
 	public void removeComputer(List<Long> ids) {
 
 		for (Long id : ids) {
-			jdbcTemplate.update(DELETE, preparedStatement ->{preparedStatement.setLong(1,id);});
+			queryFactory.get().delete(qcomputer).where(qcomputer.id.eq(id)).execute();
 		}
 	}
 	
@@ -207,7 +187,7 @@ public class ComputerDao {
 	 */
 	public int getComputersCount() {
 
-		return jdbcTemplate.query(COUNT, (resultSet, rowNum) -> resultSet.getInt(1)).get(0);
+		return (int) queryFactory.get().select(qcomputer).from(qcomputer).fetchCount();
 	}
 	
 	/**
@@ -216,8 +196,9 @@ public class ComputerDao {
 	 */
 	public int getComputersCountFromSearch(String search){
 
-		return jdbcTemplate.queryForObject(SEARCH_COUNT, new Object[] {new StringBuilder("%").append(search).append("%").toString(), new StringBuilder("%").append(search).append("%").toString()}, 
-				(resultSet, rowNum) -> resultSet.getInt(1));
+		return (int) queryFactory.get().select(qcomputer).from(qcomputer)
+				.where(qcomputer.name.like("%"+search + "%"))
+				.fetchCount();
 	}
 	
 	private Computer retrieveComputerFromQuery(ResultSet rs) throws SQLException {

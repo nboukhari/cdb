@@ -1,6 +1,15 @@
 package com.excilys.cdb2.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "company")
 public class Company {
+	@Id
+	@GeneratedValue
 	private long id;
 	private String name;
 

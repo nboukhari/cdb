@@ -3,20 +3,37 @@ package com.excilys.cdb2.model;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class Computer {
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "computer") 
+public class Computer {
+	@Id
+	@GeneratedValue
 	private long id;
 	private String name;
-	private Optional<LocalDate> introduced;
-	private Optional<LocalDate> discontinued;
-	private Optional<String> companyName;
 	
-	public Computer(long id, String name, Optional<LocalDate> introduced, Optional<LocalDate> discontinued, Optional<String> companyName){
+	@ManyToOne(optional = true)
+	private LocalDate introduced;
+	
+	@ManyToOne(optional = true)
+	private LocalDate discontinued;
+	
+	@ManyToOne(optional = true)
+	@JoinColumn(name = "company_id")
+	private Company company;
+	
+	public Computer(long id, String name, LocalDate introduced, LocalDate discontinued, Company company){
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.companyName = companyName;
+		this.company = company;
 	}
 	
 	public long getId() {
@@ -31,29 +48,29 @@ public class Computer {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Optional<LocalDate> getIntroduced() {
+	public LocalDate getIntroduced() {
 		return introduced;
 	}
-	public void setIntroduced(Optional<LocalDate> introduced) {
+	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
-	public Optional<LocalDate> getDiscontinued() {
+	public LocalDate getDiscontinued() {
 		return discontinued;
 	}
-	public void setDiscontinued(Optional<LocalDate> discontinued) {
+	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}
-	public Optional<String> getCompanyName() {
-		return companyName;
+	public Company getCompany() {
+		return company;
 	}
-	public void setCompanyName(Optional<String> companyName) {
-		this.companyName = companyName;
+	public void setCompany(Company company) {
+		this.company = company;
 	}
 	
 	@Override
 	public String toString() {
 		return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued=" + discontinued
-				+ ", companyName=" + companyName + "]";
+				+ ", company=" + company + "]";
 	}
 
 }

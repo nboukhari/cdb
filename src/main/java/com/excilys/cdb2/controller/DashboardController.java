@@ -19,10 +19,8 @@ import com.excilys.cdb2.service.ComputerServices;
 @RequestMapping("/Dashboard")
 public class DashboardController {
 
-	@Autowired
 	private Pagination pagination;
 
-	@Autowired
 	private ComputerServices computerServices;
 
 	private static final String DEFAULT_PAGE = "1";

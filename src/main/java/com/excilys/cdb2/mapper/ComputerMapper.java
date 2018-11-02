@@ -5,51 +5,32 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+
+import com.excilys.cdb2.model.Company;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.model.ComputerBuilder;
 import com.excilys.cdb2.validator.isValidFormat;
 
 public class ComputerMapper {
 
-	public static Computer createPC(String name,Optional<LocalDate> introduced,Optional<LocalDate> discontinued, Optional<String> companyName) {
+	private static Company company;
+	private static ComputerBuilder computerBuilder;
+	
+	public Computer createPC(String name,LocalDate introduced,LocalDate discontinued, Company company) {
 
-		Computer computer;
-		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setName(name);
-		computerBuilder.setIntroduced(introduced);
-		computerBuilder.setDiscontinued(discontinued);
-		computerBuilder.setCompanyName(companyName);
-		computer = computerBuilder.build();
-
-		return computer;
+		return computerBuilder.setName(name).setIntroduced(introduced).setDiscontinued(discontinued).setCompany(company).build();
 	}
 	
-	public static Computer updatePC(long id, String name,Date introduced,Date discontinued, String companyName) {
+	public Computer updatePC(long id, String name,Date introduced,Date discontinued, String companyName) {
 		
-		Optional<LocalDate> introducedOptional = Optional.empty();
-		Optional<LocalDate> discontinuedOptional = Optional.empty();
-		Optional<String> companyNameOptional = Optional.empty();
 		LocalDate ParseDateDebut = introduced != null ? introduced.toLocalDate() : null;
-		introducedOptional = Optional.ofNullable(ParseDateDebut);
-
 		LocalDate ParseDateEnd = discontinued != null ? discontinued.toLocalDate() : null;
-		discontinuedOptional = Optional.ofNullable(ParseDateEnd);
-		companyNameOptional = Optional.ofNullable(companyName);
+		company.setName(companyName);
 
-		
-		Computer computer;
-		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setId(id);
-		computerBuilder.setName(name);
-		computerBuilder.setIntroduced(introducedOptional);
-		computerBuilder.setDiscontinued(discontinuedOptional);
-		computerBuilder.setCompanyName(companyNameOptional);
-		computer = computerBuilder.build();
-
-		return computer;
+		return computerBuilder.setName(name).setIntroduced(ParseDateDebut).setDiscontinued(ParseDateEnd).setCompany(company).build();
 	}
 	
-	public static Computer enterIdPC(String idPC) {
+	public Computer enterIdPC(String idPC) {
 
 		int intId = Integer.parseInt(idPC);
 		Computer computer;
@@ -60,31 +41,29 @@ public class ComputerMapper {
 		return computer;
 	}
 
-	public static Optional<LocalDate> enterDate(String date) throws ParseException {
-
+	public static LocalDate enterDate(String date) throws ParseException {
+		LocalDate ParseDate = null;
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		Optional<LocalDate> dateToLocalDate = Optional.empty();
 		if(isValidFormat.date("yyyy-MM-dd", date)) {
-			LocalDate ParseDate = LocalDate.parse(date, format);
-			dateToLocalDate = Optional.ofNullable(ParseDate);
+			ParseDate = LocalDate.parse(date, format);
 		}
 
-		return dateToLocalDate;
+		return ParseDate;
 	}
 
-	public static Optional<String> enterCompanyName(String name) {
+	public String enterCompanyName(String name) {
 	
-		Optional<String> companyName = Optional.empty();
-		companyName = Optional.ofNullable(name);
+		company.setName(name);
+		companyName = company.setName(name);
 		return companyName;
 	
 	}
 	
-	public static Computer compName (Optional<String> companyName) {
+	public Computer compName (Company companyName) {
 		
 		Computer computer;
 		ComputerBuilder computerBuilder = new ComputerBuilder();
-		computerBuilder.setCompanyName(companyName);
+		computerBuilder.setCompany(companyName);
 		computer = computerBuilder.build();
 		return computer;
 		

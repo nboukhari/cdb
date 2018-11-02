@@ -27,10 +27,8 @@ import com.excilys.cdb2.validator.isValidFormat;
 @RequestMapping("/EditComputer")
 public class EditComputerController {
 
-	@Autowired
 	private ComputerServices computerServices;
 	
-	@Autowired
 	private CompanyServices companyServices;
 	
 	private final static Logger logger = LoggerFactory.getLogger("EditComputerController");

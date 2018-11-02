@@ -6,9 +6,9 @@ import java.util.Optional;
 public class ComputerBuilder {
 	private long id;
 	private String name;
-	private Optional<LocalDate> introduced;
-	private Optional<LocalDate> discontinued;
-	private Optional<String> companyName;
+	private LocalDate introduced;
+	private LocalDate discontinued;
+	private Company company;
 	
 	public ComputerBuilder setId(long id) {
 		this.id = id;
@@ -18,21 +18,21 @@ public class ComputerBuilder {
 		this.name = name;
 		return this;
 	}
-	public ComputerBuilder setIntroduced(Optional<LocalDate> introduced) {
+	public ComputerBuilder setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 		return this;
 	}
-	public ComputerBuilder setDiscontinued(Optional<LocalDate> discontinued) {
+	public ComputerBuilder setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 		return this;
 	}
 	
-	public ComputerBuilder setCompanyName(Optional<String> companyName) {
-		this.companyName = companyName;
+	public ComputerBuilder setCompany(Company company) {
+		this.company = company;
 		return this;
 	}
 	
 	public Computer build() {
-		return new Computer(id,name,introduced,discontinued,companyName);
+		return new Computer(id,name,introduced,discontinued,company);
 	}
 }

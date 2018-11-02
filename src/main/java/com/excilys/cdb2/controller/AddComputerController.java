@@ -24,10 +24,9 @@ import com.excilys.cdb2.validator.isValidFormat;
 @Controller
 @RequestMapping("/AddComputer")
 public class AddComputerController {
-	@Autowired
+	
 	private ComputerServices computerServices;
 
-	@Autowired
 	private CompanyServices companyServices;
 
 	@GetMapping

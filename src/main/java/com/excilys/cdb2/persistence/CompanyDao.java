@@ -1,35 +1,47 @@
 package com.excilys.cdb2.persistence;
 
 import java.io.IOException;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import java.util.List;
 import java.util.Optional;
-//import org.apache.log4j.Logger;
+
 
 import javax.sql.DataSource;
 
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.querydsl.jpa.hibernate.HibernateQuery;
+import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.mapper.CompanyMapper;
 import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Company;
 import com.excilys.cdb2.model.Computer;
+import com.excilys.cdb2.model.QCompany;
+import com.excilys.cdb2.model.QComputer;
+
 
 /**
  * This class does all the functionnalities about companies
  * @author Nassim BOUKHARI
  */
 @Repository
+@Transactional
 public class CompanyDao {
 
 	private static final String GET_ALL = "SELECT id,name FROM company";
 	private static final String GET_ID_COMPANY = "SELECT id FROM company WHERE name =?";
 	private static final String DELETE = "DELETE FROM company WHERE id =?";
-	//private final static Logger LOGGER = Logger.getLogger(CompanyDao.class);
+	
+	private SessionFactory sessionFactory;
 	
 	@Autowired
 	private ComputerDao computerDao;
