@@ -26,9 +26,9 @@ import com.excilys.cdb2.validator.isValidFormat;
 @Controller
 @RequestMapping("/EditComputer")
 public class EditComputerController {
-
+	@Autowired
 	private ComputerServices computerServices;
-	
+	@Autowired
 	private CompanyServices companyServices;
 	
 	private final static Logger logger = LoggerFactory.getLogger("EditComputerController");
@@ -42,10 +42,10 @@ public class EditComputerController {
 		
 		try {
 			Computer computer = computerServices.showComputerDetail(id);
-				if (computer.getCompanyName().isPresent() ) {
+				/*if (computer.getCompanyName().isPresent() ) {
 					long idCompany = companyServices.showCompanyId(computer.getCompanyName().orElse("0"));
 					model.addAttribute("idCompany", idCompany);
-				}
+				}*/
 			model.addAttribute("id", id);
 			model.addAttribute("computer", computer);
 		}

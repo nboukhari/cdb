@@ -20,7 +20,7 @@ import com.excilys.cdb2.service.ComputerServices;
 @Controller
 @RequestMapping("/DeleteComputer")
 public class DeleteController {
-
+	@Autowired
 	private ComputerServices computerServices;
 
 	@GetMapping

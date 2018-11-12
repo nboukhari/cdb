@@ -1,11 +1,12 @@
 package com.excilys.cdb2.configuration;
 
 import java.util.Properties;
-import java.util.ResourceBundle;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,17 +16,23 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableTransactionManagement
-@ComponentScan(basePackages ={"com.excilys.cdb2.configuration", "com.excilys.cdb2.controller", "com.excilys.cdb2.mapper", "com.excilys.cdb2.persistence",
-"com.excilys.cdb2.service", "com.excilys.cdb2.ui", "com.excilys.cdb2.model", "com.excilys.cdb2.exception"})
+@EnableTransactionManagement(proxyTargetClass=true)
+@ComponentScan(basePackages ={"com.excilys.cdb2.configuration", "com.excilys.cdb2.controller", "com.excilys.cdb2.mapper", "com.excilys.cdb2.persistence","com.excilys.cdb2.service", "com.excilys.cdb2.ui", "com.excilys.cdb2.model", "com.excilys.cdb2.exception"})
 @PropertySource("classpath:config.properties")
+//, "com.excilys.cdb2.controller", "com.excilys.cdb2.mapper", "com.excilys.cdb2.persistence",
+//"com.excilys.cdb2.service", "com.excilys.cdb2.ui", "com.excilys.cdb2.model", "com.excilys.cdb2.exception"
 public class AppConfig {
 
 	@Autowired
-	Environment environment;
+	private Environment environment;
 
 	private final String URL = "url";
 	private final String USER = "dbuser";
@@ -41,33 +48,41 @@ public class AppConfig {
 		driverManagerDataSource.setDriverClassName(environment.getProperty(DRIVER));
 		return driverManagerDataSource;
 	}
-	
-	Properties hibernateProperties() {
-		//ResourceBundle bundle = ResourceBundle.getBundle("hibernate");		
-		return new Properties() {
-			private static final long serialVersionUID = 1L;
-			{
-				   setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLInnoDBDialect");
-				    setProperty("hibernate.connection.datasource", "java:comp/env/jdbc/test");
-				    setProperty("hibernate.order_updates", "true");
-	         }
-		};
+
+	Properties getProperties() {
+		Properties properties = new Properties();
+		properties.setProperty("hibernate.dialet", "org.hibernate.dialect.MySQLDialect");
+		properties.setProperty("hibernate.show_sql", "true");
+		return properties;
 	}
-	
-	@Bean
-	public LocalSessionFactoryBean getSessionFactory(DataSource datasource) {
-		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setDataSource(datasource);
-		sessionFactory.setPackagesToScan(new String[] { "com.excilys.cdb2.model" });
-		sessionFactory.setHibernateProperties(hibernateProperties());
-		return sessionFactory;
-	}
-	
+
+	  @Bean
+	  public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+	     LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+	     em.setDataSource(dataSource());
+	     em.setPackagesToScan(new String[] { "com.excilys.cdb2.model" });
+
+	     JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+	     em.setJpaVendorAdapter(vendorAdapter);
+	     em.setJpaProperties(getProperties());
+
+	     return em;
+	  }
+	  
+//	@Bean
+//	public LocalSessionFactoryBean getSessionFactory() {
+//		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+//		sessionFactory.setDataSource(dataSource());
+//		sessionFactory.setPackagesToScan(new String[] { "com.excilys.cdb2.model" });
+//		sessionFactory.setHibernateProperties(getProperties());
+//		return sessionFactory;
+//	}
+
 	@Bean
 	@Autowired
-	public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
-		HibernateTransactionManager manager = new HibernateTransactionManager();
-		manager.setSessionFactory(sessionFactory);
-		return manager;	
+	public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+		JpaTransactionManager transactionManager = new JpaTransactionManager();
+		transactionManager.setEntityManagerFactory(entityManagerFactory);
+		return transactionManager;	
 	}
 }

@@ -20,12 +20,12 @@ public class WebInitializer extends AbstractAnnotationConfigDispatcherServletIni
   
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return null;
+        return new Class<?>[] {ClientWebConfig.class};
     }
   
     @Override
     protected String[] getServletMappings() {
-        return new String[] { "/Dashboard","/EditComputer","/DeleteComputer","/AddComputer" };
+        return new String[] { "/" };
     }
 
 }

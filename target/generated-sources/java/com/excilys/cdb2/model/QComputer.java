@@ -37,11 +37,11 @@ public class QComputer extends EntityPathBase<Computer> {
     }
 
     public QComputer(Path<? extends Computer> path) {
-        this(path.getType(), path.getMetadata(), path.getMetadata().isRoot() ? INITS : PathInits.DEFAULT);
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QComputer(PathMetadata metadata) {
-        this(metadata, metadata.isRoot() ? INITS : PathInits.DEFAULT);
+        this(metadata, PathInits.getFor(metadata, INITS));
     }
 
     public QComputer(PathMetadata metadata, PathInits inits) {

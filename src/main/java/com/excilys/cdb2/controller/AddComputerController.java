@@ -24,9 +24,10 @@ import com.excilys.cdb2.validator.isValidFormat;
 @Controller
 @RequestMapping("/AddComputer")
 public class AddComputerController {
-	
-	private ComputerServices computerServices;
 
+	@Autowired
+	private ComputerServices computerServices;
+	@Autowired
 	private CompanyServices companyServices;
 
 	@GetMapping
@@ -40,23 +41,19 @@ public class AddComputerController {
 	}
 
 	@PostMapping
-	public String handlePost(@RequestParam("computerName") String name,
-			@RequestParam("introduced") String introduced,
-			@RequestParam("discontinued") String discontinued,
-			@RequestParam("companyId") String company,
-			@ModelAttribute("messageCreate") String messageCreate,
-			final RedirectAttributes redirectAttributes,
+	public String handlePost(@RequestParam("computerName") String name, @RequestParam("introduced") String introduced,
+			@RequestParam("discontinued") String discontinued, @RequestParam("companyId") String company,
+			@ModelAttribute("messageCreate") String messageCreate, final RedirectAttributes redirectAttributes,
 			Model model) throws IOException, ClassNotFoundException, ValidationException, SQLException, ParseException {
-		messageCreate="ok";
+		messageCreate = "ok";
 		if (company.equals("0")) {
 			company = null;
 		}
-		if(isValidFormat.dateSuperior(introduced, discontinued).equals("ko")) {
-			String dateError ="ko";
-			model.addAttribute("dateError",dateError);
+		if (isValidFormat.dateSuperior(introduced, discontinued).equals("ko")) {
+			String dateError = "ko";
+			model.addAttribute("dateError", dateError);
 			return "AddComputer";
-		}
-		else {
+		} else {
 			computerServices.createComputer(name, introduced, discontinued, company);
 			redirectAttributes.addFlashAttribute("messageCreate", messageCreate);
 			return "redirect:Dashboard";

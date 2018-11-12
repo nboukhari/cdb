@@ -99,9 +99,9 @@
 								class="cb" value="${Computer.id}"></td>
 							<td><a href="EditComputer?id=${Computer.id}" onclick=""><c:out
 										value="${Computer.name}" /></a></td>
-							<td><c:out value="${Computer.introduced.orElse(null)}" /></td>
-							<td><c:out value="${Computer.discontinued.orElse(null)}" /></td>
-							<td><c:out value="${Computer.companyName.orElse(null)}" /></td>
+							<td><c:out value="${Computer.introduced}" /></td>
+							<td><c:out value="${Computer.discontinued}" /></td>
+							<td><c:out value="${Computer.company.name}" /></td>
 
 						</tr>
 

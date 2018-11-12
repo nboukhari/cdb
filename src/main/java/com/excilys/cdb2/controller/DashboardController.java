@@ -19,8 +19,10 @@ import com.excilys.cdb2.service.ComputerServices;
 @RequestMapping("/Dashboard")
 public class DashboardController {
 
+	@Autowired
 	private Pagination pagination;
-
+	
+	@Autowired
 	private ComputerServices computerServices;
 
 	private static final String DEFAULT_PAGE = "1";
@@ -31,9 +33,9 @@ public class DashboardController {
 	public String handleGet(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE) String pageNumber,
 			@RequestParam(value = "limit", defaultValue = DEFAULT_SIZE) String pageSize,
 			@RequestParam(value = "search", defaultValue = DEFAULT_SEARCH) String search, Model model) throws ClassNotFoundException, IOException, ValidationException {
-
+		System.out.println("pageNumber "+pageNumber+"   pageSize"+pageSize+"  search"+search);
 		int nbComp = 0;
-		if(search.equals(null)) {
+		if("".equals(search)) {
 			nbComp = computerServices.getNumberComputers();
 		}
 		else {
@@ -50,7 +52,7 @@ public class DashboardController {
 			else {
 				List<Computer> computers;
 
-				if(search.equals(null)) {
+				if("".equals(search)) {
 					computers = computerServices.showComputers(pageNumber,pageSize);
 				}
 				else {

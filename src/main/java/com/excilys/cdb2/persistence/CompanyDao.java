@@ -8,18 +8,20 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
-
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.mapper.CompanyMapper;
 import com.excilys.cdb2.mapper.ComputerMapper;
@@ -27,6 +29,7 @@ import com.excilys.cdb2.model.Company;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.model.QCompany;
 import com.excilys.cdb2.model.QComputer;
+import com.google.common.base.Supplier;
 
 
 /**
@@ -41,16 +44,23 @@ public class CompanyDao {
 	private static final String GET_ID_COMPANY = "SELECT id FROM company WHERE name =?";
 	private static final String DELETE = "DELETE FROM company WHERE id =?";
 	
-	private SessionFactory sessionFactory;
 	
-	@Autowired
-	private ComputerDao computerDao;
+	private QCompany qcompany;
+	private EntityManager entityManager;
+//	private static QComputer qcomputer = QComputer.computer;
+//	private static QCompany qcompany = QCompany.company;
+//	private Supplier<HibernateQueryFactory> queryFactory =
+//			() -> new HibernateQueryFactory(sessionFactory.getCurrentSession());
 	
-	JdbcTemplate jdbcTemplate;
+//	@Autowired
+//	public void setSessionFactory(SessionFactory sessionFactory) {
+//		this.sessionFactory = sessionFactory;
+//	}
 
 	@Autowired
-	public CompanyDao(DataSource dataSource) {
-		jdbcTemplate = new JdbcTemplate(dataSource);
+	public CompanyDao(EntityManagerFactory entityManagerFactory) {
+		qcompany = QCompany.company;
+		this.entityManager = entityManagerFactory.createEntityManager();
 	}
 	/**
 	 * This method displays all the companies
@@ -60,10 +70,8 @@ public class CompanyDao {
 	 * @throws ClassNotFoundException 
 	 */
 	public List<Company> getAllCompanies() throws IOException, ValidationException, ClassNotFoundException {
-		List<Company> companies = jdbcTemplate.query(GET_ALL,
-									(resultSet, rowNum) -> {
-										return retrieveCompanyFromQuery(resultSet);
-									});
+		JPAQueryFactory query = new JPAQueryFactory(entityManager);
+		List<Company> companies = query.selectFrom(qcompany).fetch();
 		return companies;
 	}
 	
@@ -73,14 +81,8 @@ public class CompanyDao {
 	 */
 	public long getCompanyId(String companyName) {
 			String comp;
-			Optional<String> newCompany = ComputerMapper.enterCompanyName(companyName);
-			Computer computer = ComputerMapper.compName(newCompany);
-			if(computer.getCompanyName().isPresent())
-				comp = computer.getCompanyName().get().toString();
-			else
-				comp = "0";
-			return (long) jdbcTemplate.queryForObject(GET_ID_COMPANY, new Object[] {comp}, (resultSet, rowNum) -> resultSet.getInt(1));
-			
+			String newCompany = ComputerMapper.enterCompanyName(companyName);
+			return 1; 
 	}
 	
 	/**
@@ -92,8 +94,8 @@ public class CompanyDao {
 	 * @throws SQLException 
 	 */
 	public void removeCompany(long id) throws IOException, ValidationException, ClassNotFoundException, SQLException {
-			computerDao.removeComputerFromCompany(id);
-			jdbcTemplate.update(DELETE, id);
+		//queryFactory.get().delete(qcomputer).where(qcomputer.company.id.eq(id)).execute();
+		//queryFactory.get().delete(qcompany).where(qcompany.id.eq(id)).execute();
 	}
 	
 	private Company retrieveCompanyFromQuery(ResultSet rs) throws SQLException {

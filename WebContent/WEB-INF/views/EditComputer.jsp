@@ -48,17 +48,17 @@
 								<div class="form-group">
 									<label for="introduced"><spring:message code="introduced"/></label> <input
 										type="date" class="form-control" id="introduced" name ="introduced"
-										placeholder="Introduced date" value="${computer.introduced.orElse(null)}">
+										placeholder="Introduced date" value="${computer.introduced}">
 								</div>
 								<div class="form-group">
 									<label for="discontinued"><spring:message code="discontinued"/></label> <input
 										type="date" class="form-control" id="discontinued" name ="discontinued"
-										placeholder="Discontinued date" value="${computer.discontinued.orElse(null)}">
+										placeholder="Discontinued date" value="${computer.discontinued}">
 								</div>
 								<div class="form-group">
 									<label for="companyId"><spring:message code="company"/></label> <select
 										class="form-control" id="companyId" name ="companyId">
-										<option value="${idCompany}">${computer.companyName.orElse(null)}</option>
+										<option value="${idCompany}">${computer.company.name}</option>
 										<c:forEach var="Company" items="${companies}">
 											
 										<c:if test="${idCompany != Company.id}">
