@@ -5,8 +5,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class Pagination {
 
+	public static int numberOfPage(String page, String limit) {
+		int nbP = Integer.parseInt(page);
+		int limitNumber = Integer.parseInt(limit);
+		nbP = (nbP-1)*limitNumber;
+		return nbP;
+	}
+	
 	public int nbPageMinusOne(int nbPage) {
-		
 		return --nbPage;
 	}
 	

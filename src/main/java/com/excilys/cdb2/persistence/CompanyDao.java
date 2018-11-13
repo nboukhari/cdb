@@ -62,6 +62,9 @@ public class CompanyDao {
 		qcompany = QCompany.company;
 		this.entityManager = entityManagerFactory.createEntityManager();
 	}
+	public CompanyDao() {
+		// TODO Auto-generated constructor stub
+	}
 	/**
 	 * This method displays all the companies
 	 * @author Nassim BOUKHARI
@@ -85,6 +88,13 @@ public class CompanyDao {
 			return 1; 
 	}
 	
+	public Company getCompanyById(long id) {
+		JPAQueryFactory query = new JPAQueryFactory(entityManager);
+		return query
+				.selectFrom(qcompany)
+				.where(qcompany.id.eq(id))
+				.fetchOne();
+	}
 	/**
 	 * This method deletes a company
 	 * @author Nassim BOUKHARI

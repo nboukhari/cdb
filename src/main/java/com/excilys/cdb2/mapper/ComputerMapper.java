@@ -9,11 +9,13 @@ import java.util.Optional;
 import com.excilys.cdb2.model.Company;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.model.ComputerBuilder;
+import com.excilys.cdb2.persistence.CompanyDao;
 import com.excilys.cdb2.validator.isValidFormat;
 
 public class ComputerMapper {
 	
-
+	
+	
 	public Computer createPC(String name,LocalDate introduced,LocalDate discontinued, Company company) {
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 		LocalDate ParseDateDebut = introduced != null ? introduced : null;
@@ -27,12 +29,11 @@ public class ComputerMapper {
 
 	public static Computer StringPC(String name,LocalDate introduced,LocalDate discontinued, String companyId) {
 		ComputerBuilder computerBuilder = new ComputerBuilder();
-		Computer computer = new Computer();
 		Company company = new Company();
 
 		LocalDate ParseDateDebut = introduced != null ? introduced : null;
 		LocalDate ParseDateEnd = discontinued != null ? discontinued : null;
-		if(!"".equals(companyId)) {
+		if(!"".equals(companyId) || companyId != null) {
 			int companyIdInt = Integer.valueOf(companyId);
 			company.setId(companyIdInt);
 		}
@@ -91,13 +92,5 @@ public class ComputerMapper {
 			return null;
 		}
 
-	}
-
-	public static int numberOfPage(String page, String limit) {
-		System.out.println("page"+page+"  limit"+limit);
-		int nbP = Integer.parseInt(page);
-		int limitNumber = Integer.parseInt(limit);
-		nbP = (nbP-1)*limitNumber;
-		return nbP;
 	}
 }

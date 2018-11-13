@@ -21,21 +21,20 @@ public class DashboardController {
 
 	@Autowired
 	private Pagination pagination;
-	
+
 	@Autowired
 	private ComputerServices computerServices;
 
 	private static final String DEFAULT_PAGE = "1";
 	private static final String DEFAULT_SIZE = "10";
-	private static final String DEFAULT_SEARCH = "";
+	//private static final String DEFAULT_SEARCH = "";
 
 	@GetMapping
-	public String handleGet(@RequestParam(value = "page", defaultValue = DEFAULT_PAGE) String pageNumber,
-			@RequestParam(value = "limit", defaultValue = DEFAULT_SIZE) String pageSize,
-			@RequestParam(value = "search", defaultValue = DEFAULT_SEARCH) String search, Model model) throws ClassNotFoundException, IOException, ValidationException {
-		System.out.println("pageNumber "+pageNumber+"   pageSize"+pageSize+"  search"+search);
+	public String handleGet(@RequestParam(name = "page", defaultValue = DEFAULT_PAGE) String pageNumber,
+			@RequestParam(name = "limit", defaultValue = DEFAULT_SIZE) String pageSize,
+			@RequestParam(required=false, name ="search") String search, Model model) throws ClassNotFoundException, IOException, ValidationException {
 		int nbComp = 0;
-		if("".equals(search)) {
+		if(search == null || "".equals(search) ) {
 			nbComp = computerServices.getNumberComputers();
 		}
 		else {
@@ -45,19 +44,20 @@ public class DashboardController {
 
 			int nbPages = (nbComp / Integer.parseInt(pageSize))+1;
 			int nbPage = Integer.parseInt(pageNumber);
-
+			
 			if(nbPage < 1 || nbPage > nbPages) {
 				return "/404";
 			}
 			else {
 				List<Computer> computers;
 
-				if("".equals(search)) {
+				if("".equals(search) || search == null) {
 					computers = computerServices.showComputers(pageNumber,pageSize);
 				}
 				else {
 					computers = computerServices.showComputersFromSearch(search, pageNumber,pageSize);
 				}
+				System.out.println(computers);
 				model.addAttribute("nbComp",nbComp);
 				model.addAttribute("search",search);
 				model.addAttribute("computers", computers);
@@ -71,7 +71,6 @@ public class DashboardController {
 			} 
 
 		}
-
 		else {
 			return "/404";
 		}	

@@ -3,6 +3,7 @@ package com.excilys.cdb2.model;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +26,7 @@ public class Computer {
 	@Column(name="discontinued")
 	private LocalDate discontinued;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "company_id")
 	private Company company;
 	

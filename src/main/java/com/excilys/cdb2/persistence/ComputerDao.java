@@ -27,6 +27,7 @@ import com.excilys.cdb2.exception.ValidationException;
 import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Company;
 import com.excilys.cdb2.model.Computer;
+import com.excilys.cdb2.model.Pagination;
 import com.excilys.cdb2.model.QCompany;
 import com.excilys.cdb2.model.QComputer;
 import com.google.common.base.Supplier;
@@ -42,25 +43,17 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 @Repository
 @Transactional
 public class ComputerDao {
-	private static final String GET_ALL = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id LIMIT ?,?";
-	private static final String SEARCH = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.name LIKE ? OR company.name LIKE ? LIMIT ?,?";
-	private static final String GET_ONE = "select computer.id, computer.name, computer.introduced, computer.discontinued, company.name from computer LEFT JOIN company on company.id = computer.company_id WHERE computer.id =?;";
-	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) VALUES (?,?,?,?);";
-	private static final String UPDATE = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id =?;";
-	private static final String DELETE = "DELETE FROM computer WHERE id = ?;";
-	private static final String DELETE_COMPUTERS_COMPANY = "DELETE FROM computer WHERE company_id =?";
-	private static final String SEARCH_COUNT = "SELECT COUNT(*) FROM computer LEFT JOIN company on company.id = computer.company_id WHERE computer.name LIKE ? OR company.name LIKE ?";
-	
 	
 	private EntityManager entityManager; 
 	
-	
-	public HibernateQueryFactory queryFactory;
 	private QComputer qcomputer;
 	private QCompany qcompany;
 
 	@Autowired
 	private PlatformTransactionManager tx;
+	
+	@Autowired
+	private CompanyDao companyDao;
 	
 	@Autowired
 	public ComputerDao(EntityManagerFactory entityManagerFactory) {
@@ -76,9 +69,9 @@ public class ComputerDao {
 	public List<Computer> getAllComputers(String numberOfPage, String limitData){
 		
 		JPAQueryFactory query = new JPAQueryFactory(entityManager);
-			long numPage = ComputerMapper.numberOfPage(numberOfPage, limitData);
+			long numPage = Pagination.numberOfPage(numberOfPage, limitData);
 			long limitPage = Integer.parseInt(limitData);
-			List<Computer> computers = query.selectFrom(qcomputer).limit(numPage).offset(limitPage).fetch();
+			List<Computer> computers = query.selectFrom(qcomputer).limit(limitPage).offset(numPage).fetch();
 		return computers;
 	}
 	
@@ -88,10 +81,10 @@ public class ComputerDao {
 	 */
 	public List<Computer> searchComputers(String search, String numberOfPage, String limitData){
 		JPAQueryFactory query = new JPAQueryFactory(entityManager);
-			long numPage = ComputerMapper.numberOfPage(numberOfPage, limitData);
+			long numPage = Pagination.numberOfPage(numberOfPage, limitData);
 			long limitPage = Integer.parseInt(limitData);
 			
-			List<Computer> computers = query.selectFrom(qcomputer).where(qcomputer.name.like("%"+ search + "%").or(qcomputer.company.name.like("%"+ search + "%"))).limit(numPage).offset(limitPage).fetch();
+			List<Computer> computers = query.selectFrom(qcomputer).where(qcomputer.name.like("%"+ search + "%").or(qcomputer.company.name.like("%"+ search + "%"))).limit(limitPage).offset(numPage).fetch();
 		return computers;
 	}
 
@@ -136,9 +129,10 @@ public class ComputerDao {
 	 * @throws ParseException 
 	 * @throws ClassNotFoundException 
 	 */
-	public void updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws ParseException {
-		JPAQueryFactory query = new JPAQueryFactory(entityManager);
-			Computer computer = ComputerMapper.StringToComputer(idPC, namePC, introducedStr, discontinuedStr, companyNameStr);
+	public void updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyIdStr) throws ParseException {
+		
+			Computer computer = ComputerMapper.StringToComputer(idPC, namePC, introducedStr, discontinuedStr, companyIdStr);
+			JPAQueryFactory query = new JPAQueryFactory(entityManager);
 			entityManager.getTransaction().begin();
 			query.update(qcomputer).where(qcomputer.id.eq(computer.getId()))
 			 .set(qcomputer.name, computer.getName())
@@ -147,6 +141,7 @@ public class ComputerDao {
 			 .set(qcomputer.company, computer.getCompany())
 			 .execute();
 			entityManager.getTransaction().commit();
+			//entityManager.flush();
 
 	
 	}
