@@ -12,20 +12,20 @@ public class Pagination {
 		return nbP;
 	}
 	
-	public int nbPageMinusOne(int nbPage) {
-		return --nbPage;
+	public int numPageMinusOne(int numPage) {
+		return --numPage;
 	}
 	
-	public int nbPageMinusTwo(int nbPage) {
-		return nbPage-=2;
+	public int numPageMinusTwo(int numPage) {
+		return numPage-=2;
 	}
 	
-	public int nbPageMoreOne(int nbPage) {
-		return ++nbPage;
+	public int numPagePlusOne(int numPage) {
+		return ++numPage;
 	}
 	
-	public int nbPageMoreTwo(int nbPage) {
-		return nbPage+=2;
+	public int numPagePlusTwo(int numPage) {
+		return numPage+=2;
 	}
 
 }

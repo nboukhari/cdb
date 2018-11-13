@@ -5,8 +5,6 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import org.hibernate.SessionFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,8 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -27,8 +23,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement(proxyTargetClass=true)
 @ComponentScan(basePackages ={"com.excilys.cdb2.configuration", "com.excilys.cdb2.controller", "com.excilys.cdb2.mapper", "com.excilys.cdb2.persistence","com.excilys.cdb2.service", "com.excilys.cdb2.ui", "com.excilys.cdb2.model", "com.excilys.cdb2.exception"})
 @PropertySource("classpath:config.properties")
-//, "com.excilys.cdb2.controller", "com.excilys.cdb2.mapper", "com.excilys.cdb2.persistence",
-//"com.excilys.cdb2.service", "com.excilys.cdb2.ui", "com.excilys.cdb2.model", "com.excilys.cdb2.exception"
 public class AppConfig {
 
 	@Autowired
@@ -68,15 +62,6 @@ public class AppConfig {
 
 	     return em;
 	  }
-	  
-//	@Bean
-//	public LocalSessionFactoryBean getSessionFactory() {
-//		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-//		sessionFactory.setDataSource(dataSource());
-//		sessionFactory.setPackagesToScan(new String[] { "com.excilys.cdb2.model" });
-//		sessionFactory.setHibernateProperties(getProperties());
-//		return sessionFactory;
-//	}
 
 	@Bean
 	@Autowired

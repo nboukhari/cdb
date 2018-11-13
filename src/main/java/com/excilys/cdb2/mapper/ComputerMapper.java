@@ -1,20 +1,15 @@
 package com.excilys.cdb2.mapper;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 import com.excilys.cdb2.model.Company;
 import com.excilys.cdb2.model.Computer;
 import com.excilys.cdb2.model.ComputerBuilder;
-import com.excilys.cdb2.persistence.CompanyDao;
 import com.excilys.cdb2.validator.isValidFormat;
 
 public class ComputerMapper {
-	
-	
 	
 	public Computer createPC(String name,LocalDate introduced,LocalDate discontinued, Company company) {
 		ComputerBuilder computerBuilder = new ComputerBuilder();
@@ -24,7 +19,7 @@ public class ComputerMapper {
 			
 			company.setName(company.getName());
 		}
-		return computerBuilder.setName(name).setIntroduced(introduced).setDiscontinued(discontinued).setCompany(company).build();
+		return computerBuilder.setName(name).setIntroduced(ParseDateDebut).setDiscontinued(ParseDateEnd).setCompany(company).build();
 	}
 
 	public static Computer StringPC(String name,LocalDate introduced,LocalDate discontinued, String companyId) {
@@ -66,31 +61,5 @@ public class ComputerMapper {
 		else {
 			return null;
 		}
-	}
-
-	public static String enterCompanyName(String name) {
-		Company company = new Company();
-		if(name != null) {
-			company.setName(name);
-			return company.getName();
-		}
-		else {
-			return null;
-		}
-	}
-
-	public Computer compName (Company companyName) {
-
-		if(companyName != null) {
-			Computer computer;
-			ComputerBuilder computerBuilder = new ComputerBuilder();
-			computerBuilder.setCompany(companyName);
-			computer = computerBuilder.build();
-			return computer;
-		}
-		else {
-			return null;
-		}
-
 	}
 }

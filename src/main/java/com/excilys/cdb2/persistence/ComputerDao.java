@@ -1,60 +1,36 @@
 package com.excilys.cdb2.persistence;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-//import org.hibernate.Session;
-//import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.cdb2.exception.ValidationException;
-import com.excilys.cdb2.mapper.ComputerMapper;
-import com.excilys.cdb2.model.Company;
 import com.excilys.cdb2.model.Computer;
-import com.excilys.cdb2.model.Pagination;
 import com.excilys.cdb2.model.QCompany;
 import com.excilys.cdb2.model.QComputer;
-import com.google.common.base.Supplier;
-import com.querydsl.jpa.hibernate.HibernateQuery;
-import com.querydsl.jpa.hibernate.HibernateQueryFactory;
-//import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 /**
  * This class does all the functionnalities about computers
+ * 
  * @author Nassim BOUKHARI
  */
 @Repository
 @Transactional
 public class ComputerDao {
-	
-	private EntityManager entityManager; 
-	
+
+	private EntityManager entityManager;
+
 	private QComputer qcomputer;
 	private QCompany qcompany;
 
-	@Autowired
-	private PlatformTransactionManager tx;
-	
-	@Autowired
-	private CompanyDao companyDao;
-	
 	@Autowired
 	public ComputerDao(EntityManagerFactory entityManagerFactory) {
 		qcomputer = QComputer.computer;
@@ -64,91 +40,95 @@ public class ComputerDao {
 
 	/**
 	 * This method displays all the computers
+	 * 
 	 * @author Nassim BOUKHARI
 	 */
-	public List<Computer> getAllComputers(String numberOfPage, String limitData){
-		
+	public List<Computer> getAllComputers(long limitPage, long numPage) {
+
 		JPAQueryFactory query = new JPAQueryFactory(entityManager);
-			long numPage = Pagination.numberOfPage(numberOfPage, limitData);
-			long limitPage = Integer.parseInt(limitData);
-			List<Computer> computers = query.selectFrom(qcomputer).limit(limitPage).offset(numPage).fetch();
+		List<Computer> computers = query.selectFrom(qcomputer)
+										.limit(limitPage)
+										.offset(numPage)
+										.fetch();
 		return computers;
 	}
-	
+
 	/**
 	 * This method displays all the computers
+	 * 
 	 * @author Nassim BOUKHARI
 	 */
-	public List<Computer> searchComputers(String search, String numberOfPage, String limitData){
+	public List<Computer> searchComputers(String search, long limitPage, long numPage) {
+
 		JPAQueryFactory query = new JPAQueryFactory(entityManager);
-			long numPage = Pagination.numberOfPage(numberOfPage, limitData);
-			long limitPage = Integer.parseInt(limitData);
-			
-			List<Computer> computers = query.selectFrom(qcomputer).where(qcomputer.name.like("%"+ search + "%").or(qcomputer.company.name.like("%"+ search + "%"))).limit(limitPage).offset(numPage).fetch();
+		List<Computer> computers = query.selectFrom(qcomputer)
+										.where(qcomputer.name
+												.like("%" + search + "%")
+												.or(qcomputer.company.name
+												.like("%" + search + "%")))
+										.limit(limitPage)
+										.offset(numPage)
+										.fetch();
 		return computers;
+
 	}
 
 	/**
 	 * This method displays all the details about a computer
+	 * 
 	 * @author Nassim BOUKHARI
 	 */
-	public Computer getComputerDetails(String idPC){
+	public Computer getComputerDetails(Computer computer) {
+
 		JPAQueryFactory query = new JPAQueryFactory(entityManager);
-		long id = Integer.parseInt(idPC);
 		return query.selectFrom(qcomputer)
-				.leftJoin(qcompany)
-				.on(qcompany.id.eq(qcomputer.company.id))
-				.where(qcomputer.id.eq(id))
-				.fetchOne();
+					.leftJoin(qcompany)
+					.on(qcompany.id.eq(qcomputer.company.id))
+					.where(qcomputer.id.eq(computer.getId()))
+					.fetchOne();
+
 	}
 
 	/**
 	 * This method creates a computer
+	 * 
 	 * @author Nassim BOUKHARI
-	 * @throws IOException 
-	 * @throws ParseException 
-	 * @throws ValidationException 
-	 * @throws ClassNotFoundException 
+	 * @throws IOException
+	 * @throws ParseException
+	 * @throws ValidationException
+	 * @throws ClassNotFoundException
 	 */
-	public void setComputer(String namePC, String introducedStr, String discontinuedStr, String companyNameStr) throws IOException, ParseException, ClassNotFoundException {
-			LocalDate introducedPC = ComputerMapper.enterDate(introducedStr);
-			LocalDate discontinuedPC = ComputerMapper.enterDate(discontinuedStr);
-			
-			Computer computer = ComputerMapper.StringPC(namePC, introducedPC, discontinuedPC,companyNameStr);
-			entityManager.getTransaction().begin();
-			entityManager.persist(computer);
-			entityManager.getTransaction().commit();
-	
+	public void setComputer(Computer computer) {
+		entityManager.getTransaction().begin();
+		entityManager.persist(computer);
+		entityManager.getTransaction().commit();
 	}
-
 
 	/**
 	 * This method updates a computer
+	 * 
 	 * @author Nassim BOUKHARI
-	 * @throws IOException 
-	 * @throws ParseException 
-	 * @throws ClassNotFoundException 
+	 * @throws IOException
+	 * @throws ParseException
+	 * @throws ClassNotFoundException
 	 */
-	public void updateComputer(String idPC, String namePC, String introducedStr, String discontinuedStr, String companyIdStr) throws ParseException {
-		
-			Computer computer = ComputerMapper.StringToComputer(idPC, namePC, introducedStr, discontinuedStr, companyIdStr);
-			JPAQueryFactory query = new JPAQueryFactory(entityManager);
-			entityManager.getTransaction().begin();
-			query.update(qcomputer).where(qcomputer.id.eq(computer.getId()))
+	public void updateComputer(Computer computer) {
+
+		JPAQueryFactory query = new JPAQueryFactory(entityManager);
+		entityManager.getTransaction().begin();
+		query.update(qcomputer).where(qcomputer.id.eq(computer.getId()))
 			 .set(qcomputer.name, computer.getName())
 			 .set(qcomputer.introduced, computer.getIntroduced())
 			 .set(qcomputer.discontinued, computer.getDiscontinued())
 			 .set(qcomputer.company, computer.getCompany())
 			 .execute();
-			entityManager.getTransaction().commit();
-			//entityManager.flush();
+		entityManager.getTransaction().commit();
 
-	
 	}
-
 
 	/**
 	 * This method deletes a computer
+	 * 
 	 * @author Nassim BOUKHARI
 	 */
 	public void removeComputer(List<Long> ids) {
@@ -156,35 +136,36 @@ public class ComputerDao {
 		for (Long id : ids) {
 			JPAQueryFactory query = new JPAQueryFactory(entityManager);
 			entityManager.getTransaction().begin();
-			query
-			.delete(qcomputer)
-			.where((qcomputer.id.eq(id)))
-			.execute();
+			query.delete(qcomputer)
+				 .where((qcomputer.id.eq(id)))
+				 .execute();
 			entityManager.getTransaction().commit();
 		}
 	}
 
 	/**
 	 * This method displays number of computers
+	 * 
 	 * @author Nassim BOUKHARI
 	 */
 	public int getComputersCount() {
 		JPAQueryFactory query = new JPAQueryFactory(entityManager);
-		return  (int) query.selectFrom(qcomputer).fetchCount();
+		return (int) query.selectFrom(qcomputer).fetchCount();
 	}
-	
+
 	/**
 	 * This method displays computers from the search
+	 * 
 	 * @author Nassim BOUKHARI
 	 */
-	public int getComputersCountFromSearch(String search){
+	public int getComputersCountFromSearch(String search) {
 
 		JPAQueryFactory query = new JPAQueryFactory(entityManager);
-		return  (int) query.selectFrom(qcomputer)
-				.where(qcomputer.name
-						.like("%"+search + "%")
-						.or(qcomputer.company.name
-						.like("%"+search + "%")))
-				.fetchCount();
+		return (int) query.selectFrom(qcomputer)
+						  .where(qcomputer.name
+						  		.like("%" + search + "%")
+								.or(qcomputer.company.name
+								.like("%" + search + "%")))
+				     	  .fetchCount();
 	}
 }

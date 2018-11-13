@@ -27,25 +27,24 @@ public class DashboardController {
 
 	private static final String DEFAULT_PAGE = "1";
 	private static final String DEFAULT_SIZE = "10";
-	//private static final String DEFAULT_SEARCH = "";
 
 	@GetMapping
 	public String handleGet(@RequestParam(name = "page", defaultValue = DEFAULT_PAGE) String pageNumber,
 			@RequestParam(name = "limit", defaultValue = DEFAULT_SIZE) String pageSize,
 			@RequestParam(required=false, name ="search") String search, Model model) throws ClassNotFoundException, IOException, ValidationException {
-		int nbComp = 0;
+		int nbComputers = 0;
 		if(search == null || "".equals(search) ) {
-			nbComp = computerServices.getNumberComputers();
+			nbComputers = computerServices.getNumberComputers();
 		}
 		else {
-			nbComp = computerServices.getNumberComputersFromSearch(search);
+			nbComputers = computerServices.getNumberComputersFromSearch(search);
 		}
 		if(pageSize.equals("10") || pageSize.equals("50") || pageSize.equals("100")){
 
-			int nbPages = (nbComp / Integer.parseInt(pageSize))+1;
-			int nbPage = Integer.parseInt(pageNumber);
+			int nbPages = (nbComputers / Integer.parseInt(pageSize))+1;
+			int numPage = Integer.parseInt(pageNumber);
 			
-			if(nbPage < 1 || nbPage > nbPages) {
+			if(numPage < 1 || numPage > nbPages) {
 				return "/404";
 			}
 			else {
@@ -57,17 +56,16 @@ public class DashboardController {
 				else {
 					computers = computerServices.showComputersFromSearch(search, pageNumber,pageSize);
 				}
-				System.out.println(computers);
-				model.addAttribute("nbComp",nbComp);
-				model.addAttribute("search",search);
-				model.addAttribute("computers", computers);
-				model.addAttribute("pageSize", pageSize);
-				model.addAttribute("nbPage", nbPage);
-				model.addAttribute("nbPages", nbPages);
-				model.addAttribute("nbPageMinusOne", pagination.nbPageMinusOne(nbPage));
-				model.addAttribute("nbPageMinusTwo", pagination.nbPageMinusTwo(nbPage));
-				model.addAttribute("nbPageMoreOne", pagination.nbPageMoreOne(nbPage));
-				model.addAttribute("nbPageMoreTwo",  pagination.nbPageMoreTwo(nbPage));
+				model.addAttribute("nbComp",nbComputers)
+				.addAttribute("search",search)
+				.addAttribute("computers", computers)
+				.addAttribute("pageSize", pageSize)
+				.addAttribute("nbPage", numPage)
+				.addAttribute("nbPages", nbPages)
+				.addAttribute("nbPageMinusOne", pagination.numPageMinusOne(numPage))
+				.addAttribute("nbPageMinusTwo", pagination.numPageMinusTwo(numPage))
+				.addAttribute("nbPageMoreOne", pagination.numPagePlusOne(numPage))
+				.addAttribute("nbPageMoreTwo",  pagination.numPagePlusTwo(numPage));
 			} 
 
 		}

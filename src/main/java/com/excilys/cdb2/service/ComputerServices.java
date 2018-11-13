@@ -2,13 +2,16 @@ package com.excilys.cdb2.service;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.excilys.cdb2.exception.ValidationException;
+import com.excilys.cdb2.mapper.ComputerMapper;
 import com.excilys.cdb2.model.Computer;
+import com.excilys.cdb2.model.Pagination;
 import com.excilys.cdb2.persistence.ComputerDao;
 
 /**
@@ -28,7 +31,9 @@ public class ComputerServices {
 	 * @throws ClassNotFoundException 
 	 */
 	public List<Computer> showComputers(String numberOfPage, String limitData) throws IOException, ValidationException, ClassNotFoundException{
-		List<Computer> computers = computerDao.getAllComputers(numberOfPage, limitData);
+		long numPage = Pagination.numberOfPage(numberOfPage, limitData);
+		long limitPage = Integer.parseInt(limitData);
+		List<Computer> computers = computerDao.getAllComputers(limitPage, numPage);
 		return computers;
 	}
 	
@@ -40,7 +45,9 @@ public class ComputerServices {
 	 * @throws ClassNotFoundException 
 	 */
 	public List<Computer> showComputersFromSearch(String search, String numberOfPage, String limitData) throws IOException, ValidationException, ClassNotFoundException{
-		List<Computer> computers = computerDao.searchComputers(search, numberOfPage, limitData);
+		long numPage = Pagination.numberOfPage(numberOfPage, limitData);
+		long limitPage = Integer.parseInt(limitData);
+		List<Computer> computers = computerDao.searchComputers(search, limitPage, numPage);
 		return computers;
 	}
 	
@@ -52,7 +59,10 @@ public class ComputerServices {
 	 * @throws ClassNotFoundException 
 	 */
 	public Computer showComputerDetail(String id) throws IOException, ValidationException, ClassNotFoundException{
-		return computerDao.getComputerDetails(id);
+		long idPC = Integer.parseInt(id);
+		Computer computer = new Computer();
+		computer.setId(idPC);
+		return computerDao.getComputerDetails(computer);
 	}
 
 	/**
@@ -63,8 +73,11 @@ public class ComputerServices {
 	 * @throws ValidationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public void createComputer(String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException, ClassNotFoundException {
-		computerDao.setComputer(name, introduced, discontinued, companyName);
+	public void createComputer(String name, String introduced, String discontinued, String companyId) throws IOException, ParseException, ValidationException, ClassNotFoundException {
+		LocalDate introducedLD = ComputerMapper.enterDate(introduced);
+		LocalDate discontinuedLD = ComputerMapper.enterDate(discontinued);
+		Computer computer = ComputerMapper.StringPC(name, introducedLD, discontinuedLD,companyId);
+		computerDao.setComputer(computer);
 	}
 
 	/**
@@ -75,8 +88,9 @@ public class ComputerServices {
 	 * @throws ParseException 
 	 * @throws ClassNotFoundException 
 	 */
-	public void modifyComputer(String id, String name, String introduced, String discontinued, String companyName) throws IOException, ParseException, ValidationException, ClassNotFoundException {
-		computerDao.updateComputer(id, name, introduced, discontinued, companyName);
+	public void modifyComputer(String id, String name, String introduced, String discontinued, String companyId) throws IOException, ParseException, ValidationException, ClassNotFoundException {
+		Computer computer = ComputerMapper.StringToComputer(id, name, introduced, discontinued, companyId);
+		computerDao.updateComputer(computer);
 	}
 
 	/**

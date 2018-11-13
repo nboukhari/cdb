@@ -38,8 +38,4 @@ public class CompanyServices {
 	public void deleteCompany(long id) throws ClassNotFoundException, IOException, ValidationException, SQLException {
 		companyDao.removeCompany(id);
 	}
-	
-	public long showCompanyId(String companyName) throws ClassNotFoundException, SQLException, IOException, ValidationException {
-		return companyDao.getCompanyId(companyName);
-	}
 }

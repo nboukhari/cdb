@@ -1,7 +1,6 @@
 package com.excilys.cdb2.model;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 public class ComputerBuilder {
 	private long id;
