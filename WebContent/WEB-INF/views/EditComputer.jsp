@@ -58,10 +58,10 @@
 								<div class="form-group">
 									<label for="companyId"><spring:message code="company"/></label> <select
 										class="form-control" id="companyId" name ="companyId">
-										<option value="${idCompany}">${computer.company.name}</option>
+										<option value="${computer.company.id}">${computer.company.name}</option>
 										<c:forEach var="Company" items="${companies}">
 											
-										<c:if test="${idCompany != Company.id}">
+										<c:if test="${computer.company.id != Company.id}">
 										<option value="${Company.id}">${Company.name}</option>
 										</c:if>
 										</c:forEach>

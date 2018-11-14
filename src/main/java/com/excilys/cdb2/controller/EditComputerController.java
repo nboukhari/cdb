@@ -42,14 +42,10 @@ public class EditComputerController {
 		
 		try {
 			Computer computer = computerServices.showComputerDetail(id);
-				/*if (computer.getCompanyName().isPresent() ) {
-					long idCompany = companyServices.showCompanyId(computer.getCompanyName().orElse("0"));
-					model.addAttribute("idCompany", idCompany);
-				}*/
 			model.addAttribute("id", id);
 			model.addAttribute("computer", computer);
 		}
-		catch(ValidationException | ClassNotFoundException e) {
+		catch(ValidationException e) {
 			return "404";
 		}
 		return "EditComputer";
@@ -72,7 +68,7 @@ public class EditComputerController {
 			model.addAttribute("messageOk", messageOk);
 			}
 		}
-		catch(ValidationException | ParseException | ClassNotFoundException e) {
+		catch(ValidationException | ParseException e) {
 			logger.error("Les valeurs que vous avez entrées ne sont pas correctes, veuillez recommencer.");
 		}
 	

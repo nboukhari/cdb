@@ -27,10 +27,10 @@ public class DashboardController {
 
 	private static final String DEFAULT_PAGE = "1";
 	private static final String DEFAULT_SIZE = "10";
-
+	
 	@GetMapping
-	public String handleGet(@RequestParam(name = "page", defaultValue = DEFAULT_PAGE) String pageNumber,
-			@RequestParam(name = "limit", defaultValue = DEFAULT_SIZE) String pageSize,
+	public String handleGet(@RequestParam(defaultValue = DEFAULT_PAGE, value = "page") String pageNumber,
+			@RequestParam(defaultValue = DEFAULT_SIZE, value = "limit") String pageSize,
 			@RequestParam(required=false, name ="search") String search, Model model) throws ClassNotFoundException, IOException, ValidationException {
 		int nbComputers = 0;
 		if(search == null || "".equals(search) ) {

@@ -100,6 +100,7 @@ public class ComputerDao {
 	 */
 	public void setComputer(Computer computer) {
 		entityManager.getTransaction().begin();
+		System.out.println("computer"+computer); 
 		entityManager.persist(computer);
 		entityManager.getTransaction().commit();
 	}

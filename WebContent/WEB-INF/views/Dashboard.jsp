@@ -17,6 +17,11 @@
 			<a class="navbar-brand" href="?limit=10&page=1"> Application -
 				Computer Database </a>
 				<div class="actions pull-right" role="group">
+						<a class="navbar-brand" href="/login">
+							<button	type="button" class="btn btn-default">
+								<spring:message code="login"/>
+							</button>
+						</a>
 						<a class="navbar-brand" href="?lang=en">
 							<button	type="button" class="btn btn-default">
 								<spring:message code="eng"/>

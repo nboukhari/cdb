@@ -4,7 +4,6 @@ com/excilys/cdb2/model/CompanyBuilder.class
 com/excilys/cdb2/controller/DeleteController.class
 com/excilys/cdb2/model/Company.class
 com/excilys/cdb2/App.class
-com/excilys/cdb2/persistence/ConnectionDAO.class
 com/excilys/cdb2/validator/isValidFormat.class
 com/excilys/cdb2/exception/InvalidDatesException.class
 com/excilys/cdb2/configuration/ClientWebConfig.class
